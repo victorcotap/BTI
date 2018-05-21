@@ -7,6 +7,9 @@ MCRGO = MISSION:New( CommandCenter, "Virtual Fedex", "CARGO", "Transport various
 HeloAvailableGroups = SET_GROUP:New():FilterCoalitions("blue"):FilterPrefixes("Player Helo"):FilterCategoryHelicopter():FilterStart()
 
 
+
+
+
 FrontlineZone = ZONE:New("RED Forefront Zone")
 FrontlineZoneCoalition = ZONE_CAPTURE_COALITION:New(FrontlineZone, coalition.side.red)
 FrontlineZoneCoalition:Start(20, 30)
@@ -91,10 +94,10 @@ local CrateStaticA = STATIC:FindByName( "Boxes A" )
 local CrateStaticB = STATIC:FindByName( "Boxes B" )
 local CrateStaticC = STATIC:FindByName( "Boxes C" )
 local CrateStaticD = STATIC:FindByName( "Boxes D" )
-local CrateCargoA = CARGO_SLINGLOAD:New( CrateStaticA, "Boxes", "Crates", 1000, 25 )
-local CrateCargoB = CARGO_SLINGLOAD:New( CrateStaticB, "Boxes", "Crates", 1000, 25 )
-local CrateCargoC = CARGO_SLINGLOAD:New( CrateStaticC, "Boxes", "Crates", 1000, 25 )
-local CrateCargoD = CARGO_SLINGLOAD:New( CrateStaticD, "Boxes", "Crates", 1000, 25 )
+local CrateCargoA = CARGO_SLINGLOAD:New( CrateStaticA, "Boxes", "Boxes", 1000, 25 )
+local CrateCargoB = CARGO_SLINGLOAD:New( CrateStaticB, "Boxes", "Boxes", 1000, 25 )
+local CrateCargoC = CARGO_SLINGLOAD:New( CrateStaticC, "Boxes", "Boxes", 1000, 25 )
+local CrateCargoD = CARGO_SLINGLOAD:New( CrateStaticD, "Boxes", "Boxes", 1000, 25 )
 local CrateCargoSet = SET_CARGO:New():FilterTypes( "Boxes" ):FilterStart()
 
 local staticTask = CargoDispatcher:AddTransportTask("Slingload crates", CrateCargoSet, "Slingload olympics!! Get those crates to the hospital")
