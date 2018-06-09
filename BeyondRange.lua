@@ -52,7 +52,7 @@ local rangeCoord = rangeStatic:GetCoordinate()
 
 range = RANGE:New("Boulder City Range");
 range:SetRangeLocation(rangeCoord)
-range:SetRangeRadius(25000)
+range:SetRangeRadius(11000)
 range:AddStrafePit(strafePitA, 3000, 500, nil, true, 20, 300);
 range:AddStrafePit(strafePitB, 3000, 500, nil, true, 10, 200);
 range:AddStrafePit(strafePitC, 3000, 500, nil, true, 30);
