@@ -13,7 +13,7 @@ ZonesList = {
 }
 
 HQ = GROUP:FindByName("BLUE CC")
-CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
+CommandCenter = COMMANDCENTER:New( CommandCenter, "CommandCenter" )
 
 
 for _, zoneName in pairs(ZonesList) do
@@ -27,17 +27,17 @@ for _, zoneName in pairs(ZonesList) do
             self:E( { Coalition = Coalition } )
             if Coalition == coalition.side.BLUE then
                 ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
-                HQ:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             else
                 ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
-                HQ:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             end
         end
     end
 
     function ZoneCaptureCoalition:OnEnterEmpty()
         ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
-        HQ:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+        CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
     end
 
     function ZoneCaptureCoalition:OnEnterAttacked()
@@ -45,9 +45,9 @@ for _, zoneName in pairs(ZonesList) do
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
-            HQ:MessageTypeToCoalition( string.format( "%s is under attack by Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         else
-            HQ:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         end
     end
 
@@ -55,9 +55,9 @@ for _, zoneName in pairs(ZonesList) do
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
-            HQ:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         else
-            HQ:MessageTypeToCoalition( string.format( "%s is captured by Russia, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is captured by Russia, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         end
         
         self:AddScore( "Captured", "Zone captured: Extra points granted.", 200 )    
