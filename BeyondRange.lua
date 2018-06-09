@@ -28,7 +28,6 @@ local bombtargets = {
     "RNG Bomb Target #012",
     "RNG Bomb Target #013",
     "RNG Bomb Target #014",
-    "RNG Bomb Target #015",
     "RNG Bomb Target #016",
     "RNG Bomb Target #017",
     "RNG Bomb Target #018",
