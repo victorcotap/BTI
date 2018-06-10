@@ -36,7 +36,7 @@ for keyIndex, zoneName in pairs(ZonesList) do
                 ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
                 CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             else
-                ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
+                -- ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
                 CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             end
         end
@@ -48,7 +48,7 @@ for keyIndex, zoneName in pairs(ZonesList) do
     end
 
     function ZoneCaptureCoalition:OnEnterAttacked()
-        ZoneCaptureCoalition:Smoke( SMOKECOLOR.White )
+        -- ZoneCaptureCoalition:Smoke( SMOKECOLOR.White )
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
