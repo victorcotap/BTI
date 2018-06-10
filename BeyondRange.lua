@@ -50,9 +50,9 @@ local bombtargets = {
 rangeStatic = UNIT:FindByName("RNG Bomb Moving Target #001")
 local rangeCoord = rangeStatic:GetCoordinate()
 
-range = RANGE:New("Boulder City Range");
+range = RANGE:New("Al Dhafra Range");
 range:SetRangeLocation(rangeCoord)
-range:SetRangeRadius(11000)
+range:SetRangeRadius(10000)
 range:AddStrafePit(strafePitA, 3000, 500, nil, true, 20, 300);
 range:AddStrafePit(strafePitB, 3000, 500, nil, true, 10, 200);
 range:AddStrafePit(strafePitC, 3000, 500, nil, true, 30);

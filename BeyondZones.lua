@@ -9,18 +9,24 @@ ZonesList = {
     "Sharjah Intl",
     "Maritime City",
     "Margham",
-    "Test Capture"
     "Al Dhaid",
+    "Camel Racetrack",
+    "Test Capture",
+    "Test Capture 2",
 }
 
 HQ = GROUP:FindByName("BLUE CC")
-CommandCenter = COMMANDCENTER:New( CommandCenter, "CommandCenter" )
+CommandCenter = COMMANDCENTER:New( HQ, "USA HQ" )
 
+ZonesCaptureCoalition = {}
 
-for _, zoneName in pairs(ZonesList) do
+for keyIndex, zoneName in pairs(ZonesList) do
+    env.info("BTI: Creating new Coalition Zone with index ")
     CaptureZone = ZONE:New( zoneName )
-    ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.BLUE ) 
+    local ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.BLUE ) 
     ZoneCaptureCoalition:Start( 5, 30 )
+
+    ZonesCaptureCoalition[keyIndex] = ZoneCaptureCoalition
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
         if From ~= To then
@@ -65,33 +71,26 @@ for _, zoneName in pairs(ZonesList) do
         
         self:__Guard( 30 )
     end
-    
+
     ZoneCaptureCoalition:__Guard(1)
-    ZoneCaptureCoalition:Mark()
+
+    -- ZoneCaptureCoalition:Mark()
 end
 
+function ZonesMarkingRefresh()
+    env.info("BTI: Refreshing Zones on the Map ")
 
--- CaptureZone = ZONE:New( "Palm Jebel Ali" )
--- ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.BLUE ) 
--- ZoneCaptureCoalition:Start( 5, 30 )
+    for keyIndex, zoneName in pairs(ZonesList) do
+        local Zone = ZonesCaptureCoalition[keyIndex]
+        Zone:Mark()
 
--- local tacanScheduler = SCHEDULER:New( nil, 
--- function()
---     env.info("we here")
---     local toto = ZoneCaptureCoalition:IsGuarded()
---     local tata = ZoneCaptureCoalition:IsAttacked()
---     env.info("we also here")
---     if ZoneCaptureCoalition:IsGuarded() then
---          env.info("is guarded is true")
---     end
---     if ZoneCaptureCoalition:IsAttacked() then
---         env.info("is Attacked is true")
---     end
---     env.info("we down here")
--- end, {}, 32, 30
--- )
+        local Coalition = Zone:GetCoalition()
+        if Coalition == coalition.side.BLUE then
+            CommandCenter:MessageTypeToCoalition( string.format( "Zone %s is ours", ZonesCaptureCoalition[keyIndex]:GetZoneName() ), MESSAGE.Type.Information )
+        else
+            CommandCenter:MessageTypeToCoalition( string.format( "Zone %s is captured by the Russians", ZonesCaptureCoalition[keyIndex]:GetZoneName() ), MESSAGE.Type.Information )
+        end
+    end
+end
 
--- ZoneCaptureCoalition:__Guard(1)
--- ZoneCaptureCoalition:Mark()
-
--- env.info("BTI: Zones set")
+SCHEDULER:New(nil, ZonesMarkingRefresh, {}, 5, 30)

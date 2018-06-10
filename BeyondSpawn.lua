@@ -12,7 +12,7 @@ function spawnRecon()
 end
 
 SCHEDULER:New(nil, spawnServices, {}, 1, 7200)
-SCHEDULER:New(nil, spawnRecon, {}, 2, 3600)
+SCHEDULER:New(nil, spawnRecon, {}, 2, 1800)
 
 
 
