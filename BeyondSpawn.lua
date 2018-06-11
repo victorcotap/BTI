@@ -14,6 +14,6 @@ end
 SCHEDULER:New(nil, spawnServices, {}, 1, 7200)
 SCHEDULER:New(nil, spawnRecon, {}, 2, 1800)
 
-
+TruckSpawn = SPAWN:New('BLUE Supply Convoy')
 
 env.info('BTI Spawn scheduled')

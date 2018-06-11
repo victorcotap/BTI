@@ -10,12 +10,13 @@ ZonesList = {
     "Maritime City",
     "Margham",
     "Al Dhaid",
-    "Camel Racetrack",
+    "Racetrack",
     "Test Capture",
     "Test Capture 2",
 }
 
 HQ = GROUP:FindByName("BLUE CC")
+Cavalry = GROUP:FindByName("BLUE Cavalry")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 ZonesCaptureCoalition = {}
@@ -45,6 +46,10 @@ for keyIndex, zoneName in pairs(ZonesList) do
     function ZoneCaptureCoalition:OnEnterEmpty()
         ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
         CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+        local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
+        local newTrucks = TruckSpawn:Spawn()
+        newTrucks:RouteGroundOnRoad(coordinate)
+        Cavalry:RouteGroundOnRoad(coordinate)
     end
 
     function ZoneCaptureCoalition:OnEnterAttacked()
@@ -89,7 +94,7 @@ function ZonesMarkingRefresh()
     end
 end
 
-SCHEDULER:New(nil, ZonesMarkingRefresh, {}, 5, 30)
+SCHEDULER:New(nil, ZonesMarkingRefresh, {}, 5, 600)
 
 function ZonesIntelRefresh()
     env.info("BTI: Sending Intel to players ")
@@ -121,4 +126,4 @@ function ZonesIntelRefresh()
     end
 end
 
-SCHEDULER:New(nil, ZonesIntelRefresh, {}, 20, 55)
+SCHEDULER:New(nil, ZonesIntelRefresh, {}, 20, 300)
