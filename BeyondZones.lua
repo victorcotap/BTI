@@ -12,8 +12,7 @@ ZonesList = {
     "Margham",
     -- "Al Dhaid",
     "Racetrack",
-    -- "Test Capture",
-    "Test Capture 2",
+    -- "Test Capture 2",
 }
 
 HQ = GROUP:FindByName("BLUE CC")

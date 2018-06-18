@@ -44,7 +44,6 @@ local bombtargets = {
     "RNG Bomb Target #029",
     "RNG Bomb Target #030",
     "RNG Bomb Target #031",
-    "RNG Bomb Target #032"
 }
 
 rangeStatic = UNIT:FindByName("RNG Bomb Moving Target #001")
