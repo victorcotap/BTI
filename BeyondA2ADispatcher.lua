@@ -38,11 +38,11 @@ A2ADispatcher:SetSquadronCap( BandarAbbasSquadron, RedCapZone, 4000, 8000, 600, 
 A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 
 LarSquadron = "Lar Squadron"
-A2ADispatcher:SetSquadron( LarSquadron, "Al Dhafra AB", { "RED Mirage" }, 4 )
+A2ADispatcher:SetSquadron( LarSquadron, "Al Maktoum Intl", { "RED Mirage" }, 4 )
 A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
 HavadaryaSquadron = "Havadarya Squadron"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Dhafra AB", { "RED Mig31"}, 7)
+A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Maktoum Intl", { "RED Mig31"}, 7)
 A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 800, 1800)
 
 

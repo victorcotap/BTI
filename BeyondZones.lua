@@ -12,7 +12,7 @@ ZonesList = {
     "Margham",
     -- "Al Dhaid",
     "Racetrack",
-    -- "Test Capture 2",
+    "Test Capture 2",
 }
 
 HQ = GROUP:FindByName("BLUE CC")
@@ -48,8 +48,8 @@ function InitZoneCoalition(keyIndex, zoneName)
         CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
         local newTrucks = TruckSpawn:Spawn()
-        newTrucks:RouteGroundOnRoad(coordinate)
-        Cavalry:RouteGroundOnRoad(coordinate)
+        newTrucks:RouteGroundOnRoad(coordinate, 40)
+        Cavalry:RouteGroundOnRoad(coordinate, 35)
     end
 
     function ZoneCaptureCoalition:OnEnterAttacked()
@@ -121,6 +121,11 @@ for keyIndex, zoneName in pairs(ZonesList) do
     SCHEDULER:New(nil, InitZoneCoalition, {keyIndex, zoneName}, seconds)
 end
 
+function IntelBriefing()
+    CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
+end
+
+SCHEDULER:New(nil, IntelBriefing, nil, 600, 600)
 
 
 
