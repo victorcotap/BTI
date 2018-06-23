@@ -119,15 +119,15 @@ function routeCarrierTemporary(routePoints)
     env.info(string.format("Current wind from %d", currentWindDirection - 7))
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), 11.83)
-    S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
+    -- S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
     env.info("BTI: Carrier re-routed")
     sendWeatherTextFromCoordinate(currentCoordinate)
     SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1340)
     SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1400)
 end
 
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 440)
-SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 500)
+SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 240)
+SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 300)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 
