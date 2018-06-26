@@ -15,7 +15,7 @@ function spawnRecon()
 end
 
 SCHEDULER:New(nil, spawnServices, {}, 5, 7200)
-SCHEDULER:New(nil, spawnRecon, {}, 2, 1800)
+SCHEDULER:New(nil, spawnRecon, {}, 2, 3600)
 
 TruckSpawn = SPAWN:New('BLUE Supply Convoy')
 

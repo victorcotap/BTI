@@ -115,14 +115,22 @@ end
 function routeCarrierTemporary(routePoints)
     env.info("BTI: Going to route the carrier into the wind")
     local currentCoordinate = CyclicCarrier:GetCoordinate()
-    local currentWindDirection = currentCoordinate:GetWind()
+    local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
     env.info(string.format("Current wind from %d", currentWindDirection - 7))
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
-    CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), 11.83)
+    local speed = 0
+    if currentWindStrengh < 3.6 then
+        speed = 11.83
+    elseif currentWindStrengh > 3.6 and currentWindStrengh < 11  then
+        speed = 11.83 - currentWindStrengh
+    elseif currentWindStrengh > 11 then
+        speed = 2
+    end
+    CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     -- S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
-    env.info("BTI: Carrier re-routed")
+    env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1340)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1440)
     SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1500)
 end
 
