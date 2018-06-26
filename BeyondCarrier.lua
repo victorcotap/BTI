@@ -107,8 +107,8 @@ function routeCarrierBackToNextWaypoint(routePoints)
         CyclicCarrier:SetTask(newTask)
         env.info("BTI: Carrier back on track")
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1340)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1400)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1240)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1300)
     env.info("BTI: carrier set to go back to into the wind in 100")
 end
 
@@ -123,7 +123,7 @@ function routeCarrierTemporary(routePoints)
     env.info("BTI: Carrier re-routed")
     sendWeatherTextFromCoordinate(currentCoordinate)
     SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1340)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1400)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1500)
 end
 
 SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 240)
