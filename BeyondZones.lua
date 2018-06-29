@@ -3,20 +3,16 @@ env.info("BTI: Starting Zones")
 ZonesList = {
     -- "Palm Jebel Ali",
     -- "Palm Jumeirah",
-    "Al Makthoum Intl",
-    -- "Al Dhafra AB",
     "Dubai Intl",
     "Al Minhad AB",
     "Sharjah Intl",
     "Maritime City",
-    "Margham",
-    -- "Al Dhaid",
     "Racetrack",
     "Test Capture 2",
 }
 
 HQ = GROUP:FindByName("BLUE CC")
-Cavalry = GROUP:FindByName("BLUE Cavalry")
+-- Cavalry = GROUP:FindByName("BLUE Cavalry")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 ZonesCaptureCoalition = {}
@@ -49,7 +45,7 @@ function InitZoneCoalition(keyIndex, zoneName)
         local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
         local newTrucks = TruckSpawn:Spawn()
         newTrucks:RouteGroundOnRoad(coordinate, 40)
-        Cavalry:RouteGroundOnRoad(coordinate, 35)
+        -- Cavalry:RouteGroundOnRoad(coordinate, 35)
     end
 
     function ZoneCaptureCoalition:OnEnterAttacked()
