@@ -7,7 +7,6 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 Carrier = GROUP:FindByName("BLUE CV Fleet")
 TestCarrier = GROUP:FindByName("TEST CVN")
 Fleet = GROUP:FindByName("BLUE CV Fleet")
-S3Tanker = GROUP:FindByName("BLUE C REFUK S3B")
 Carrier:HandleEvent(EVENTS.Land)
 
 -- Events
@@ -107,7 +106,7 @@ function routeCarrierBackToNextWaypoint(routePoints)
     end
     SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1440)
     SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1500)
-    env.info("BTI: carrier set to go back to into the wind in 100")
+    env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
 function routeCarrierTemporary(routePoints)
@@ -125,8 +124,9 @@ function routeCarrierTemporary(routePoints)
         speed = 2
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
-    -- S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
-    S3Tanker:TaskRouteToVec2(intoTheWindCoordinate, 139)
+    local S3Tanker = GROUP:FindByName("BLUE C REFUK S3B")
+    S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
+    -- S3Tanker:TaskRouteToVec2(intoTheWindCoordinate, 139)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
     sendWeatherTextFromCoordinate(currentCoordinate)
     SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1140)
