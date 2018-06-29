@@ -98,17 +98,15 @@ function routeCarrierBackToNextWaypoint(routePoints)
     local nextPoint = originalMissionRoute[index]
     if nextPoint then
         env.info("BTI: we have an extra point!")
-        -- local oldPoint = originalMissionRoute[1]
-        -- env.info(string.format("BTI: Old Point X %d and Y %d", oldPoint.x, oldPoint.z))
+
         table.remove(originalMissionRoute, 1)
-        -- local currentPoint = originalMissionRoute[1]
-        -- env.info(string.format("BTI: Current Point X %d and Y %d", currentPoint.x, currentPoint.z))
+
         local newTask = CyclicCarrier:TaskRoute(originalMissionRoute)
         CyclicCarrier:SetTask(newTask)
         env.info("BTI: Carrier back on track")
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1240)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1300)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1440)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1500)
     env.info("BTI: carrier set to go back to into the wind in 100")
 end
 
@@ -128,10 +126,11 @@ function routeCarrierTemporary(routePoints)
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     -- S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
+    S3Tanker:TaskOrbitCircle(3000, 139, intoTheWindCoordinate)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1440)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1500)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1140)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1200)
 end
 
 SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 240)

@@ -22,9 +22,14 @@ function spawnBomberEscortFerry(something)
     SPAWN:New('RED Bomber Escort'):Spawn()
 end
 
+function spawnShipConvoy(something)
+    SPAWN:New('RED Ship Convoy'):Spawn()
+end
+
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 5, 7200)
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 SCHEDULER:New(nil, spawnBomberEscortFerry, {"toto"}, 10, 4000)
+SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 15, 10800)
 
 TruckSpawn = SPAWN:New('BLUE Supply Convoy')
 
