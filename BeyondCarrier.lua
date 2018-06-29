@@ -126,7 +126,7 @@ function routeCarrierTemporary(routePoints)
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     -- S3Tanker:TaskOrbitCircleAtVec2(intoTheWindCoordinate:GetVec2(), 3000, 139)
-    S3Tanker:TaskOrbitCircle(3000, 139, intoTheWindCoordinate)
+    S3Tanker:TaskRouteToVec2(intoTheWindCoordinate, 139)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
     sendWeatherTextFromCoordinate(currentCoordinate)
     SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1140)
