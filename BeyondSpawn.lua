@@ -11,7 +11,9 @@ function spawnServices(something)
 end
 
 function spawnRecon(something)
-    SPAWN:New('BLUE FAC Reaper A'):Spawn()
+    local group = SPAWN:New('BLUE FAC Reaper A'):Spawn()
+    local type = group:GetTypeName()
+    env.info(string.format("blue fac reaper type %s", type))
 end
 
 function spawnBomberEscortFerry(something)
