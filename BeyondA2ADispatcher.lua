@@ -17,7 +17,7 @@ env.info("[BTI] A2A Dispatcher: Detection ready")
 -- Setup the A2A dispatcher, and initialize it.
 A2ADispatcher = AI_A2A_DISPATCHER:New( EWR )
 A2ADispatcher:SetEngageRadius( 50000 )
-A2ADispatcher:SetGciRadius( 150000 )
+A2ADispatcher:SetGciRadius( 100000 )
 A2ADispatcher:SetIntercept(90)
 -- A2ADispatcher:SetTacticalDisplay( true )
 A2ADispatcher:SetBorderZone( RedBorderZone )
@@ -37,9 +37,9 @@ A2ADispatcher:SetSquadron( BandarAbbasSquadron , "Al Minhad AB", { "RED Mig23" }
 A2ADispatcher:SetSquadronCap( BandarAbbasSquadron, RedCapZone, 4000, 8000, 600, 800, 800, 1200, "BARO" )
 A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 
-LarSquadron = "Lar Squadron"
-A2ADispatcher:SetSquadron( LarSquadron, "Al Maktoum Intl", { "RED F5" }, 4 )
-A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
+-- LarSquadron = "Lar Squadron"
+-- A2ADispatcher:SetSquadron( LarSquadron, "Al Maktoum Intl", { "RED F5" }, 4 )
+-- A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
 HavadaryaSquadron = "Havadarya Squadron"
 A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Maktoum Intl", { "RED Mig21"}, 6 )
