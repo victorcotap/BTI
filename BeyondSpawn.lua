@@ -25,7 +25,7 @@ function spawnShipConvoy(something)
     SPAWN:New('RED Ship Convoy'):Spawn()
 end
 
-SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 5, 7200)
+SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 55, 7200)
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 SCHEDULER:New(nil, spawnBomberFerry, {"toto"}, 60, 4000)
 SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 15, 10800)
