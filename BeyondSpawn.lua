@@ -32,7 +32,7 @@ end
 
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 5, 7200)
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
-SCHEDULER:New(nil, spawnBomberEscort, {"toto"}, 120, 4000)
+SCHEDULER:New(nil, spawnBomberEscort, {"toto"}, 90, 4000)
 SCHEDULER:New(nil, spawnBomberFerry, {"toto"}, 60, 4000)
 SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 15, 10800)
 
