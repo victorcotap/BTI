@@ -39,7 +39,7 @@ function InitZoneCoalition(keyIndex, zoneName)
         end
     end
 
-    function ZoneCaptureCoalition:OnEnterEmpty()
+    function ZoneCaptureCoalition:OnEnterEmpty(From, Event, To)
         ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
         CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
@@ -48,7 +48,7 @@ function InitZoneCoalition(keyIndex, zoneName)
         -- Cavalry:RouteGroundOnRoad(coordinate, 35)
     end
 
-    function ZoneCaptureCoalition:OnEnterAttacked()
+    function ZoneCaptureCoalition:OnEnterAttacked(From, Event, To)
         -- ZoneCaptureCoalition:Smoke( SMOKECOLOR.White )
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
@@ -59,10 +59,14 @@ function InitZoneCoalition(keyIndex, zoneName)
         end
     end
 
-    function ZoneCaptureCoalition:OnEnterCaptured()
+    function ZoneCaptureCoalition:OnEnterCaptured(From, Event, To)
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
+            if From ~= 'Empty' then
+                local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
+                local newTrucks = TruckSpawn:Spawn()
+            end
             CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             ZoneCaptureCoalition:FlareZone( FLARECOLOR.White, 4 )
         else
