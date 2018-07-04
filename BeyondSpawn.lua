@@ -16,11 +16,6 @@ function spawnRecon(something)
     env.info(string.format("blue fac reaper type %s", type))
 end
 
-function spawnBomberEscort(something)
-    env.info('BTI: RED Bomber Escort activated')
-    SPAWN:New('RED Bomber Escort'):Spawn()
-end
-
 function spawnBomberFerry(something)
     env.info('BTI: RED Bomber Ferry activated')
     SPAWN:New('RED Bomber Ferry'):Spawn()
@@ -32,7 +27,6 @@ end
 
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 5, 7200)
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
-SCHEDULER:New(nil, spawnBomberEscort, {"toto"}, 90, 4000)
 SCHEDULER:New(nil, spawnBomberFerry, {"toto"}, 60, 4000)
 SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 15, 10800)
 
