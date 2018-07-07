@@ -32,7 +32,7 @@ end
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 55, 7200)
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 SCHEDULER:New(nil, spawnBomberFerry, {"toto"}, 60, 2500)
--- SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 750, 10800)
+SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 750, 10800)
 
 TruckSpawn = SPAWN:New('BLUE Supply Convoy')
 
