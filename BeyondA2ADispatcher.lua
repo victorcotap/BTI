@@ -43,7 +43,7 @@ A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 -- A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
 HavadaryaSquadron = "Havadarya Squadron"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Dhafra AB", { "RED Mig21"}, 6 )
+A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Dhafra AB", { "RED F4"}, 6 )
 A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 800, 1800)
 
 
