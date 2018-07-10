@@ -7,8 +7,9 @@ ZonesList = {
     "Al Minhad AB",
     "Sharjah Intl",
     "Maritime City",
-    "Racetrack",
+    -- "Racetrack",
     "Test Capture 2",
+    "Test Capture",
     "Bandar Abbas",
 }
 
@@ -45,7 +46,7 @@ function InitZoneCoalition(keyIndex, zoneName)
         CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
         local newTrucks = TruckSpawn:Spawn()
-        newTrucks:RouteGroundOnRoad(coordinate, 40)
+        newTrucks:RouteGroundOnRoad(coordinate, 70)
         -- Cavalry:RouteGroundOnRoad(coordinate, 35)
     end
 

@@ -8,6 +8,19 @@ Carrier = GROUP:FindByName("BLUE CV Fleet")
 TestCarrier = GROUP:FindByName("TEST CVN")
 Fleet = GROUP:FindByName("BLUE CV Fleet")
 Carrier:HandleEvent(EVENTS.Land)
+S3Tanker = nil
+
+-- Spawns
+
+function spawnServices(something)
+    env.info('BTI Spawn function activated')
+
+    SPAWN:New('BLUE C EWR E2'):Spawn()
+    SPAWN:New('BLUE REFUK KC130'):Spawn()
+    S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
+end
+
+SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 45, 7200)
 
 -- Events
 
@@ -31,17 +44,17 @@ function sendWeatherTextFromCoordinate(coordinate)
     local currentPressure = coordinate:GetPressure(0)
     local currentTemperature = coordinate:GetTemperature()
     local currentWindDirection, currentWindStrengh = coordinate:GetWind()
-    local weatherString = string.format("Wind from %d@%dkts, QNH %d, Temperature %d", currentWindDirection, currentWindStrengh, currentPressure, currentTemperature)
+    local weatherString = string.format("Carrier weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
     return weatherString
 end
 
 function sendCarrierLaunchRecoveryCycle()
-    CommandCenter:MessageTypeToCoalition("Carrier will turn into Launch/Recovery cycle in 1 minute!\nArco will reposition for recovery operation.\nWeather to follow", MESSAGE.Type.Information)
+    CommandCenter:MessageTypeToCoalition("Carrier will turn into Launch/Recovery cycle in 5 minute!\nArco will reposition for recovery operation.\nWeather to follow", MESSAGE.Type.Information)
 end
 
 function sendCarrierRoutingCycle()
-    CommandCenter:MessageTypeToCoalition("Carrier launch/recovery cycle is over in 1 minute.\nCarrier will resume its original route higher speed.\nPunch it Chewie!", MESSAGE.Type.Information)
+    CommandCenter:MessageTypeToCoalition("Carrier launch/recovery cycle is over in 5 minute.\nCarrier will resume its original route higher speed.\nPunch it Chewie!", MESSAGE.Type.Information)
 end
 
 
@@ -69,16 +82,19 @@ function findNearestRoutePointIndex(currentCoordinate, routePoints)
     return result, distance
 end
 
+function routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
+    local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
+    S3OrbitTask = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
+    S3Tanker:SetTask(S3OrbitTask)
+end
+
 env.info("BTI: Carrier fleet is deployed, starting operations")
 
 -- Cyclic ops
 
--- CyclicCarrier = TestCarrier
 CyclicCarrier = Carrier
 
 originalMissionRoute = CyclicCarrier:GetTaskRoute()
--- testRoute = mist.getGroupPoints('TEST CVN')
--- originalMissionRoute = testRoute
 if originalMissionRoute then
     env.info("BTI: Got mission route")
     if #originalMissionRoute > 1 then
@@ -92,8 +108,6 @@ function routeCarrierBackToNextWaypoint(routePoints)
     env.info("BTI: Trying to route back to the next waypoint")
     index = index + 1
 
-    -- local nextIndex = findNearestRoutePointIndex(CyclicCarrier:GetCoordinate(), routePoints)
-    -- local newRoute = mist.utils.deepCopy(originalMissionRoute)
     local nextPoint = originalMissionRoute[index]
     if nextPoint then
         env.info("BTI: we have an extra point!")
@@ -104,8 +118,8 @@ function routeCarrierBackToNextWaypoint(routePoints)
         CyclicCarrier:SetTask(newTask)
         env.info("BTI: Carrier back on track")
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1440)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1500)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1340)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1600)
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
@@ -125,17 +139,15 @@ function routeCarrierTemporary(routePoints)
         speed = 2
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
-    local S3Tanker = GROUP:FindByName("BLUE C REFUK S3B")
-    S3Task = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, 139)
-    -- S3Task = S3Tanker:TaskRouteToVec2(intoTheWindCoordinate, 139)
-    S3Tanker:SetTask(S3Task)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
+
+    routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1140)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1200)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1100)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1400)
 end
 
-SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 240)
+SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
 SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 300)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 

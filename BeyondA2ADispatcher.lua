@@ -25,7 +25,7 @@ env.info("[BTI] A2A Dispatcher: Dispatcher created")
 
 -- Set Defaults
 A2ADispatcher:SetDefaultGrouping(1)
-A2ADispatcher:SetDefaultOverhead(0.70)
+A2ADispatcher:SetDefaultOverhead(0.75)
 A2ADispatcher:SetDefaultFuelThreshold(0.25)
 A2ADispatcher:SetDefaultTanker("RED Tanker")
 A2ADispatcher:SetDefaultDamageThreshold(0.4)
@@ -43,7 +43,7 @@ A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 -- A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
 HavadaryaSquadron = "Havadarya Squadron"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Dhafra AB", { "RED F4"}, 6 )
+A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Dhafra AB", { "RED F4" }, 6 )
 A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 800, 1800)
 
 
