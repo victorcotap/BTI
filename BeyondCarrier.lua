@@ -83,9 +83,10 @@ function findNearestRoutePointIndex(currentCoordinate, routePoints)
 end
 
 function routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
-    local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
-    S3OrbitTask = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
-    S3Tanker:SetTask(S3OrbitTask)
+    -- Use 
+    -- local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
+    -- S3OrbitTask = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
+    -- S3Tanker:SetTask(S3OrbitTask)
 end
 
 env.info("BTI: Carrier fleet is deployed, starting operations")
