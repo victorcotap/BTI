@@ -21,17 +21,17 @@ RED_A2ADispatcher = AI_A2A_DISPATCHER:New( RED_EWR_Detection )
 RED_A2ADispatcher:SetTacticalDisplay( true )
 RED_A2ADispatcher:SetIntercept(60)
 
-SquadronA = "Taboule"
-RED_A2ADispatcher:SetSquadron( SquadronA , "Bandar Abbas Intl", { "!mig29_ai #002" }, 0 )
-RED_A2ADispatcher:SetSquadronGci( SquadronA, 800, 1800)
+RedSquadronA = "Taboule"
+RED_A2ADispatcher:SetSquadron( RedSquadronA , "Bandar Abbas Intl", { "!mig29_ai #002" })
+RED_A2ADispatcher:SetSquadronGci( RedSquadronA, 800, 1800)
 
-SquadronB = "Couscous"
-RED_A2ADispatcher:SetSquadron( SquadronA , "Bandar Abbas Intl", { "!mig23_ai hard" }, 0 )
-RED_A2ADispatcher:SetSquadronGci( SquadronA, 800, 1800)
+RedSquadronB = "Couscous"
+RED_A2ADispatcher:SetSquadron( RedSquadronB , "Bandar Abbas Intl", { "!mig23_ai hard" })
+RED_A2ADispatcher:SetSquadronGci( RedSquadronB, 800, 1800)
 
-SquadronC = "Kebab"
-RED_A2ADispatcher:SetSquadron( SquadronA , "Bandar Abbas Intl", { "!mig23_ai easy" }, 0 )
-RED_A2ADispatcher:SetSquadronGci( SquadronA, 800, 1800)
+RedSquadronC = "Kebab"
+RED_A2ADispatcher:SetSquadron( RedSquadronC , "Bandar Abbas Intl", { "!mig23_ai easy" } )
+RED_A2ADispatcher:SetSquadronGci( RedSquadronC, 800, 1800)
 
 env.info("CTI: RED Dispatcher ready")
 
@@ -52,12 +52,12 @@ BLUE_A2ADispatcher:SetTacticalDisplay( true )
 
 BLUE_A2ADispatcher:SetIntercept(60)
 
-SquadronA = "BBQ"
-BLUE_A2ADispatcher:SetSquadron( SquadronA , "Dubai Intl", { "@f16_ai med" }, 0 )
-BLUE_A2ADispatcher:SetSquadronGci( SquadronA, 800, 1800)
+BlueSquadronA = "BBQ"
+BLUE_A2ADispatcher:SetSquadron( BlueSquadronA , "Dubai Intl", { "@f16_ai med" })
+BLUE_A2ADispatcher:SetSquadronGci( BlueSquadronA, 800, 1800)
 
-SquadronB = "Guns"
-BLUE_A2ADispatcher:SetSquadron( SquadronA , "Dubai Intl", { "@f16_ai hard" }, 0 )
-BLUE_A2ADispatcher:SetSquadronGci( SquadronA, 800, 1800)
+BlueSquadronB = "Guns"
+BLUE_A2ADispatcher:SetSquadron( BlueSquadronB , "Dubai Intl", { "@f16_ai hard" })
+BLUE_A2ADispatcher:SetSquadronGci( BlueSquadronB, 800, 1800)
 
 env.info("CTI: BLUE Dispatcher ready")
