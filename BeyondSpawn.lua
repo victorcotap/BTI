@@ -22,6 +22,11 @@ function spawnShipConvoy(something)
     CommandCenter:MessageTypeToCoalition( string.format("A convoy consisting of several warships has left Bandar Shenas to re-supply Abu-Dhabi with new and modern SAM.\nDestroy the convoy before it can bring new and improved SAMs to the peninsula"), MESSAGE.Type.Information )
 end
 
+function spawnArty(something)
+    env.info("BTI: Cargo delivered!")
+    SPAWN:New('BLUE Arty Paladin'):Spawn()
+end
+
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 SCHEDULER:New(nil, spawnBomberFerry, {"toto"}, 60, 2500)
 SCHEDULER:New(nil, spawnShipConvoy, {"toto"}, 750, 10800)
