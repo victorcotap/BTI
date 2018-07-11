@@ -84,9 +84,11 @@ end
 
 function routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
     -- Use 
-    -- local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
-    -- S3OrbitTask = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
-    -- S3Tanker:SetTask(S3OrbitTask)
+    local tasks = {}
+    local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
+    tasks[#tasks+1] = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
+    tasks[#tasks+1] = S3Tanker:EnRouteTaskTanker()
+    S3Tanker:SetTask(S3Tanker:TaskCombo(tasks))
 end
 
 env.info("BTI: Carrier fleet is deployed, starting operations")
@@ -149,7 +151,7 @@ function routeCarrierTemporary(routePoints)
 end
 
 SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 300)
+SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 55)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 
