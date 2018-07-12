@@ -25,7 +25,7 @@ env.info("[BTI] A2A Dispatcher: Dispatcher created")
 
 -- Set Defaults
 A2ADispatcher:SetDefaultGrouping(1)
-A2ADispatcher:SetDefaultOverhead(0.85)
+A2ADispatcher:SetDefaultOverhead(1)
 A2ADispatcher:SetDefaultFuelThreshold(0.25)
 A2ADispatcher:SetDefaultTanker("RED Tanker")
 A2ADispatcher:SetDefaultDamageThreshold(0.4)
