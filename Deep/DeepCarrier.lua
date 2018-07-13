@@ -10,6 +10,11 @@ S3Tanker = nil
 
 -- Spawns
 
+function spawnRecon(something)
+    local group = SPAWN:New('BLUE FAC Reaper A'):Spawn()
+end
+SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 7, 3600)
+
 function spawnServices(something)
     env.info('BTI Spawn function activated')
 
@@ -119,8 +124,8 @@ function routeCarrierBackToNextWaypoint(routePoints)
         CyclicCarrier:SetTask(newTask)
         env.info("BTI: Carrier back on track")
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 1340)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1600)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 600)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 900)
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
@@ -144,8 +149,8 @@ function routeCarrierTemporary(routePoints)
 
     routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 1100)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 1400)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 420)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 720)
 end
 
 SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
