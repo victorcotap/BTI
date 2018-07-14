@@ -20,6 +20,7 @@ function spawnServices(something)
 
     SPAWN:New('BLUE C EWR E2'):Spawn()
     SPAWN:New('BLUE REFUK KC130'):Spawn()
+    SPAWN:New('BLUE REFUK KC135'):Spawn()
     S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
 end
 
