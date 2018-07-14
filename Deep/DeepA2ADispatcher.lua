@@ -20,7 +20,7 @@ A2ADispatcher = AI_A2A_DISPATCHER:New( EWR )
 A2ADispatcher:SetEngageRadius( 50000 )
 A2ADispatcher:SetGciRadius( 269000 )
 A2ADispatcher:SetIntercept(30)
-A2ADispatcher:SetTacticalDisplay( true )
+-- A2ADispatcher:SetTacticalDisplay( true )
 A2ADispatcher:SetBorderZone( RedBorderZone )
 env.info("[BTI] A2A Dispatcher: Dispatcher created")
 
