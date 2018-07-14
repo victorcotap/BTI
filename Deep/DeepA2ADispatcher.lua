@@ -36,7 +36,7 @@ env.info("[BTI] A2A Dispatcher: Defaults set")
 --Set Squadrons
 SquadronA = "Squadron A"
 A2ADispatcher:SetSquadron( SquadronA , "Vaziani", { "RED F4" }, 6 )
-A2ADispatcher:SetSquadronCap( SquadronA, RedCapZone, 4000, 8000, 450, 600, 500, 650, "BARO" )
+A2ADispatcher:SetSquadronCap( SquadronA, RedCapZone, 4000, 8000, 500, 640, 500, 650, "BARO" )
 A2ADispatcher:SetSquadronCapInterval( SquadronA, 2, 180, 300, 1 )
 
 -- LarSquadron = "Lar Squadron"
