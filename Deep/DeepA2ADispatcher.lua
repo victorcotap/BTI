@@ -18,7 +18,7 @@ env.info("[BTI] A2A Dispatcher: Detection ready")
 -- Setup the A2A dispatcher, and initialize it.
 A2ADispatcher = AI_A2A_DISPATCHER:New( EWR )
 A2ADispatcher:SetEngageRadius( 50000 )
-A2ADispatcher:SetGciRadius( 350000 )
+A2ADispatcher:SetGciRadius( 269000 )
 A2ADispatcher:SetIntercept(30)
 A2ADispatcher:SetTacticalDisplay( true )
 A2ADispatcher:SetBorderZone( RedBorderZone )
@@ -35,9 +35,9 @@ env.info("[BTI] A2A Dispatcher: Defaults set")
 
 --Set Squadrons
 SquadronA = "Squadron A"
-A2ADispatcher:SetSquadron( SquadronA , "Vaziani", { "RED F4" }, 5 )
-A2ADispatcher:SetSquadronCap( SquadronA, RedCapZone, 4000, 8000, 600, 800, 800, 1200, "BARO" )
-A2ADispatcher:SetSquadronCapInterval( SquadronA, 1, 30, 120, 1 )
+A2ADispatcher:SetSquadron( SquadronA , "Vaziani", { "RED F4" }, 6 )
+A2ADispatcher:SetSquadronCap( SquadronA, RedCapZone, 4000, 8000, 450, 600, 500, 650, "BARO" )
+A2ADispatcher:SetSquadronCapInterval( SquadronA, 2, 180, 300, 1 )
 
 -- LarSquadron = "Lar Squadron"
 -- A2ADispatcher:SetSquadron( LarSquadron, "Al Maktoum Intl", { "RED F5" }, 4 )
@@ -45,7 +45,7 @@ A2ADispatcher:SetSquadronCapInterval( SquadronA, 1, 30, 120, 1 )
 
 SquadronB = "Squadron B"
 A2ADispatcher:SetSquadron( SquadronB, "Vaziani", { "RED Mig29" }, 6 )
-A2ADispatcher:SetSquadronGci( SquadronB, 800, 1800)
+A2ADispatcher:SetSquadronGci( SquadronB, 500, 650)
 
 
 env.info("[BTI] A2A Dispatcher: Squadrons ready")

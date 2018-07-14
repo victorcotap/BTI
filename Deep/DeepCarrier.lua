@@ -149,8 +149,8 @@ function routeCarrierTemporary(routePoints)
 
     routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 420)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 720)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 460)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 760)
 end
 
 SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
