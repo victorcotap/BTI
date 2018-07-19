@@ -154,9 +154,10 @@ function routeCarrierTemporary(routePoints)
     SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 760)
 end
 
-SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 55)
-CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
+-- Disable/Enable lines below for carrier ops training
+-- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
+-- SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 55)
+-- CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 
 env.info("BTI: Carrier fleet is now on cyclic operations")
