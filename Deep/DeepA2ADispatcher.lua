@@ -44,7 +44,7 @@ A2ADispatcher:SetSquadronCapInterval( SquadronA, 2, 180, 300, 1 )
 -- A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
 SquadronB = "Squadron B"
-A2ADispatcher:SetSquadron( SquadronB, "Maykop-Khanskaya", { "RED F5" }, 6 )
+A2ADispatcher:SetSquadron( SquadronB, "Maykop-Khanskaya", { "RED Mig29" }, 6 )
 A2ADispatcher:SetSquadronGci( SquadronB, 500, 650)
 
 

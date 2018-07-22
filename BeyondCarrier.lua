@@ -83,11 +83,11 @@ end
 
 function routeTankerToMarshallStack(currentCoordinate, currentWindDirection)
     -- Use 
-    local tasks = {}
-    local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
-    tasks[#tasks+1] = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
-    tasks[#tasks+1] = S3Tanker:EnRouteTaskTanker()
-    S3Tanker:SetTask(S3Tanker:TaskCombo(tasks), 1)
+    -- local tasks = {}
+    -- local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
+    -- tasks[#tasks+1] = S3Tanker:TaskOrbitCircleAtVec2(S3TankerCoordinate:GetVec2(), 3000, UTILS.KnotsToMps(280))
+    -- tasks[#tasks+1] = S3Tanker:EnRouteTaskTanker()
+    -- S3Tanker:SetTask(S3Tanker:TaskCombo(tasks), 1)
 end
 
 env.info("BTI: Carrier fleet is deployed, starting operations")

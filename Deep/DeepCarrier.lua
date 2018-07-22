@@ -134,16 +134,16 @@ function routeCarrierTemporary(routePoints)
     env.info("BTI: Going to route the carrier into the wind")
     local currentCoordinate = CyclicCarrier:GetCoordinate()
     local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
-    env.info(string.format("Current wind from %d", currentWindDirection - 7))
+    env.info(string.format("Current wind from %d @ ", currentWindDirection - 7, UTILS.MpsToKnots(currentWindDirection)))
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
     local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
     local speed = 0
-    if currentWindStrengh < 3.6 then
-        speed = 11.83
-    elseif currentWindStrengh > 3.6 and currentWindStrengh < 11  then
-        speed = 11.83 - currentWindStrengh
-    elseif currentWindStrengh > 11 then
-        speed = 2
+    if currentWindStrengh < UTILS.KnotsToMps(5) then
+        speed = UTILS.KnotsToMps(30)
+    elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(20)  then
+        speed = UTILS.KnotsToMps(30) - currentWindStrengh
+    elseif currentWindStrengh > UTILS.KnotsToMps(20) then
+        speed = UTILS.KnotsToMps(10)
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
@@ -155,9 +155,9 @@ function routeCarrierTemporary(routePoints)
 end
 
 -- Disable/Enable lines below for carrier ops training
--- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
--- SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 55)
--- CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
+SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
+SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 55)
+CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 
 env.info("BTI: Carrier fleet is now on cyclic operations")

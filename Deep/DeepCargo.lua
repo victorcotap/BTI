@@ -7,4 +7,9 @@ function testCargo(something)
     local group = convoySpawn:Spawn()
 end
 
+function testTroop(something)
+    env.info('BTI: Troops delivered, capturing')
+end
+
+
 env.info("BTI: Cargo airline operational")
