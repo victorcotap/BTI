@@ -134,7 +134,7 @@ function routeCarrierTemporary(routePoints)
     env.info("BTI: Going to route the carrier into the wind")
     local currentCoordinate = CyclicCarrier:GetCoordinate()
     local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
-    env.info(string.format("Current wind from %d @ ", currentWindDirection - 7, UTILS.MpsToKnots(currentWindDirection)))
+    env.info(string.format("Current wind from %d @ %f", currentWindDirection - 7, UTILS.MpsToKnots(currentWindStrengh)))
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
     local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
     local speed = 0
