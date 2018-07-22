@@ -7,8 +7,11 @@ function testCargo(something)
     local group = convoySpawn:Spawn()
 end
 
+local NavySeals = SPAWN:New('BLUE SF Fleet')
 function testTroop(something)
     env.info('BTI: Troops delivered, capturing')
+    local NavySeals = SPAWN:New('BLUE SF Fleet')
+    NavySeals:Spawn()
 end
 
 

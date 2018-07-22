@@ -25,6 +25,7 @@ A2ADispatcher:SetBorderZone( RedBorderZone )
 env.info("[BTI] A2A Dispatcher: Dispatcher created")
 
 -- Set Defaults
+A2ADispatcher:SetDefaultLandingAtRunway()
 A2ADispatcher:SetDefaultGrouping(2)
 A2ADispatcher:SetDefaultOverhead(1)
 A2ADispatcher:SetDefaultFuelThreshold(0.25)
