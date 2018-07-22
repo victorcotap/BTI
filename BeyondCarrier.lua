@@ -133,12 +133,12 @@ function routeCarrierTemporary(routePoints)
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
     local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
     local speed = 0
-    if currentWindStrengh < 3.6 then
-        speed = 11.83
-    elseif currentWindStrengh > 3.6 and currentWindStrengh < 11  then
-        speed = 11.83 - currentWindStrengh
-    elseif currentWindStrengh > 11 then
-        speed = 2
+    if currentWindStrengh < UTILS.KnotsToMps(5) then
+        speed = UTILS.KnotsToMps(30)
+    elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(20)  then
+        speed = UTILS.KnotsToMps(30) - currentWindStrengh
+    elseif currentWindStrengh > UTILS.KnotsToMps(20) then
+        speed = UTILS.KnotsToMps(10)
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
