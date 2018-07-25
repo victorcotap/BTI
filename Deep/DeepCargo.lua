@@ -7,6 +7,8 @@ function testCargo(something)
     local group = convoySpawn:Spawn()
 end
 
+SCHEDULER:New(nil, testCargo, {"toto"}, 2500, 2000)
+
 local NavySeals = SPAWN:New('BLUE SF Fleet')
 function testTroop(something)
     env.info('BTI: Troops delivered, capturing')
