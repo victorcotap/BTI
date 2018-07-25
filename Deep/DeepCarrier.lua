@@ -48,7 +48,7 @@ function sendWeatherTextFromCoordinate(coordinate)
     local currentPressure = coordinate:GetPressure(0)
     local currentTemperature = coordinate:GetTemperature()
     local currentWindDirection, currentWindStrengh = coordinate:GetWind()
-    local weatherString = string.format("Carrier weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
+    local weatherString = string.format("Carrier weather: Wind from %d@%.1fkts, BRC %d, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentWindDirection, currentPressure * 0.0295299830714, currentTemperature)
     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
     return weatherString
 end
