@@ -4,74 +4,10 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 MCRGO = MISSION:New( CommandCenter, "Virtual Fedex", "CARGO", "Transport various cargo for FEDEX, kinda...")
 
-HeloAvailableGroups = SET_GROUP:New():FilterCoalitions("blue"):FilterPrefixes("Player Helo"):FilterCategoryHelicopter():FilterStart()
-
-
-
-
-
-FrontlineZone = ZONE:New("RED Forefront Zone")
-FrontlineZoneCoalition = ZONE_CAPTURE_COALITION:New(FrontlineZone, coalition.side.red)
-FrontlineZoneCoalition:Start(20, 30)
-
-function FrontlineZoneCoalition:OnEnterGuarded( From, Event, To )
-    if From ~= To then
-      local Coalition = self:GetCoalition()
-      self:E( { Coalition = Coalition } )
-      if Coalition == coalition.side.BLUE then
-        ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
-        US_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-        RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-      else
-        ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
-        RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-        US_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-      end
-    end
-end
-
-function FrontlineZoneCoalition:OnEnterCaptured()
-    local Coalition = self:GetCoalition()
-    self:E({Coalition = Coalition})
-    if Coalition == coalition.side.BLUE then
-      RU_CC:MessageTypeToCoalition( string.format( "%s is captured by the USA, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-      US_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-    else
-      US_CC:MessageTypeToCoalition( string.format( "%s is captured by Russia, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-      RU_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-    end
-end
-
-function FrontlineZoneCoalition:OnEnterEmpty()
-    self:Smoke( SMOKECOLOR.Green )
-    US_CC:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-    RU_CC:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-end
-
-function FrontlineZoneCoalition:OnEnterAttacked()
-    ZoneCaptureCoalition:Smoke( SMOKECOLOR.White )
-    local Coalition = self:GetCoalition()
-    self:E({Coalition = Coalition})
-    if Coalition == coalition.side.BLUE then
-      US_CC:MessageTypeToCoalition( string.format( "%s is under attack by Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-      RU_CC:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-    else
-      RU_CC:MessageTypeToCoalition( string.format( "%s is under attack by the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-      US_CC:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-    end
-end
-
+HeloAvailableGroups = SET_GROUP:New():FilterCoalitions("blue"):FilterPrefixes("P H"):FilterCategoryHelicopter():FilterStart()
 
 
 env.info('BTI: Zone coalition set')
-
-
-
-
-
-
-
-
 
 
 CargoHospital = ZONE:New("BLUE Cargo Hospital")

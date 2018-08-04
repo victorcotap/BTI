@@ -1,5 +1,11 @@
 env.info("BTI: Starting Zones")
 
+
+if BeyondPersistedZones then
+    env.info(string.format("BTI: Beyond Zone read %s", BeyondPersistedZones["Test1"]["Hello 233"]))
+    BeyondPersistedZones["Test2"]["New"] = "newnewnew"
+end
+
 ZonesList = {
     -- "Palm Jebel Ali",
     -- "Palm Jumeirah",
@@ -12,6 +18,7 @@ ZonesList = {
     "Test Capture",
     "Bandar Abbas",
 }
+
 
 HQ = GROUP:FindByName("BLUE CC")
 -- Cavalry = GROUP:FindByName("BLUE Cavalry")
@@ -117,17 +124,17 @@ function InitZoneCoalition(keyIndex, zoneName)
     SCHEDULER:New(nil, ZoneIntelRefresh, {keyIndex, zoneName}, 600, 600)
 end
 
-local interval = 5
-for keyIndex, zoneName in pairs(ZonesList) do
-    local seconds = keyIndex * interval
-    SCHEDULER:New(nil, InitZoneCoalition, {keyIndex, zoneName}, seconds)
-end
+-- local interval = 5
+-- for keyIndex, zoneName in pairs(ZonesList) do
+--     local seconds = keyIndex * interval
+--     SCHEDULER:New(nil, InitZoneCoalition, {keyIndex, zoneName}, seconds)
+-- end
 
-function IntelBriefing()
-    CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
-end
+-- function IntelBriefing()
+--     CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
+-- end
 
-SCHEDULER:New(nil, IntelBriefing, nil, 600, 600)
+-- SCHEDULER:New(nil, IntelBriefing, nil, 600, 600)
 
 
 

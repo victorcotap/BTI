@@ -12,3 +12,5 @@ frontlines =
         }
     }
 }
+
+return frontlines
