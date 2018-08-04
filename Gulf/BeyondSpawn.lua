@@ -13,7 +13,7 @@ function convoySpawn(something)
     env.info("BTI: Got cargo! Spawning")
     local group = convoySpawn:Spawn()
 end
-SCHEDULER:New(nil, convoySpawn, {"toto"}, 1800, 2000)
+SCHEDULER:New(nil, convoySpawn, {"toto"}, 600, 1200)
 
 
 

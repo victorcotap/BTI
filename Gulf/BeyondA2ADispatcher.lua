@@ -17,8 +17,8 @@ env.info("[BTI] A2A Dispatcher: Detection ready")
 
 -- Setup the A2A dispatcher, and initialize it.
 A2ADispatcher = AI_A2A_DISPATCHER:New( EWR )
-A2ADispatcher:SetEngageRadius( 50000 )
-A2ADispatcher:SetGciRadius( 269000 )
+A2ADispatcher:SetEngageRadius( 56000 )
+A2ADispatcher:SetGciRadius( 333000 )
 A2ADispatcher:SetIntercept(30)
 -- A2ADispatcher:SetTacticalDisplay( true )
 A2ADispatcher:SetBorderZone( RedBorderZone )
