@@ -72,8 +72,13 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 
     ZoneCaptureCoalition:__Guard(1)
 
+
+
+
+
+
+
     function ZoneMarkingRefresh(line, keyIndex, zoneName)
-        env.info(string.format("BTI: DEBUG line %s, key %d, name %s", line, keyIndex, zoneName))
         local Zone = ZonesCaptureCoalitions[line][keyIndex]
         if not Zone then
             env.info("BTI: DEBUG Couldn't get the zone")
@@ -113,13 +118,27 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     SCHEDULER:New(nil, ZoneIntelRefresh, {line, keyIndex, zoneName}, 600, 600)
 end
 
+
+
+
+
+-- Schedule
 local interval = 5
 for keyIndex, zone in pairs(QeshmZonesList) do
     local seconds = keyIndex * interval
+    local zoneName = zone["ZoneName"]
     if zone["Coalition"] ~= coalition.side.BLUE then
-        SCHEDULER:New(nil, InitZoneCoalition, {"Qeshm", keyIndex, zone["ZoneName"]}, seconds)
+        SCHEDULER:New(nil, InitZoneCoalition, {"Qeshm", keyIndex, zoneName}, seconds)
     else
-        env.info("BTI: We need to destroy this zone")
+        env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
+        local zoneToDestroy = ZONE:New(zoneName)
+        local zoneRadiusToDestroy = ZONE_RADIUS:New(zoneName, zoneToDestroy:GetVec2(), 1000)
+        local function destroyUnit(zoneUnit)
+            env.info(string.format("BTI: Found unit in zone %s, destroying", zoneName))
+            zoneUnit:Destroy()
+            return true
+        end
+        zoneRadiusToDestroy:SearchZone(destroyUnit)
     end
 end
 

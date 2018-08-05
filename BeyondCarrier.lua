@@ -75,8 +75,8 @@ function routeCarrierBackToNextWaypoint(routePoints)
         CyclicCarrier:SetTask(newTask)
         env.info("BTI: Carrier back on track")
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 60)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 90)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 600)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 900)
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
@@ -99,16 +99,13 @@ function routeCarrierTemporary(routePoints)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
 
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 46)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 76)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 460)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 760)
 end
 
 -- Disable/Enable lines below for carrier ops training
-SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 54)
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 55)
+SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 540)
+SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 550)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
-
-
-env.info("BTI: Carrier fleet is now on cyclic operations")
 
 env.info("BTI: Carrier fleet is now on cyclic operations")

@@ -114,6 +114,13 @@ do
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 
+
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+
 BeyondPersistedZones = {}
 local zoneFileName = "Frontlines.lua"
 local zoneFilePath = lfs.writedir() .. zoneFileName
@@ -173,4 +180,4 @@ function savePersistenceEngine(something)
     saveZoneFile(BeyondPersistedZones)
 end
 SCHEDULER:New(nil, startPersistenceEngine, {"something"}, 1)
-SCHEDULER:New(nil, savePersistenceEngine, {"something"}, 20, 20)
+SCHEDULER:New(nil, savePersistenceEngine, {"something"}, 20, 90)
