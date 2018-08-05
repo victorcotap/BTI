@@ -7,7 +7,7 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 --Default spawns
 TruckSpawn = SPAWN:New('BLUE Supply Convoy')
-
+TruckSpawn:Spawn()
 
 --Interval Spawns
 function spawnRecon(something)
@@ -16,7 +16,6 @@ function spawnRecon(something)
     env.info(string.format("blue fac reaper type %s", type))
 end
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
-
 
 -- function spawnBomberFerry(something)
 --     env.info('BTI: RED Bomber Ferry activated')

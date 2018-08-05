@@ -121,9 +121,19 @@ env.info(string.format("BTI: Persisted path %s", zoneFilePath))
 
 
 local someTable = {
-    ["Test1"] = {
-        ["Hello"] = 1,
-        ["Hello 233"] = "dfssdlfg"
+    ["Qeshm"] = {
+        [1] = {
+            ["ZoneName"] = "Qeshm A",
+            ["Coalition"] = "red"
+        },
+        [2] = {
+            ["ZoneName"] = "Qeshm B",
+            ["Coalition"] = "red"
+        },
+        [3] = {
+            ["ZoneName"] = "Qeshm C",
+            ["Coalition"] = "red"
+        },
     },
     ["Test2"] = {
         ["result"] = 234356
