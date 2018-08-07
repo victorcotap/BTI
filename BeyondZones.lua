@@ -1,9 +1,11 @@
 env.info("BTI: Starting Zones")
 
-QeshmZonesList = BeyondPersistedZones["Qeshm"]
+local QeshmZonesList = BeyondPersistedZones["Qeshm"]
+local TimeToEvaluate = 60
 
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
+captureHelos = SPAWN:New('BLUE H Capture')
 
 ZonesCaptureCoalitions = {}
 
@@ -11,7 +13,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
     CaptureZone = ZONE:New( zoneName )
     local ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
-    ZoneCaptureCoalition:Start( 5, 60 )
+    ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
 
     ZonesCaptureCoalitions[line] = {}
     ZonesCaptureCoalitions[line][keyIndex] = ZoneCaptureCoalition
@@ -21,9 +23,10 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             local Coalition = self:GetCoalition()
             self:E( { Coalition = Coalition } )
             if Coalition == coalition.side.BLUE then
-                env.info("BTI: Zone is detected guarded, changing persistence")
+                env.info(string.format("BTI: Zone %s is detected guarded, changing persistence", zoneName))
 
                 BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
+                ZoneCaptureCoalition:Stop()
                 CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             else
                 CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
@@ -32,14 +35,21 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     end
 
     function ZoneCaptureCoalition:OnEnterEmpty(From, Event, To)
-        if From ~= 'Empty' then
+        local Coalition = self:GetCoalition()
+        if From ~= 'Empty' and BeyondPersistedZones[line][keyIndex]["Coalition"] ~= coalition.side.BLUE then
             ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured! Sending Helos", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
+            captureHelos:OnSpawnGroup(
+                function(spawnGroup)
+                    env.info(string.format("BTI: Sending helos to zone %s", ZoneCaptureCoalition:GetZoneName()))
+                    local task = spawnGroup:TaskLandAtZone(ZoneCaptureCoalition.Zone, 60000, false)
+                    spawnGroup:SetTask(task)
+                end 
+            )
+            captureHelos:Spawn()
         end
-        CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
-        local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
-        -- local newTrucks = TruckSpawn:Spawn()
-        -- newTrucks:RouteGroundOnRoad(coordinate, 70)
-        -- Cavalry:RouteGroundOnRoad(coordinate, 35)
+        
     end
 
     function ZoneCaptureCoalition:OnEnterAttacked(From, Event, To)
@@ -56,17 +66,14 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     function ZoneCaptureCoalition:OnEnterCaptured(From, Event, To)
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
-        if Coalition == coalition.side.BLUE then
-            if From ~= 'Empty' then
-                env.info("BTI: Zone is detected captured, changing persistence")
-                BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
-            end
+        if Coalition == coalition.side.BLUE and BeyondPersistedZones[line][keyIndex]["Coalition"] ~= coalition.side.BLUE then
+            env.info(string.format("BTI: Zone %s is detected captured, changing persistence", zoneName))
+            BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
             CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         else
             CommandCenter:MessageTypeToCoalition( string.format( "%s is captured by Iran, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         end
         
-        -- self:AddScore( "Captured", "Zone captured: Extra points granted.", 200 )    
         self:__Guard( 30 )
     end
 
@@ -78,18 +85,21 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 
 
 
-    function ZoneMarkingRefresh(line, keyIndex, zoneName)
-        local Zone = ZonesCaptureCoalitions[line][keyIndex]
+    function ZoneMarkingRefresh(lineName, keyIndexZone, zoneNameParam)
+        local Zone = ZoneCaptureCoalition
         if not Zone then
-            env.info("BTI: DEBUG Couldn't get the zone")
+            env.info(string.format("BTI: DEBUG Couldn't get the zone %s for Refresh %s", zoneNameParam, zoneName))
             return
         end
         Zone:Mark()
     end
 
-    function ZoneIntelRefresh(line, keyIndex, zoneName)
-        local Zone = ZonesCaptureCoalitions[line][keyIndex]
-
+    function ZoneIntelRefresh(lineName, keyIndexZone, zoneNameParam)
+        local Zone = ZoneCaptureCoalition
+        if not Zone then
+            env.info(string.format("BTI: DEBUG Couldn't get the zone %s for Intel %s", zoneNameParam, zoneName))
+            return
+        end
         local Coalition = Zone:GetCoalition()
         if Coalition == coalition.side.BLUE then
             if Zone:IsGuarded() then
@@ -132,13 +142,13 @@ for keyIndex, zone in pairs(QeshmZonesList) do
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
         local zoneToDestroy = ZONE:New(zoneName)
-        local zoneRadiusToDestroy = ZONE_RADIUS:New(zoneName, zoneToDestroy:GetVec2(), 1000)
+        local zoneRadiusToDestroy = ZONE_RADIUS:New(zoneName, zoneToDestroy:GetVec2(), 1850)
         local function destroyUnit(zoneUnit)
             env.info(string.format("BTI: Found unit in zone %s, destroying", zoneName))
             zoneUnit:Destroy()
             return true
         end
-        zoneRadiusToDestroy:SearchZone(destroyUnit)
+        zoneRadiusToDestroy:SearchZone(destroyUnit, Object.Category.UNIT)
     end
 end
 

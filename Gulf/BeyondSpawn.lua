@@ -9,13 +9,11 @@ SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3000)
 
 
 local convoySpawn = SPAWN:New('BLUE G Convoy')
-function convoySpawn(something)
+function spawnConvoy(something)
     env.info("BTI: Got cargo! Spawning")
     local group = convoySpawn:Spawn()
 end
-SCHEDULER:New(nil, convoySpawn, {"toto"}, 600, 1200)
-
-
+SCHEDULER:New(nil, spawnConvoy, {"toto"}, 1800, 1200)
 
 -- local NavySeals = SPAWN:New('BLUE SF Fleet')
 -- function testTroop(something)

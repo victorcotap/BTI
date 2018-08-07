@@ -4,11 +4,6 @@ SETTINGS:SetPlayerMenuOff()
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
-
---Default spawns
-TruckSpawn = SPAWN:New('BLUE Supply Convoy')
-TruckSpawn:Spawn()
-
 --Interval Spawns
 function spawnRecon(something)
     local group = SPAWN:New('BLUE FAC Reaper A'):Spawn()

@@ -130,16 +130,32 @@ env.info(string.format("BTI: Persisted path %s", zoneFilePath))
 local someTable = {
     ["Qeshm"] = {
         [1] = {
-            ["ZoneName"] = "Qeshm A",
-            ["Coalition"] = "red"
+            ["ZoneName"] = "Tomban",
+            ["Coalition"] = 1
         },
         [2] = {
-            ["ZoneName"] = "Qeshm B",
-            ["Coalition"] = "red"
+            ["ZoneName"] = "Kavarzin",
+            ["Coalition"] = 1
         },
         [3] = {
-            ["ZoneName"] = "Qeshm C",
-            ["Coalition"] = "red"
+            ["ZoneName"] = "Saheli Alpha",
+            ["Coalition"] = 1
+        },
+        [4] = {
+            ["ZoneName"] = "Saheli Bravo",
+            ["Coalition"] = 1
+        },
+        [5] = {
+            ["ZoneName"] = "Tabul Charlie",
+            ["Coalition"] = 1
+        },
+        [6] = {
+            ["ZoneName"] = "Tabul Sierra",
+            ["Coalition"] = 1
+        },
+        [7] = {
+            ["ZoneName"] = "Salakh",
+            ["Coalition"] = 1
         },
     },
     ["Test2"] = {
@@ -180,4 +196,4 @@ function savePersistenceEngine(something)
     saveZoneFile(BeyondPersistedZones)
 end
 SCHEDULER:New(nil, startPersistenceEngine, {"something"}, 1)
-SCHEDULER:New(nil, savePersistenceEngine, {"something"}, 20, 90)
+SCHEDULER:New(nil, savePersistenceEngine, {"something"}, 20, 160)
