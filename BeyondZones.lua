@@ -43,7 +43,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             captureHelos:OnSpawnGroup(
                 function(spawnGroup)
                     env.info(string.format("BTI: Sending helos to zone %s", ZoneCaptureCoalition:GetZoneName()))
-                    local task = spawnGroup:TaskLandAtZone(ZoneCaptureCoalition.Zone, 60000, false)
+                    local task = spawnGroup:TaskLandAtZone(ZoneCaptureCoalition.Zone, 60000, true)
                     spawnGroup:SetTask(task)
                 end 
             )
