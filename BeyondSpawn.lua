@@ -12,6 +12,11 @@ function spawnRecon(something)
 end
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 
+function deployApache(something)
+    local apacheSpawn = SPAWN:New('BLUE H Apache')
+    apacheSpawn = apacheSpawn:Spawn()
+end
+
 -- function spawnBomberFerry(something)
 --     env.info('BTI: RED Bomber Ferry activated')
 --     SPAWN:New('RED Bomber Ferry'):Spawn()
