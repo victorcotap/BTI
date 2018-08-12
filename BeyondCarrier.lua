@@ -89,18 +89,18 @@ function routeCarrierTemporary(routePoints)
     local S3TankerCoordinate = currentCoordinate:Translate(15000, currentWindDirection)
     local speed = 0
     if currentWindStrengh < UTILS.KnotsToMps(5) then
-        speed = UTILS.KnotsToMps(26)
-    elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(25)  then
-        speed = UTILS.KnotsToMps(26) - currentWindStrengh
-    elseif currentWindStrengh > UTILS.KnotsToMps(25) then
-        speed = UTILS.KnotsToMps(17)
+        speed = UTILS.KnotsToMps(23)
+    elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
+        speed = UTILS.KnotsToMps(23) - currentWindStrengh
+    elseif currentWindStrengh > UTILS.KnotsToMps(23) then
+        speed = UTILS.KnotsToMps(15)
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
 
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 460)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 760)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 540)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 840)
 end
 
 -- Disable/Enable lines below for carrier ops training
