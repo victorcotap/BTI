@@ -12,7 +12,7 @@ S3Tanker = nil
 -- Spawns
 
 function spawnServices(something)
-    env.info('BTI Spawn function activated')
+    env.info('BTI Carrier spawn function activated')
 
     SPAWN:New('BLUE C EWR E2'):Spawn()
     SPAWN:New('BLUE REFUK KC130'):Spawn()

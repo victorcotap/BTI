@@ -1,6 +1,6 @@
 env.info("[BTI] A2A Dispatcher: Starting the mastermind dispatcher")
 
-RedBorderZone = ZONE_POLYGON:New( "RED Border", GROUP:FindByName( "RED BorderZone" ) )
+-- RedBorderZone = ZONE_POLYGON:New( "RED Border", GROUP:FindByName( "RED BorderZone" ) )
 RedCapZone = ZONE_POLYGON:New( "RED Patrol", GROUP:FindByName("RED Patrol"))
 env.info("[BTI] A2A Dispatcher: Zone Poly ready")
 
@@ -17,10 +17,10 @@ env.info("[BTI] A2A Dispatcher: Detection ready")
 -- Setup the A2A dispatcher, and initialize it.
 A2ADispatcher = AI_A2A_DISPATCHER:New( EWR )
 A2ADispatcher:SetEngageRadius( 50000 )
-A2ADispatcher:SetGciRadius( 80000 )
+A2ADispatcher:SetGciRadius( 120000 )
 A2ADispatcher:SetIntercept(400)
 -- A2ADispatcher:SetTacticalDisplay( true )
-A2ADispatcher:SetBorderZone( RedBorderZone )
+-- A2ADispatcher:SetBorderZone( RedBorderZone )
 env.info("[BTI] A2A Dispatcher: Dispatcher created")
 
 -- Set Defaults
@@ -33,17 +33,17 @@ A2ADispatcher:SetDisengageRadius(130000)
 env.info("[BTI] A2A Dispatcher: Defaults set")
 
 --Set Squadrons
-BandarAbbasSquadron = "Bandar Abbas Squadron"
-A2ADispatcher:SetSquadron( BandarAbbasSquadron , "Al Minhad AB", { "RED Mig23" }, 5 )
-A2ADispatcher:SetSquadronCap( BandarAbbasSquadron, RedCapZone, 4000, 8000, 600, 800, 800, 1200, "BARO" )
-A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
+-- BandarAbbasSquadron = "Bandar Abbas Squadron"
+-- A2ADispatcher:SetSquadron( BandarAbbasSquadron , "Al Minhad AB", { "RED Mig23" }, 5 )
+-- A2ADispatcher:SetSquadronCap( BandarAbbasSquadron, RedCapZone, 4000, 8000, 600, 800, 800, 1200, "BARO" )
+-- A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 
 -- LarSquadron = "Lar Squadron"
 -- A2ADispatcher:SetSquadron( LarSquadron, "Al Maktoum Intl", { "RED F5" }, 4 )
 -- A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
-HavadaryaSquadron = "Havadarya Squadron"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Al Dhafra AB", { "RED F4" }, 6 )
+HavadaryaSquadron = "Lar Squadron"
+A2ADispatcher:SetSquadron( HavadaryaSquadron, "Lar Airbase", { "RED F4" }, 8 )
 A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 800, 1800)
 
 
