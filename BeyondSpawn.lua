@@ -1,5 +1,5 @@
 env.info('BTI Spawn starting')
-SETTINGS:SetPlayerMenuOff()
+
 
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
