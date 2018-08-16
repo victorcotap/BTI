@@ -36,10 +36,10 @@ function handleGFACRequest(Event)
 
     if text:find("route") then
         GFAC:ClearTasks()
-        local routeTask = GFAC:RouteGroundTo( coord, UTILS.KnotsToMps(55), "vee", 5 )
-        GFAC:SetTask(routeTask)
-        local facTask = GFAC:EnRouteTaskFAC( 10000, 2 )
-        GFAC:PushTask(facTask)
+        -- local routeTask = GFAC:RouteGroundTo( coord, UTILS.KnotsToMps(55), "vee", 5 )
+        -- GFAC:SetTask(routeTask)
+        -- local facTask = GFAC:EnRouteTaskFAC( 10000, 2 )
+        -- GFAC:PushTask(facTask)
     end
 end
 
