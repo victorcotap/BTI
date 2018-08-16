@@ -5,12 +5,6 @@ HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 --Interval Spawns
-function spawnRecon(something)
-    local group = SPAWN:New('BLUE FAC Reaper A'):Spawn()
-    local type = group:GetTypeName()
-    env.info(string.format("blue fac reaper type %s", type))
-end
-SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 
 function deployApache(something)
     local apacheSpawn = SPAWN:New('BLUE H Apache')
