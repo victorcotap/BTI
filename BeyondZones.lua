@@ -1,6 +1,6 @@
 env.info("BTI: Starting Zones")
 
-local QeshmZonesList = BeyondPersistedZones["Qeshm"]
+local ZonesList = BeyondPersistedStore["Coast"]
 local TimeToEvaluate = 60
 
 HQ = GROUP:FindByName("BLUE CC")
@@ -134,7 +134,7 @@ end
 
 -- Schedule
 local interval = 5
-for keyIndex, zone in pairs(QeshmZonesList) do
+for keyIndex, zone in pairs(ZonesList) do
     local seconds = keyIndex * interval
     local zoneName = zone["ZoneName"]
     if zone["Coalition"] ~= coalition.side.BLUE then

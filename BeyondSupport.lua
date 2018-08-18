@@ -3,12 +3,16 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 artySpawn = SPAWN:New('BLUE Support arty')
 tankSpawn = SPAWN:New('BLUE Support tank')
 repairSpawn = SPAWN:New('BLUE Support repair')
+apcSpawn = SPAWN:New('BLUE Support apc')
+
 SupportHandler = EVENTHANDLER:New()
 GFAC = nil
 AFAC = nil
+JFAC = nil
 function spawnRecon(something)
     AFAC = SPAWN:New('BLUE FAC Reaper A'):Spawn()
-    GFAC = SPAWN:New('BLUE FAC HMMWV'):Spawn()
+    JFAC = SPAWN:New('BLUE FAC Reaper B'):Spawn()
+    ctld.JTACAutoLase(JFAC:GetName(), 1688, false,"all", 4)
 end
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 
@@ -28,18 +32,18 @@ function handleAFACRequest(Event)
     end
 end
 
-function handleGFACRequest(Event)
+function handleJFACRequest(Event)
     local text = Event.text:lower()
     local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
     local coord = COORDINATE:NewFromVec3(vec3)
     coord.y = coord:GetLandHeight()
 
     if text:find("route") then
-        GFAC:ClearTasks()
-        -- local routeTask = GFAC:RouteGroundTo( coord, UTILS.KnotsToMps(55), "vee", 5 )
-        -- GFAC:SetTask(routeTask)
-        -- local facTask = GFAC:EnRouteTaskFAC( 10000, 2 )
-        -- GFAC:PushTask(facTask)
+        JFAC:ClearTasks()
+        local routeTask = JFAC:TaskOrbitCircleAtVec2( coord:GetVec2(), 6000,  UTILS.KnotsToMps(150) )
+        JFAC:SetTask(routeTask)
+        local facTask = JFAC:EnRouteTaskFAC( 10000, 2 )
+        JFAC:PushTask(facTask)
     end
 end
 
@@ -58,6 +62,8 @@ function handleSupportRequest(Event)
         supportSpawn = tankSpawn
     elseif text:find("repair") then
         supportSpawn = repairSpawn
+    elseif text:find("apc") then
+        supportSpawn = apcSpawn
     end
 
 
@@ -69,8 +75,8 @@ function markRemoved(Event)
     if Event.text~=nil then 
         if Event.text:lower():find("afac") then
             handleAFACRequest(Event)
-        elseif Event.text:lower():find("gfac") then
-            handleGFACRequest(Event)
+        elseif Event.text:lower():find("jfac") then
+            handleJFACRequest(Event)
         elseif Event.text:lower():find("support") then
             handleSupportRequest(Event)
         end
@@ -81,7 +87,7 @@ function SupportHandler:onEvent(Event)
     if Event.id == world.event.S_EVENT_MARK_ADDED then
         -- env.info(string.format("BTI: Support got event ADDED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
     elseif Event.id == world.event.S_EVENT_MARK_CHANGE then
-        env.info(string.format("BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        -- env.info(string.format("BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
     elseif Event.id == world.event.S_EVENT_MARK_REMOVED then
         -- env.info(string.format("BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
         markRemoved(Event)

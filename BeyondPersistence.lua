@@ -1,4 +1,4 @@
-SETTINGS:SetPlayerMenuOff()
+_SETTINGS:SetPlayerMenuOff()
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 do
@@ -117,45 +117,96 @@ do
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 
-BeyondPersistedZones = {}
+BeyondPersistedStore = {}
 local zoneFileName = "Frontlines.lua"
 local zoneFilePath = lfs.writedir() .. zoneFileName
 env.info(string.format("BTI: Persisted path %s", zoneFilePath))
 
 
 local someTable = {
-    ["Qeshm"] = {
+    ["Coast"] = {
         [1] = {
-            ["ZoneName"] = "Tomban",
+            ["ZoneName"] = "Lego",
             ["Coalition"] = 1
         },
         [2] = {
-            ["ZoneName"] = "Kavarzin",
+            ["ZoneName"] = "Devaron",
             ["Coalition"] = 1
         },
         [3] = {
-            ["ZoneName"] = "Saheli Alpha",
+            ["ZoneName"] = "Cantonica",
             ["Coalition"] = 1
         },
         [4] = {
-            ["ZoneName"] = "Saheli Bravo",
+            ["ZoneName"] = "Wobani",
             ["Coalition"] = 1
         },
         [5] = {
-            ["ZoneName"] = "Tabul Charlie",
+            ["ZoneName"] = "Bespin",
             ["Coalition"] = 1
         },
         [6] = {
-            ["ZoneName"] = "Tabul Sierra",
+            ["ZoneName"] = "Atollon",
             ["Coalition"] = 1
         },
         [7] = {
-            ["ZoneName"] = "Salakh",
+            ["ZoneName"] = "Scarif",
+            ["Coalition"] = 1
+        },
+        [8] = {
+            ["ZoneName"] = "Vardos",
+            ["Coalition"] = 1
+        },
+        [9] = {
+            ["ZoneName"] = "Yavin",
+            ["Coalition"] = 1
+        },
+        [10] = {
+            ["ZoneName"] = "Mustafar",
+            ["Coalition"] = 1
+        },
+        [11] = {
+            ["ZoneName"] = "Shili",
+            ["Coalition"] = 1
+        },
+        [12] = {
+            ["ZoneName"] = "Mortis",
+            ["Coalition"] = 1
+        },
+        [13] = {
+            ["ZoneName"] = "Kessel",
+            ["Coalition"] = 1
+        },
+        [14] = {
+            ["ZoneName"] = "Jedha",
+            ["Coalition"] = 1
+        },
+        [15] = {
+            ["ZoneName"] = "Felucia",
+            ["Coalition"] = 1
+        },
+        [16] = {
+            ["ZoneName"] = "Eadu",
+            ["Coalition"] = 1
+        },
+        [17] = {
+            ["ZoneName"] = "Abafar",
+            ["Coalition"] = 1
+        },
+        [18] = {
+            ["ZoneName"] = "Ando",
             ["Coalition"] = 1
         },
     },
-    ["Test2"] = {
+    ["Resources"] = {
+        ["tank"] = 10,
+        ["arty"] = 10,
+        ["apc"] = 10,
+        ["repair"] = 10,
         ["result"] = 234356
+    },
+    ["Support"] = {
+        ["Helos"] = 2
     }
 }
 
@@ -185,11 +236,11 @@ function startPersistenceEngine(something)
         env.info(string.format("BTI: ERROR can't read or create persisted file"))
         return
     end
-    BeyondPersistedZones = persistedTable
+    BeyondPersistedStore = persistedTable
 end
 
 function savePersistenceEngine(something)
-    saveZoneFile(BeyondPersistedZones)
+    saveZoneFile(BeyondPersistedStore)
 end
 SCHEDULER:New(nil, startPersistenceEngine, {"something"}, 1)
-SCHEDULER:New(nil, savePersistenceEngine, {"something"}, 20, 160)
+SCHEDULER:New(nil, savePersistenceEngine, {"something"}, 30, 160)
