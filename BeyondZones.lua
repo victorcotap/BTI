@@ -36,8 +36,11 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 
     function ZoneCaptureCoalition:OnEnterEmpty(From, Event, To)
         local Coalition = self:GetCoalition()
-        if From ~= 'Empty' and BeyondPersistedZones[line][keyIndex]["Coalition"] ~= coalition.side.BLUE then
-            ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
+        -- if From ~= 'Empty' and BeyondPersistedZones[line][keyIndex]["Coalition"] ~= coalition.side.BLUE then
+            
+        -- end
+
+        ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
             CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured! Sending Helos", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
             local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
             captureHelos:OnSpawnGroup(
@@ -48,7 +51,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
                 end 
             )
             captureHelos:Spawn()
-        end
         
     end
 

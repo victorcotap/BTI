@@ -13,6 +13,7 @@ function spawnRecon(something)
     AFAC = SPAWN:New('BLUE FAC Reaper A'):Spawn()
     JFAC = SPAWN:New('BLUE FAC Reaper B'):Spawn()
     ctld.JTACAutoLase(JFAC:GetName(), 1688, false,"all", 4)
+    ctld.JTACAutoLase(AFAC:GetName(), 1687, false,"all", 3)
 end
 SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 
