@@ -34,14 +34,14 @@ env.info("[BTI] A2A Dispatcher: Defaults set")
 
 --Set Squadrons
 BandarAbbasSquadron = "Bandar Abbas Squadron"
-A2ADispatcher:SetSquadron( BandarAbbasSquadron , "Bandar Abbas Intl", { "RED Mig23" }, 5 )
+A2ADispatcher:SetSquadron( BandarAbbasSquadron , "Bandar Abbas Intl", { "RED Mig23" }, 15 )
 A2ADispatcher:SetSquadronGci(BandarAbbasSquadron, 800, 1800)
 -- A2ADispatcher:SetSquadronCap( BandarAbbasSquadron, RedCapZone, 4000, 8000, 600, 800, 800, 1200, "BARO" )
 -- A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 
 
 LarSquadron = "Ta race"
-A2ADispatcher:SetSquadron( LarSquadron, "Bandar Lengeh", { "RED F5" }, 4 )
+A2ADispatcher:SetSquadron( LarSquadron, "Bandar Lengeh", { "RED F5" }, 14 )
 A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
 Blabla = "Lar Squadron"
@@ -49,7 +49,7 @@ A2ADispatcher:SetSquadron( Blabla, "Lar Airbase", { "RED F4" }, 8 )
 A2ADispatcher:SetSquadronGci( Blabla, 800, 1800)
 
 HavadaryaSquadron = "Havada"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Havadarya", { "RED Mig15" }, 3 )
+A2ADispatcher:SetSquadron( HavadaryaSquadron, "Havadarya", { "RED Mig15" }, 9 )
 A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 400, 800)
 
 
