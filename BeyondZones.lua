@@ -125,7 +125,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     end
 
     SCHEDULER:New(nil, ZoneMarkingRefresh, {line, keyIndex, zoneName}, 2, 120)
-    SCHEDULER:New(nil, ZoneIntelRefresh, {line, keyIndex, zoneName}, 900, 900)
+    -- SCHEDULER:New(nil, ZoneIntelRefresh, {line, keyIndex, zoneName}, 900, 900)
 end
 
 

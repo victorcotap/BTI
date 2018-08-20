@@ -37,6 +37,17 @@ end
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 45, 7200)
 
 --------------------------------------------------------------------------
+
+SUPPORT_COOLDOWN = 600
+FAC_COOLDOWN = 300
+TANKER_COOLDOWN = 600
+EXFILL_COOLDOWN = 600
+
+supportTimer = 0
+facTimer = 0
+tankerTimer = 0
+exfillTimer = 0
+
 local function supportCooldownHelp(something)
     CommandCenter:MessageTypeToCoalition( string.format("Support asset delivery is now available again. Use the following marker commands:\n-support arty\n-support tank\n-support repair\n-support sam\n-support apc"), MESSAGE.Type.Information )
 end
@@ -60,6 +71,12 @@ function handleFACRequest(Event)
     local coord = COORDINATE:NewFromVec3(vec3)
     coord.y = coord:GetLandHeight()
 
+    local currentTime = os.time()
+    local cooldown = currentTime - facTimer
+    if cooldown < FAC_COOLDOWN then
+        CommandCenter:MessageTypeToCoalition(string.format("FAC Requests are not available at this time.\nRequests will be available again in %d minutes", (FAC_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
+    end
+
     local fac = nil
     local name = nil
     if text:find("afac") then
@@ -72,10 +89,11 @@ function handleFACRequest(Event)
         fac:ClearTasks()
         local routeTask = fac:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(10000),  UTILS.KnotsToMps(110) )
         fac:SetTask(routeTask)
-        CommandCenter:MessageTypeToCoalition( string.format("%s FAC is re-routed to the requested destination.\n5 minutes cooldown starting now", fac:GetName()), MESSAGE.Type.Information )
+        CommandCenter:MessageTypeToCoalition( string.format("%s FAC is re-routed to the requested destination.\n%d minutes cooldown starting now", fac:GetName(), FAC_COOLDOWN / 60), MESSAGE.Type.Information )
         -- local facTask = fac:EnRouteTaskFAC( 10000, 2 )
         -- fac:PushTask(facTask)
-        SCHEDULER:New(nil, facCooldownHelp, {"sdfsdfd"}, 6)
+        facTimer = currentTime
+        SCHEDULER:New(nil, facCooldownHelp, {"sdfsdfd"}, FAC_COOLDOWN)
     end
 end
 
@@ -85,6 +103,12 @@ function handleTankerRequest(Event)
     local coord = COORDINATE:NewFromVec3(vec3)
     coord.y = coord:GetLandHeight()
 
+    local currentTime = os.time()
+    local cooldown = currentTime - tankerTimer
+    if cooldown < FAC_COOLDOWN then
+        CommandCenter:MessageTypeToCoalition(string.format("Tanker Requests are not available at this time.\nRequests will be available again in %d minutes", (TANKER_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
+        return
+    end
 
     if text:find("route") then
         local tanker = nil
@@ -109,8 +133,9 @@ function handleTankerRequest(Event)
         tanker:SetTask(routeTask)
         local tankerTask = tanker:EnRouteTaskTanker()
         tanker:PushTask(tankerTask)
-        CommandCenter:MessageTypeToCoalition( string.format("%s Tanker is re-routed to the requested destination.\n10 minutes cooldown starting now", tanker:GetName()), MESSAGE.Type.Information )
-        SCHEDULER:New(nil, tankerCooldownHelp, {"sdfsdfd"}, 6)
+        CommandCenter:MessageTypeToCoalition( string.format("%s Tanker is re-routed to the requested destination.\n%d minutes cooldown starting now", tanker:GetName(), TANKER_COOLDOWN / 60), MESSAGE.Type.Information )
+        tankerTimer = currentTime
+        SCHEDULER:New(nil, tankerCooldownHelp, {"sdfsdfd"}, TANKER_COOLDOWN)
     end
 end
 
@@ -120,6 +145,13 @@ function handleSupportRequest(Event)
     local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
     local coord = COORDINATE:NewFromVec3(vec3)
     coord.y = coord:GetLandHeight()
+
+    local currentTime = os.time()
+    local cooldown = currentTime - supportTimer
+    if cooldown < FAC_COOLDOWN then
+        CommandCenter:MessageTypeToCoalition(string.format("Support requests are not available at this time.\nRequests will be available again  in %d minutes", (SUPPORT_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
+        return
+    end
 
     local supportSpawn = nil
     if text:find("arty") then
@@ -137,8 +169,9 @@ function handleSupportRequest(Event)
 
     local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
     supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
-    CommandCenter:MessageTypeToCoalition( string.format("%s Support asset is enroute to the requested destination.\n10 minutes cooldown starting now", supportGroup:GetName()), MESSAGE.Type.Information )
-    SCHEDULER:New(nil, supportCooldownHelp, {"sdfsdfd"}, 6)
+    CommandCenter:MessageTypeToCoalition( string.format("%s Support asset is enroute to the requested destination.\n%d minutes cooldown starting now", supportGroup:GetName(), SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
+    supportTimer = currentTime
+    SCHEDULER:New(nil, supportCooldownHelp, {"sdfsdfd"}, SUPPORT_COOLDOWN)
 end
 
 --------------------------------------------------------------------------------
@@ -149,12 +182,19 @@ function handleExfillRequest(Event)
     local coord = COORDINATE:NewFromVec3(vec3)
     coord.y = coord:GetLandHeight()
 
+    local currentTime = os.time()
+    local cooldown = currentTime - exfillTimer
+    if cooldown < FAC_COOLDOWN then
+        CommandCenter:MessageTypeToCoalition(string.format("Exfill requests are not available at this time.\nRequests will be available again  in %d minutes", (EXFILL_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
+        return
+    end
+
     if text:find("salvage") then
 
     elseif text:find("destroy") then
 
     end
-    env.info(string.format("BTI: We need to destroy this"))
+
     local destroyZoneName = string.format("destroy %d", destroyZoneCount)
     local zoneRadiusToDestroy = ZONE_RADIUS:New(destroyZoneName, coord:GetVec2(), 80)
     destroyZoneCount = destroyZoneCount + 1
@@ -165,8 +205,9 @@ function handleExfillRequest(Event)
         return true
     end
     zoneRadiusToDestroy:SearchZone(destroyUnit, Object.Category.UNIT)
-    CommandCenter:MessageTypeToCoalition( string.format("Exfill complete! Salvage and Destroy services are now on cooldown for 10 minutes"), MESSAGE.Type.Information )
-    exfillCooldownHelp()
+    CommandCenter:MessageTypeToCoalition( string.format("Exfill complete! Salvage and Destroy services are now on cooldown for %d minutes", EXFILL_COOLDOWN / 60), MESSAGE.Type.Information )
+    exfillTimer = currentTime
+    SCHEDULER:New(nil, exfillCooldownHelp, {"sdfsdfd"}, EXFILL_COOLDOWN)
 end
 
 ---------------------------------------------------------------------------------
@@ -193,8 +234,6 @@ function SupportHandler:onEvent(Event)
         -- env.info(string.format("BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
         markRemoved(Event)
     end
-
-
 end
 
 world.addEventHandler(SupportHandler)
