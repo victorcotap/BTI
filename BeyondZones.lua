@@ -4,11 +4,12 @@ local mainLine = "Coast"
 local ZonesList = BeyondPersistedStore[mainLine]
 local TimeToEvaluate = 60
 
+BlueZonesCounter = 0
+RedZonesCounter = 0
+
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
-captureHelos = SPAWN:New('BLUE H Capture')
-
-ZonesCaptureCoalitions = {}
+local captureHelos = SPAWN:New('BLUE H Capture')
 
 function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
@@ -16,8 +17,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     local ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
     ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
 
-    ZonesCaptureCoalitions[line] = {}
-    ZonesCaptureCoalitions[line][keyIndex] = ZoneCaptureCoalition
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
         if From ~= To then
@@ -60,6 +59,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         else
             CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
         end
     end
 
@@ -69,6 +69,8 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         if Coalition == coalition.side.BLUE and BeyondPersistedZones[line][keyIndex]["Coalition"] ~= coalition.side.BLUE then
             env.info(string.format("BTI: Zone %s is detected captured, changing persistence", zoneName))
             BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
+            BlueZonesCounter = BlueZonesCounter + 1
+            RedZonesCounter = RedZonesCounter - 1
             CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
         else
             CommandCenter:MessageTypeToCoalition( string.format( "%s is captured by Iran, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
@@ -78,7 +80,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     end
 
     ZoneCaptureCoalition:__Guard(1)
-
 
 
 
@@ -139,6 +140,7 @@ for keyIndex, zone in pairs(ZonesList) do
     local zoneName = zone["ZoneName"]
     if zone["Coalition"] ~= coalition.side.BLUE then
         SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
+        RedZonesCounter = RedZonesCounter + 1
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
         local zoneToDestroy = ZONE:New(zoneName)
@@ -149,17 +151,16 @@ for keyIndex, zone in pairs(ZonesList) do
             return true
         end
         zoneRadiusToDestroy:SearchZone(destroyUnit, Object.Category.UNIT)
+        BlueZonesCounter = BlueZonesCounter + 1
     end
 end
 
-function IntelBriefing()
-    CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
+function IntelBriefing(something)
+    -- CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
+    env.info(string.format('BTI: Starting Intel Blue %d Red %d', BlueZonesCounter, RedZonesCounter))
 end
 
-SCHEDULER:New(nil, IntelBriefing, nil, 600, 600)
-
-
-
+SCHEDULER:New(nil, IntelBriefing, {"something"}, 20)
 
 
 

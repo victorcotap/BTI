@@ -9,6 +9,7 @@ tankSpawn = SPAWN:New('BLUE Support tank')
 repairSpawn = SPAWN:New('BLUE Support repair')
 apcSpawn = SPAWN:New('BLUE Support apc')
 samSpawn = SPAWN:New('BLUE Support sam')
+transportSpawn = SPAWN:New('BLUE Support transport')
 GFAC = nil
 AFAC = nil
 JFAC = nil
@@ -75,6 +76,7 @@ function handleFACRequest(Event)
     local cooldown = currentTime - facTimer
     if cooldown < FAC_COOLDOWN then
         CommandCenter:MessageTypeToCoalition(string.format("FAC Requests are not available at this time.\nRequests will be available again in %d minutes", (FAC_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
+        return
     end
 
     local fac = nil
@@ -105,7 +107,7 @@ function handleTankerRequest(Event)
 
     local currentTime = os.time()
     local cooldown = currentTime - tankerTimer
-    if cooldown < FAC_COOLDOWN then
+    if cooldown < TANKER_COOLDOWN then
         CommandCenter:MessageTypeToCoalition(string.format("Tanker Requests are not available at this time.\nRequests will be available again in %d minutes", (TANKER_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
         return
     end
@@ -148,7 +150,7 @@ function handleSupportRequest(Event)
 
     local currentTime = os.time()
     local cooldown = currentTime - supportTimer
-    if cooldown < FAC_COOLDOWN then
+    if cooldown < SUPPORT_COOLDOWN then
         CommandCenter:MessageTypeToCoalition(string.format("Support requests are not available at this time.\nRequests will be available again  in %d minutes", (SUPPORT_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
         return
     end
@@ -166,10 +168,23 @@ function handleSupportRequest(Event)
         supportSpawn = samSpawn
     end
 
+    local spawnGroup = transportSpawn:Spawn()
+    spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(550), "vee" )
+    -- local distance = coord:DistanceFromPointVec2(HQ:GetPointVec2())
+    function spawnAsset(something)
+        if spawnGroup:IsAlive() then
+            local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
+            supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
+            CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
+        else
+            CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
+        end
+    end
+    -- local travelTime = distance / UTILS.KnotsToMps(550) + 60
+    -- env.info('BTI: New Asset request. Travel time %d', distance)
+    SCHEDULER:New(nil, spawnAsset, {"sdfsdfd"}, 300)
 
-    local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
-    supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
-    CommandCenter:MessageTypeToCoalition( string.format("%s Support asset is enroute to the requested destination.\n%d minutes cooldown starting now", supportGroup:GetName(), SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the requested destination.\n%d minutes cooldown starting now", spawnGroup:GetName(), SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
     supportTimer = currentTime
     SCHEDULER:New(nil, supportCooldownHelp, {"sdfsdfd"}, SUPPORT_COOLDOWN)
 end
@@ -184,7 +199,7 @@ function handleExfillRequest(Event)
 
     local currentTime = os.time()
     local cooldown = currentTime - exfillTimer
-    if cooldown < FAC_COOLDOWN then
+    if cooldown < EXFILL_COOLDOWN then
         CommandCenter:MessageTypeToCoalition(string.format("Exfill requests are not available at this time.\nRequests will be available again  in %d minutes", (EXFILL_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
         return
     end
