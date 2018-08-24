@@ -15,7 +15,7 @@ function triggerFighters(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
             env.info(string.format("BTI: Sending fighter group %d to zone ", fighterCounter))
-            spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(400), "cone" )
+            spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(600), "cone" )
             local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 50000, { "Planes", "Battle airplanes" }, 1 )
             spawnGroup:SetTask(enrouteTask)
         end 
@@ -35,7 +35,7 @@ function AirQuakeZoneAttacked(attackedZone)
             spawn = fighterHardSpawn
         end
 
-        triggerFighters(spawn, attackedZone:GetVec2())
+        triggerFighters(spawn, attackedZone:GetCoordinate())
 
         fighterCounter = fighterCounter + 1
     else
