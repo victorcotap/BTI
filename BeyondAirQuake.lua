@@ -3,13 +3,26 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 
 --------------------------------------------------------------------
-local fighterMediumSpawn = SPAWN:New("RED F14")
-local fighterHardSpawn = SPAWN:New('RED J11')
+fighterMediumSpawn = SPAWN:New("RED F14")
+fighterHardSpawn = SPAWN:New('RED J11')
 
 
 local fighterCounter = 0
 -- local fighterResources = BeyondPersistedStore['']
 --------------------------------------------------------------------
+
+function triggerFighters(spawn, coord)
+    spawn:OnSpawnGroup(
+        function(spawnGroup)
+            env.info(string.format("BTI: Sending fighter group %d to zone ", fighterCounter))
+            spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(400), "cone" )
+            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 50000, { "Planes", "Battle airplanes" }, 1 )
+            spawnGroup:SetTask(enrouteTask)
+        end 
+    )
+
+    spawn:Spawn()
+end
 
 function AirQuakeZoneAttacked(attackedZone)
     local maxFighterCap = RedZonesCounter - BlueZonesCounter
@@ -22,16 +35,8 @@ function AirQuakeZoneAttacked(attackedZone)
             spawn = fighterHardSpawn
         end
 
-        spawn:OnSpawnGroup(
-            function(spawnGroup)
-                env.info(string.format("BTI: Sending fighter group %d to zone ", fighterCounter))
-                spawnGroup:TaskRouteToZone( attackedZone, false, UTILS.KnotsToMps(400), "vee" )
-                local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 50000, { "Planes", "Battle airplanes" }, 1 )
-                spawnGroup:SetTask(enrouteTask)
-            end 
-        )
+        triggerFighters(spawn, attackedZone:GetVec2())
 
-        spawn:Spawn()
         fighterCounter = fighterCounter + 1
     else
         env.info()

@@ -75,7 +75,7 @@ function handleFACRequest(Event)
     local currentTime = os.time()
     local cooldown = currentTime - facTimer
     if cooldown < FAC_COOLDOWN then
-        CommandCenter:MessageTypeToCoalition(string.format("FAC Requests are not available at this time.\nRequests will be available again in %d minutes", (FAC_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
+        CommandCenter:MessageTypeToCoalition(string.format("FAC Requests are not available at this time.\nPlayer FAC requests will be available again in %d minutes", (FAC_COOLDOWN - cooldown) / 60), MESSAGE.Type.Information)
         return
     end
 
@@ -135,7 +135,7 @@ function handleTankerRequest(Event)
         tanker:SetTask(routeTask)
         local tankerTask = tanker:EnRouteTaskTanker()
         tanker:PushTask(tankerTask)
-        CommandCenter:MessageTypeToCoalition( string.format("%s Tanker is re-routed to the requested destination.\n%d minutes cooldown starting now", tanker:GetName(), TANKER_COOLDOWN / 60), MESSAGE.Type.Information )
+        CommandCenter:MessageTypeToCoalition( string.format("%s Tanker is re-routed to the player requested destination.\n%d minutes cooldown starting now", tanker:GetName(), TANKER_COOLDOWN / 60), MESSAGE.Type.Information )
         tankerTimer = currentTime
         SCHEDULER:New(nil, tankerCooldownHelp, {"sdfsdfd"}, TANKER_COOLDOWN)
     end
@@ -175,7 +175,7 @@ function handleSupportRequest(Event)
         if spawnGroup:IsAlive() then
             local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
             supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
-            CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
         else
             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
         end
@@ -184,7 +184,7 @@ function handleSupportRequest(Event)
     -- env.info('BTI: New Asset request. Travel time %d', distance)
     SCHEDULER:New(nil, spawnAsset, {"sdfsdfd"}, 300)
 
-    CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the requested destination.\n%d minutes cooldown starting now", spawnGroup:GetName(), SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the player requested destination.\n%d minutes cooldown starting now", spawnGroup:GetName(), SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
     supportTimer = currentTime
     SCHEDULER:New(nil, supportCooldownHelp, {"sdfsdfd"}, SUPPORT_COOLDOWN)
 end
@@ -222,7 +222,22 @@ function handleExfillRequest(Event)
     zoneRadiusToDestroy:SearchZone(destroyUnit, Object.Category.UNIT)
     CommandCenter:MessageTypeToCoalition( string.format("Exfill complete! Salvage and Destroy services are now on cooldown for %d minutes", EXFILL_COOLDOWN / 60), MESSAGE.Type.Information )
     exfillTimer = currentTime
+    supportTimer = supportTimer - 300
+    env.info(string.format('BTI: using salvage new timer %d', supportTimer))
     SCHEDULER:New(nil, exfillCooldownHelp, {"sdfsdfd"}, EXFILL_COOLDOWN)
+end
+
+function handleDebugRequest(Event)
+    local text = Event.text:lower()
+    local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
+    local coord = COORDINATE:NewFromVec3(vec3)
+    coord.y = coord:GetLandHeight()
+
+    if text:find("hard") then
+        triggerFighters(fighterHardSpawn, coord)
+    elseif text:find("medium") then
+        triggerFighters(fighterMediumSpawn, coord)
+    end
 end
 
 ---------------------------------------------------------------------------------
@@ -236,6 +251,8 @@ function markRemoved(Event)
             handleSupportRequest(Event)
         elseif Event.text:lower():find("-exfill") then
             handleExfillRequest(Event)
+        elseif Event.text:lower():find("-debug") then
+            handleDebugRequest(Event)
         end
     end
 end
