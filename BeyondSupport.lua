@@ -223,7 +223,7 @@ function handleDebugRequest(text, coord)
     elseif text:find("smoke") then
         coord:SmokeWhite()
     elseif text:find("flare") then
-        coord:FlareYellow()
+        coord:FlareGreen()
     end
 end
 
