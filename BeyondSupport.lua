@@ -51,8 +51,8 @@ function spawnRecon(something)
     ctld.JTACAutoLase(JFAC:GetName(), 1688, true,"all", 4)
     ctld.JTACAutoLase(AFAC:GetName(), 1687, true,"all", 3)
 end
-SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 3300, 3600)
-SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
+SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 4500, 3600)
+SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 1200, 3600)
 
 
 KC130Tanker = nil
@@ -68,7 +68,7 @@ function spawnServices(something)
     S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
 end
 
-SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 45, 7200)
+SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 600, 7200)
 
 ---------------------------------------------------------------------------
 function handleFACRequest(text, coord)
