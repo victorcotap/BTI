@@ -170,7 +170,7 @@ function handleSupportRequest(text, coord)
             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
         end
     end
-    local travelTime = distance / UTILS.KnotsToMps(375) + 30
+    local travelTime = distance / UTILS.KnotsToMps(375) + 10
     env.info(string.format('BTI: New Asset request. distance %d, travel time %d', distance, travelTime))
     SCHEDULER:New(nil, spawnAsset, {"sdfsdfd"}, travelTime)
 
