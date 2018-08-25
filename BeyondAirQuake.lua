@@ -23,7 +23,6 @@ function triggerFighters(spawn, coord)
     )
 
     spawn:Spawn()
-    fighterCounter = fighterCounter + 1
 end
 
 function AirQuakeZoneAttacked(attackedZone)
