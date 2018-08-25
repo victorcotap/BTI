@@ -47,7 +47,7 @@ CyclicCarrier = Carrier
 
 originalMissionRoute = CyclicCarrier:GetTaskRoute()
 if originalMissionRoute then
-    env.info("BTI: Got mission route")
+    -- env.info("BTI: Got mission route")
     if #originalMissionRoute > 1 then
         env.info(string.format("BTI: We have %d points", #originalMissionRoute))
     end

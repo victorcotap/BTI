@@ -3,42 +3,8 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 SupportHandler = EVENTHANDLER:New()
 
--- Spawns ---------------------------------------------------
-artySpawn = SPAWN:New('BLUE Support arty')
-tankSpawn = SPAWN:New('BLUE Support tank')
-repairSpawn = SPAWN:New('BLUE Support repair')
-apcSpawn = SPAWN:New('BLUE Support apc')
-samSpawn = SPAWN:New('BLUE Support sam')
-transportSpawn = SPAWN:New('BLUE Support transport')
-GFAC = nil
-AFAC = nil
-JFAC = nil
-function spawnRecon(something)
-    AFAC = SPAWN:New('BLUE FAC AFAC'):Spawn()
-    JFAC = SPAWN:New('BLUE FAC JFAC'):Spawn()
-    ctld.JTACAutoLase(JFAC:GetName(), 1688, false,"all", 4)
-    ctld.JTACAutoLase(AFAC:GetName(), 1687, false,"all", 3)
-end
-SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
 
-
-KC130Tanker = nil
-KC135Tanker = nil
-S3Tanker = nil
-E2EWR = nil
-function spawnServices(something)
-    env.info('BTI Carrier spawn function activated')
-    CommandCenter:MessageTypeToCoalition( string.format("AWACS and Tanker are now respawning. Next respawn in 2 hours"), MESSAGE.Type.Information )
-    E2EWR = SPAWN:New('BLUE C EWR E2'):Spawn()
-    KC130Tanker = SPAWN:New('BLUE REFUK KC130'):Spawn()
-    KC135Tanker = SPAWN:New('BLUE REFUK KC135'):Spawn()
-    S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
-end
-
-SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 45, 7200)
-
---------------------------------------------------------------------------
-
+-----Cooldowns and helpers -------------------------------------------------------
 SUPPORT_COOLDOWN = 600
 FAC_COOLDOWN = 300
 TANKER_COOLDOWN = 600
@@ -65,13 +31,47 @@ local function exfillCooldownHelp(something)
     CommandCenter:MessageTypeToCoalition( string.format("Exfill capability is now available again. Use the following marker commands:\n-exfill salvage\n-exfill destroy"), MESSAGE.Type.Information )
 end
 
----------------------------------------------------------------------------
-function handleFACRequest(Event)
-    local text = Event.text:lower()
-    local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-    local coord = COORDINATE:NewFromVec3(vec3)
-    coord.y = coord:GetLandHeight()
+local function supportServicesRespawnHelp(something)
+    CommandCenter:MessageTypeToCoalition( string.format("Tanker drones and AWACS will respawn in 5 minutes!"), MESSAGE.Type.Information )
+end
 
+-- Spawns -----------------------------------------------------------------------
+artySpawn = SPAWN:New('BLUE Support arty')
+tankSpawn = SPAWN:New('BLUE Support tank')
+repairSpawn = SPAWN:New('BLUE Support repair')
+apcSpawn = SPAWN:New('BLUE Support apc')
+samSpawn = SPAWN:New('BLUE Support sam')
+transportSpawn = SPAWN:New('BLUE Support transport')
+GFAC = nil
+AFAC = nil
+JFAC = nil
+function spawnRecon(something)
+    AFAC = SPAWN:New('BLUE FAC AFAC'):Spawn()
+    JFAC = SPAWN:New('BLUE FAC JFAC'):Spawn()
+    ctld.JTACAutoLase(JFAC:GetName(), 1688, true,"all", 4)
+    ctld.JTACAutoLase(AFAC:GetName(), 1687, true,"all", 3)
+end
+SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 3300, 3600)
+SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 2, 3600)
+
+
+KC130Tanker = nil
+KC135Tanker = nil
+S3Tanker = nil
+E2EWR = nil
+function spawnServices(something)
+    env.info('BTI Carrier spawn function activated')
+    CommandCenter:MessageTypeToCoalition( string.format("AWACS and Tanker are now respawning. Next respawn in 2 hours"), MESSAGE.Type.Information )
+    E2EWR = SPAWN:New('BLUE C EWR E2'):Spawn()
+    KC130Tanker = SPAWN:New('BLUE REFUK KC130'):Spawn()
+    KC135Tanker = SPAWN:New('BLUE REFUK KC135'):Spawn()
+    S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
+end
+
+SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 45, 7200)
+
+---------------------------------------------------------------------------
+function handleFACRequest(text, coord)
     local currentTime = os.time()
     local cooldown = currentTime - facTimer
     if cooldown < FAC_COOLDOWN then
@@ -99,12 +99,7 @@ function handleFACRequest(Event)
     end
 end
 
-function handleTankerRequest(Event)
-    local text = Event.text:lower()
-    local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-    local coord = COORDINATE:NewFromVec3(vec3)
-    coord.y = coord:GetLandHeight()
-
+function handleTankerRequest(text, coord)
     local currentTime = os.time()
     local cooldown = currentTime - tankerTimer
     if cooldown < TANKER_COOLDOWN then
@@ -142,12 +137,7 @@ function handleTankerRequest(Event)
 end
 
 -------------------------------------------------------------------------------
-function handleSupportRequest(Event)
-    local text = Event.text:lower()
-    local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-    local coord = COORDINATE:NewFromVec3(vec3)
-    coord.y = coord:GetLandHeight()
-
+function handleSupportRequest(text, coord)
     local currentTime = os.time()
     local cooldown = currentTime - supportTimer
     if cooldown < SUPPORT_COOLDOWN then
@@ -170,7 +160,7 @@ function handleSupportRequest(Event)
 
     local spawnGroup = transportSpawn:Spawn()
     spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(550), "vee" )
-    -- local distance = coord:DistanceFromPointVec2(HQ:GetPointVec2())
+    local distance = coord:Get2DDistance(HQ:GetCoordinate())
     function spawnAsset(something)
         if spawnGroup:IsAlive() then
             local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
@@ -180,23 +170,18 @@ function handleSupportRequest(Event)
             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
         end
     end
-    -- local travelTime = distance / UTILS.KnotsToMps(550) + 60
-    -- env.info('BTI: New Asset request. Travel time %d', distance)
-    SCHEDULER:New(nil, spawnAsset, {"sdfsdfd"}, 300)
+    local travelTime = distance / UTILS.KnotsToMps(375) + 30
+    env.info(string.format('BTI: New Asset request. distance %d, travel time %d', distance, travelTime))
+    SCHEDULER:New(nil, spawnAsset, {"sdfsdfd"}, travelTime)
 
-    CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the player requested destination.\n%d minutes cooldown starting now", spawnGroup:GetName(), SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the player requested destination\nETE is %d minutes.\n%d minutes cooldown starting now", spawnGroup:GetName(), travelTime / 60, SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
     supportTimer = currentTime
     SCHEDULER:New(nil, supportCooldownHelp, {"sdfsdfd"}, SUPPORT_COOLDOWN)
 end
 
 --------------------------------------------------------------------------------
 local destroyZoneCount = 0
-function handleExfillRequest(Event)
-    local text = Event.text:lower()
-    local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-    local coord = COORDINATE:NewFromVec3(vec3)
-    coord.y = coord:GetLandHeight()
-
+function handleExfillRequest(text, coord)
     local currentTime = os.time()
     local cooldown = currentTime - exfillTimer
     if cooldown < EXFILL_COOLDOWN then
@@ -227,32 +212,39 @@ function handleExfillRequest(Event)
     SCHEDULER:New(nil, exfillCooldownHelp, {"sdfsdfd"}, EXFILL_COOLDOWN)
 end
 
-function handleDebugRequest(Event)
-    local text = Event.text:lower()
-    local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-    local coord = COORDINATE:NewFromVec3(vec3)
-    coord.y = coord:GetLandHeight()
-
-    if text:find("hard") then
-        triggerFighters(fighterHardSpawn, coord)
-    elseif text:find("medium") then
+---------------------------------------------------------------------------------
+function handleDebugRequest(text, coord)
+    if text:find("fighters hard") then
         triggerFighters(fighterMediumSpawn, coord)
+    elseif text:find("fighters medium") then
+        triggerFighters(fighterMediumSpawn, coord)
+    elseif text:find("fighters easy") then
+        triggerFighters(fighterEasySpawn, coord)
+    elseif text:find("smoke") then
+        coord:SmokeWhite()
+    elseif text:find("flare") then
+        coord:FlareYellow()
     end
 end
 
 ---------------------------------------------------------------------------------
 function markRemoved(Event)
-    if Event.text~=nil then 
+    if Event.text~=nil and Event.text:lower():find("-") then 
+        local text = Event.text:lower()
+        local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
+        local coord = COORDINATE:NewFromVec3(vec3)
+        coord.y = coord:GetLandHeight()
+
         if Event.text:lower():find("-fac") then
-            handleFACRequest(Event)
+            handleFACRequest(text, coord)
         elseif Event.text:lower():find("-tanker") then
-            handleTankerRequest(Event)
+            handleTankerRequest(text, coord)
         elseif Event.text:lower():find("-support") then
-            handleSupportRequest(Event)
+            handleSupportRequest(text, coord)
         elseif Event.text:lower():find("-exfill") then
-            handleExfillRequest(Event)
+            handleExfillRequest(text, coord)
         elseif Event.text:lower():find("-debug") then
-            handleDebugRequest(Event)
+            handleDebugRequest(text, coord)
         end
     end
 end
