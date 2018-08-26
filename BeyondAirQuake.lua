@@ -27,7 +27,7 @@ end
 
 function AirQuakeZoneAttacked(attackedZone)
     local maxFighterCap = RedZonesCounter - BlueZonesCounter
-    local zoneName = attackedZone:GetZoneName()
+    local zoneName = attackedZone.ZoneName
 
     env.info('BTI: Evaluating AirQuake')
     if fighterTrack[zoneName] then
