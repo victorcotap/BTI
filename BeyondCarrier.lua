@@ -69,8 +69,8 @@ function routeCarrierBackToNextWaypoint(routePoints)
         env.info("BTI: Carrier back on track")
         sendCarrierRouting()
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 600)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 900)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 400)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 700)
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 

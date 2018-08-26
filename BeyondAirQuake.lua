@@ -31,6 +31,7 @@ function AirQuakeZoneAttacked(attackedZone)
 
     env.info('BTI: Evaluating AirQuake')
     if fighterTrack[zoneName] then
+        env.info(string.format('BTI: Forbidding air quake for zone %s', zoneName))
         return
     end
 

@@ -220,6 +220,8 @@ function handleDebugRequest(text, coord)
         triggerFighters(fighterMediumSpawn, coord)
     elseif text:find("fighters easy") then
         triggerFighters(fighterEasySpawn, coord)
+    elseif text:find("helos apache") then
+        deployApache({"something"})
     elseif text:find("smoke") then
         coord:SmokeWhite()
     elseif text:find("flare") then
