@@ -69,8 +69,8 @@ function routeCarrierBackToNextWaypoint(routePoints)
         env.info("BTI: Carrier back on track")
         sendCarrierRouting()
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 400)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 700)
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 600)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 900)
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
@@ -92,8 +92,8 @@ function routeCarrierTemporary(routePoints)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
 
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 600)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 900)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 400)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 700)
 end
 
 -- Disable/Enable lines below for carrier ops training

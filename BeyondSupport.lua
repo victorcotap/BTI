@@ -41,6 +41,7 @@ tankSpawn = SPAWN:New('BLUE Support tank')
 repairSpawn = SPAWN:New('BLUE Support repair')
 apcSpawn = SPAWN:New('BLUE Support apc')
 samSpawn = SPAWN:New('BLUE Support sam')
+infantrySpawn = SPAWN:New('BLUE Support infantry')
 transportSpawn = SPAWN:New('BLUE Support transport')
 GFAC = nil
 AFAC = nil
@@ -156,6 +157,8 @@ function handleSupportRequest(text, coord)
         supportSpawn = apcSpawn
     elseif text:find("sam") then
         supportSpawn = samSpawn
+    elseif text:find("infantry") then
+        supportSpawn = infantrySpawn
     end
 
     local spawnGroup = transportSpawn:Spawn()
@@ -213,6 +216,33 @@ function handleExfillRequest(text, coord)
 end
 
 ---------------------------------------------------------------------------------
+
+function handleCommandRequest(text, coord)
+    if text:find("smoke") then
+        if text:find("green") then
+            coord:SmokeGreen()
+        elseif text:find("orange") then
+            coord:SmokeOrange()
+        elseif text:find("blue") then
+            coord:SmokeBlue()
+        elseif text:find("red") then
+            coord:SmokeRed()
+        else
+            coord:SmokeWhite()
+        end
+    elseif text:find("flare") then
+        if text:find("green") then
+            for i=10,1,-1 do coord:FlareGreen() end
+        elseif text:find("yellow") then
+            for i=10,1,-1 do coord:FlareYellow() end
+        elseif text:find("red") then
+            for i=10,1,-1 do coord:FlareRed() end
+        else
+            for i=10,1,-1 do coord:FlareWhite() end
+        end
+    end
+end
+
 function handleDebugRequest(text, coord)
     if text:find("fighters hard") then
         triggerFighters(fighterMediumSpawn, coord)
@@ -222,10 +252,16 @@ function handleDebugRequest(text, coord)
         triggerFighters(fighterEasySpawn, coord)
     elseif text:find("helos apache") then
         deployApache({"something"})
-    elseif text:find("smoke") then
-        coord:SmokeWhite()
-    elseif text:find("flare") then
-        coord:FlareGreen()
+    elseif text:find("fire") then
+        if text:find("big") then
+            coord:BigSmokeAndFireLarge()
+        elseif text:find("medium") then
+            coord:BigSmokeAndFireMedium()
+        elseif text:find("inferno") then
+            coord:BigSmokeAndFireHuge(1)
+        else
+            coord:BigSmokeAndFireSmall()
+        end
     end
 end
 
@@ -245,6 +281,8 @@ function markRemoved(Event)
             handleSupportRequest(text, coord)
         elseif Event.text:lower():find("-exfill") then
             handleExfillRequest(text, coord)
+        elseif Event.text:lower():find("-command") then
+            handleCommandRequest(text, coord)
         elseif Event.text:lower():find("-debug") then
             handleDebugRequest(text, coord)
         end
