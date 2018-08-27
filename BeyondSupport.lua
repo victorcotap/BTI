@@ -16,7 +16,7 @@ tankerTimer = 0
 exfillTimer = 0
 
 local function supportCooldownHelp(something)
-    CommandCenter:MessageTypeToCoalition( string.format("Support asset delivery is now available again. Use the following marker commands:\n-support arty\n-support tank\n-support repair\n-support sam\n-support apc"), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition( string.format("Support asset delivery is now available again. Use the following marker commands:\n-support arty\n-support tank\n-support repair\n-support sam\n-support apc\n-support infantry"), MESSAGE.Type.Information )
 end
 
 local function facCooldownHelp(something)
@@ -52,8 +52,8 @@ function spawnRecon(something)
     ctld.JTACAutoLase(JFAC:GetName(), 1688, true,"all", 4)
     ctld.JTACAutoLase(AFAC:GetName(), 1687, true,"all", 3)
 end
-SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 4500, 3600)
-SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 1200, 3600)
+SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 3300, 3600)
+SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 12, 3600)
 
 
 KC130Tanker = nil
@@ -69,7 +69,7 @@ function spawnServices(something)
     S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
 end
 
-SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 600, 7200)
+SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 60, 7200)
 
 ---------------------------------------------------------------------------
 function handleFACRequest(text, coord)
