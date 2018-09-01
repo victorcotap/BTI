@@ -27,9 +27,9 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 
                 BeyondPersistedStore[line][keyIndex]["Coalition"] = coalition.side.BLUE
                 ZoneCaptureCoalition:Stop()
-                CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
             else
-                CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
             end
         end
     end
@@ -38,7 +38,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         local Coalition = self:GetCoalition()
         if From ~= 'Empty' and BeyondPersistedStore[line][keyIndex]["Coalition"] ~= coalition.side.BLUE then
             ZoneCaptureCoalition:Smoke( SMOKECOLOR.Green )
-            CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured! Sending Helos", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured! Sending Helos", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
             local coordinate = ZoneCaptureCoalition:GetZone():GetCoordinate()
             captureHelos:OnSpawnGroup(
                 function(spawnGroup)
@@ -56,9 +56,9 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
-            CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
-            CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
             AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
         end
     end
@@ -71,9 +71,9 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
             BlueZonesCounter = BlueZonesCounter + 1
             RedZonesCounter = RedZonesCounter - 1
-            CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
-            CommandCenter:MessageTypeToCoalition( string.format( "%s is captured by Iran, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is captured by Iran, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         end
         
         self:__Guard( 30 )
@@ -104,23 +104,23 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         local Coalition = Zone:GetCoalition()
         if Coalition == coalition.side.BLUE then
             if Zone:IsGuarded() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is guarded by BLUFOR", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is guarded by BLUFOR", Zone:GetZoneName() ), MESSAGE.Type.Update )
             elseif Zone:IsAttacked() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is attacked by REDFOR, go help!", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is attacked by REDFOR, go help!", Zone:GetZoneName() ), MESSAGE.Type.Update )
             elseif Zone:IsEmpty() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is BLUEFOR but empty", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is BLUEFOR but empty", Zone:GetZoneName() ), MESSAGE.Type.Update )
             elseif Zone:IsCaptured() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is captured by BLUEFOR", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is captured by BLUEFOR", Zone:GetZoneName() ), MESSAGE.Type.Update )
             end
         else
             if Zone:IsGuarded() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is captured by the Iranians", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is captured by the Iranians", Zone:GetZoneName() ), MESSAGE.Type.Update )
             elseif Zone:IsAttacked() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is attacked by BLUEFOR. Go help them!", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is attacked by BLUEFOR. Go help them!", Zone:GetZoneName() ), MESSAGE.Type.Update )
             elseif Zone:IsEmpty() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is empty! Go Capture it!", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is empty! Go Capture it!", Zone:GetZoneName() ), MESSAGE.Type.Update )
             elseif Zone:IsCaptured() then
-                CommandCenter:MessageTypeToCoalition( string.format( " %s is being captured by Iranians! You lost it", Zone:GetZoneName() ), MESSAGE.Type.Information )
+                CommandCenter:MessageTypeToCoalition( string.format( " %s is being captured by Iranians! You lost it", Zone:GetZoneName() ), MESSAGE.Type.Update )
             end
         end
     end

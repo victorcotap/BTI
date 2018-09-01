@@ -200,7 +200,27 @@ local someTable = {
         [19] = {
             ["ZoneName"] = "Dathomir",
             ["Coalition"] = 1
-        }
+        },
+        [20] = {
+            ["ZoneName"] = "Endor",
+            ["Coalition"] = 1
+        },
+        [21] = {
+            ["ZoneName"] = "Malachor",
+            ["Coalition"] = 1
+        },
+        [22] = {
+            ["ZoneName"] = "Onderon",
+            ["Coalition"] = 1
+        },
+        [23] = {
+            ["ZoneName"] = "Rishi",
+            ["Coalition"] = 1
+        },
+        [24] = {
+            ["ZoneName"] = "Maridun",
+            ["Coalition"] = 1
+        },
     },
     ["Resources"] = {
         ["tank"] = 10,

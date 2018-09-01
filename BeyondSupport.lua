@@ -66,7 +66,7 @@ function spawnServices(something)
     E2EWR = SPAWN:New('BLUE C EWR E2'):Spawn()
     KC130Tanker = SPAWN:New('BLUE REFUK KC130'):Spawn()
     KC135Tanker = SPAWN:New('BLUE REFUK KC135'):Spawn()
-    S3Tanker = SPAWN:New('BLUE C REFUK S3B'):Spawn()
+    S3Tanker = SPAWN:New('BLUE C REFUK KC130 Navy'):Spawn()
 end
 
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 60, 7200)
@@ -116,7 +116,7 @@ function handleTankerRequest(text, coord)
             tanker = KC130Tanker
             altitude = UTILS.FeetToMeters(12000)
             speed = UTILS.KnotsToMps(290)
-        elseif text:find("s3") then
+        elseif text:find("navy") then
             tanker = S3Tanker
             altitude = UTILS.FeetToMeters(9000)
             speed = UTILS.KnotsToMps(280)

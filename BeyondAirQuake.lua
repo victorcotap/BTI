@@ -35,7 +35,7 @@ function AirQuakeZoneAttacked(attackedZone)
 
     local zoneName = attackedZone.ZoneName
 
-    env.info(string.format('BTI: Evaluating AirQuake RedZonesCounter %d, BlueZonesCounter %d, zoneFightersCounter %d', RedZonesCounter, BlueZonesCounter, zoneFightersCounter))
+    env.info(string.format('BTI: Evaluating AirQuake Zone %s RedZonesCounter %d, BlueZonesCounter %d, zoneFightersCounter %d', zoneName, RedZonesCounter, BlueZonesCounter, zoneFightersCounter))
     if fighterTrack[zoneName] then
         env.info(string.format('BTI: Forbidding air quake for zone %s', zoneName))
         return
