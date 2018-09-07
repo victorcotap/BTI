@@ -11,6 +11,15 @@ HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 local captureHelos = SPAWN:New('BLUE H Capture')
 
+-- Utils ---------------------------------------------------------------
+function tableLength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end
+
+
+-- ZONE COALITION ---------------------------------------------------------------------------------------------
 function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
     CaptureZone = ZONE:New( zoneName )
@@ -133,13 +142,25 @@ end
 
 
 
--- Schedule
+-- Schedule & init zone engine -----------------------------------------------------------------------------------------------------------------------
+
+local SelectedZonesList = {}
+
+repeat
+    local r = math.random(1,24)
+    local name = ZonesList[r]["ZoneName"]
+    SelectedZonesList[name] = true
+    env.info(string.format( "BTI: Selecting zone name %s", name))
+until ( tableLength(SelectedZonesList) == 7)
+
 local interval = 5
 for keyIndex, zone in pairs(ZonesList) do
     local seconds = keyIndex * interval
     local zoneName = zone["ZoneName"]
     if zone["Coalition"] ~= coalition.side.BLUE then
-        SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
+        if SelectedZonesList[zoneName] == true then
+            SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
+        end
         RedZonesCounter = RedZonesCounter + 1
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
@@ -161,22 +182,5 @@ function IntelBriefing(something)
 end
 
 SCHEDULER:New(nil, IntelBriefing, {"something"}, 20)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
