@@ -17,7 +17,7 @@ env.info("[BTI] A2A Dispatcher: Detection ready")
 -- Setup the A2A dispatcher, and initialize it.
 A2ADispatcher = AI_A2A_DISPATCHER:New( EWR )
 A2ADispatcher:SetEngageRadius( 50000 )
-A2ADispatcher:SetGciRadius( 200000 )
+A2ADispatcher:SetGciRadius( 100000 )
 A2ADispatcher:SetIntercept(200)
 -- A2ADispatcher:SetTacticalDisplay( true )
 -- A2ADispatcher:SetBorderZone( RedBorderZone )
@@ -40,16 +40,16 @@ env.info("[BTI] A2A Dispatcher: Defaults set")
 -- A2ADispatcher:SetSquadronCapInterval( BandarAbbasSquadron, 1, 30, 120, 1 )
 
 
-LarSquadron = "Ta race"
-A2ADispatcher:SetSquadron( LarSquadron, "Kerman Airport", { "RED F14" }, 14 )
-A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
+-- LarSquadron = "Ta race"
+-- A2ADispatcher:SetSquadron( LarSquadron, "Kerman Airport", { "RED F14" }, 14 )
+-- A2ADispatcher:SetSquadronGci( LarSquadron, 800, 1800)
 
-Blabla = "Lar Squadron"
-A2ADispatcher:SetSquadron( Blabla, "Shiraz International Airport", { "RED J11" }, 8 )
-A2ADispatcher:SetSquadronGci( Blabla, 800, 1800)
+-- Blabla = "Lar Squadron"
+-- A2ADispatcher:SetSquadron( Blabla, "Shiraz International Airport", { "RED J11" }, 8 )
+-- A2ADispatcher:SetSquadronGci( Blabla, 800, 1800)
 
 HavadaryaSquadron = "Havada"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Lar Airbase", { "RED Mig21" }, 9 )
+A2ADispatcher:SetSquadron( HavadaryaSquadron, "Lar Airbase", { "RED Mig21" }, 6 )
 A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 400, 800)
 
 
