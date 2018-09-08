@@ -144,15 +144,35 @@ end
 
 -- Schedule & init zone engine -----------------------------------------------------------------------------------------------------------------------
 
-local SelectedZonesList = {}
+-------------------- Read Zones -------------------------------------------------------------------
+for keyIndex, zone in pairs(ZonesList) do
+    local zoneName = zone["ZoneName"]
+    if zone["Coalition"] ~= coalition.side.BLUE then
+        RedZonesCounter = RedZonesCounter + 1
+    else
+        BlueZonesCounter = BlueZonesCounter + 1
+    end
+end
+env.info(string.format( "BTI: Iterating through zones. Red %d, Blue %d", RedZonesCounter, BlueZonesCounter ))
 
+--------------------- Select Zones -----------------------------------------------------------------
+local maxZones = RedZonesCounter
+if maxZones > 7 then
+    maxZones = 7
+end
+
+local SelectedZonesList = {}
 repeat
     local r = math.random(1,24)
-    local name = ZonesList[r]["ZoneName"]
-    SelectedZonesList[name] = true
+    local selectedZone = ZonesList[r]
+    local name = selectedZone["ZoneName"]
+    if selectedZone["Coalition"] ~= coalition.side.BLUE then
+        SelectedZonesList[name] = true
+    end
     env.info(string.format( "BTI: Selecting zone name %s", name))
-until ( tableLength(SelectedZonesList) == 7)
+until ( tableLength(SelectedZonesList) == maxZones)
 
+-------------------- Init Zones -----------------------------------------------------------------------
 local interval = 5
 for keyIndex, zone in pairs(ZonesList) do
     local seconds = keyIndex * interval
@@ -161,7 +181,6 @@ for keyIndex, zone in pairs(ZonesList) do
         if SelectedZonesList[zoneName] == true then
             SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
         end
-        RedZonesCounter = RedZonesCounter + 1
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
         local zoneToDestroy = ZONE:New(zoneName)
@@ -172,10 +191,11 @@ for keyIndex, zone in pairs(ZonesList) do
             return true
         end
         zoneRadiusToDestroy:SearchZone(destroyUnit, Object.Category.UNIT)
-        BlueZonesCounter = BlueZonesCounter + 1
     end
 end
 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function IntelBriefing(something)
     -- CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
     env.info(string.format('BTI: Starting Intel Blue %d Red %d', BlueZonesCounter, RedZonesCounter))
