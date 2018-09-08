@@ -177,10 +177,10 @@ local interval = 5
 for keyIndex, zone in pairs(ZonesList) do
     local seconds = keyIndex * interval
     local zoneName = zone["ZoneName"]
-    if zone["Coalition"] ~= coalition.side.BLUE then
-        if SelectedZonesList[zoneName] == true then
+    if zone["Coalition"] ~= coalition.side.BLUE and SelectedZonesList[zoneName] == true then
+        -- if SelectedZonesList[zoneName] == true then
             SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
-        end
+        -- end
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
         local zoneToDestroy = ZONE:New(zoneName)
