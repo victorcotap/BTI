@@ -157,8 +157,8 @@ env.info(string.format( "BTI: Iterating through zones. Red %d, Blue %d", RedZone
 
 --------------------- Select Zones -----------------------------------------------------------------
 local maxZones = RedZonesCounter
-if maxZones > 7 then
-    maxZones = 7
+if maxZones > 5 then
+    maxZones = 5
 end
 
 local SelectedZonesList = {}
