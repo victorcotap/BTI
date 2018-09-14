@@ -38,11 +38,12 @@ end
 -- Spawns -----------------------------------------------------------------------
 artySpawn = SPAWN:New('BLUE Support arty')
 tankSpawn = SPAWN:New('BLUE Support tank')
-repairSpawn = SPAWN:New('BLUE Support repair')
+servicesSpawn = SPAWN:New('BLUE Support services')
 apcSpawn = SPAWN:New('BLUE Support apc')
 samSpawn = SPAWN:New('BLUE Support sam')
 infantrySpawn = SPAWN:New('BLUE Support infantry')
 transportSpawn = SPAWN:New('BLUE Support transport')
+jtacSpawn = SPAWN:New('BLUE Support jtac')
 GFAC = nil
 AFAC = nil
 JFAC = nil
@@ -151,8 +152,10 @@ function handleSupportRequest(text, coord)
         supportSpawn = artySpawn
     elseif text:find("tank") then
         supportSpawn = tankSpawn
-    elseif text:find("repair") then
-        supportSpawn = repairSpawn
+    elseif text:find("services") then
+        supportSpawn = servicesSpawn
+    elseif text:find("jtac") then
+        supportSpawn = jtacSpawn
     elseif text:find("apc") then
         supportSpawn = apcSpawn
     elseif text:find("sam") then
