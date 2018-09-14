@@ -167,10 +167,13 @@ function handleSupportRequest(text, coord)
     local spawnGroup = transportSpawn:Spawn()
     spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(550), "vee" )
     local distance = coord:Get2DDistance(HQ:GetCoordinate())
-    function spawnAsset(something)
+    function spawnAsset(text)
         if spawnGroup:IsAlive() then
             local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
             supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
+            if text:find("jtac") then
+                ctld.JTACAutoLase(JFAC:GetName(), 1689, true,"all", 2)
+            end
             CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
         else
             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
@@ -182,7 +185,7 @@ function handleSupportRequest(text, coord)
 
     CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the player requested destination\nETE is %d minutes.\n%d minutes cooldown starting now", spawnGroup:GetName(), travelTime / 60, SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
     supportTimer = currentTime
-    SCHEDULER:New(nil, supportCooldownHelp, {"sdfsdfd"}, SUPPORT_COOLDOWN)
+    SCHEDULER:New(nil, supportCooldownHelp, {text}, SUPPORT_COOLDOWN)
 end
 
 --------------------------------------------------------------------------------
