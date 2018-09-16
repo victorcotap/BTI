@@ -24,8 +24,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
     CaptureZone = ZONE:New( zoneName )
     local ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
-    ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
-
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
         if From ~= To then
@@ -68,7 +66,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
             CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
-            AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
         end
     end
 
@@ -88,12 +85,13 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         self:__Guard( 30 )
     end
 
+    ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
     ZoneCaptureCoalition:__Guard(1)
-
-
-
-
-
+    ZoneCaptureCoalition:MonitorDestroyedUnits()
+    function ZoneCaptureCoalition:OnAfterDestroyedUnit(From, Event, To, unit, PlayerName)
+        env.info(string.format('BTI: Detected destroyed unit %s', Event))
+        AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
+    end
 
     function ZoneMarkingRefresh(lineName, keyIndexZone, zoneNameParam)
         local Zone = ZoneCaptureCoalition
