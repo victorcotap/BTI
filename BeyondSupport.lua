@@ -250,12 +250,18 @@ function handleCommandRequest(text, coord)
 end
 
 function handleDebugRequest(text, coord)
-    if text:find("fighters hard") then
+    if text:find("patrol hard") then
+        triggerFighters(fighterHardSpawn, coord)
+    elseif text:find("patrol medium") then
         triggerFighters(fighterMediumSpawn, coord)
-    elseif text:find("fighters medium") then
-        triggerFighters(fighterMediumSpawn, coord)
-    elseif text:find("fighters easy") then
+    elseif text:find("patrol easy") then
         triggerFighters(fighterEasySpawn, coord)
+    elseif text:find("fighters easy") then
+        deployFighters(fighterEasySpawn, coord)
+    elseif text:find("fighters medium") then
+        deployFighters(fighterMediumSpawn, coord)
+    elseif text:find("fighters hard") then
+        deployFighters(fighterHardSpawn, coord)
     elseif text:find("helos apache") then
         deployApache({"something"})
     elseif text:find("fire") then
@@ -289,7 +295,7 @@ function markRemoved(Event)
             handleExfillRequest(text, coord)
         elseif Event.text:lower():find("-command") then
             handleCommandRequest(text, coord)
-        elseif Event.text:lower():find("-debug") then
+        elseif Event.text:lower():find("-debug toto") then
             handleDebugRequest(text, coord)
         end
     end

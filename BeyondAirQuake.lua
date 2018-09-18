@@ -18,15 +18,29 @@ function triggerFighters(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
             env.info(string.format("BTI: Sending fighter group %d to zone ", zoneFightersCounter))
-            spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(600), "cone" )
+            local routeTask = spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(600), "cone" )
+            spawnGroup:SetTask(routeTask)
             local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 60000, { "Planes", "Battle airplanes" }, 1 )
-            spawnGroup:SetTask(enrouteTask)
+            spawnGroup:PushTask(enrouteTask)
         end 
     )
 
     spawn:Spawn()
 end
 
+function deployFighters(spawn, coord)
+    spawn:OnSpawnGroup(
+        function(spawnGroup)
+            env.info(string.format("BTI: Deploying fighters at requested zone"))
+            local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(18000) , UTILS.KnotsToMps(400))
+            spawnGroup:SetTask(orbitTask)
+            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 60000, { "Planes", "Battle airplanes" }, 1 )
+            spawnGroup:PushTask(enrouteTask)
+        end
+    )
+
+    spawn:SpawnFromVec2(coord:GetVec2(), UTILS.FeetToMeters(5000), UTILS.FeetToMeters(25000))
+end
 -------------------------------------------------------------------------------
 
 function AirQuakeZoneAttacked(attackedZone)

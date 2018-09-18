@@ -48,9 +48,9 @@ env.info("[BTI] A2A Dispatcher: Defaults set")
 -- A2ADispatcher:SetSquadron( Blabla, "Shiraz International Airport", { "RED J11" }, 8 )
 -- A2ADispatcher:SetSquadronGci( Blabla, 800, 1800)
 
-HavadaryaSquadron = "Havada"
-A2ADispatcher:SetSquadron( HavadaryaSquadron, "Lar Airbase", { "RED Mig21" }, 6 )
-A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 400, 800)
+-- HavadaryaSquadron = "Havada"
+-- A2ADispatcher:SetSquadron( HavadaryaSquadron, "Lar Airbase", { "RED Mig21" }, 6 )
+-- A2ADispatcher:SetSquadronGci( HavadaryaSquadron, 400, 800)
 
 
 env.info("[BTI] A2A Dispatcher: Squadrons ready")

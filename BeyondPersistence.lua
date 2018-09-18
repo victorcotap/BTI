@@ -221,6 +221,10 @@ local someTable = {
             ["ZoneName"] = "Maridun",
             ["Coalition"] = 1
         },
+        [25] = {
+            ["ZoneName"] = "Batuu",
+            ["Coalition"] = 1
+        }
     },
     ["Resources"] = {
         ["tank"] = 10,
