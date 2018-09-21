@@ -7,8 +7,8 @@ SupportHandler = EVENTHANDLER:New()
 -----Cooldowns and helpers -------------------------------------------------------
 SUPPORT_COOLDOWN = 600
 FAC_COOLDOWN = 300
-TANKER_COOLDOWN = 600
-EXFILL_COOLDOWN = 600
+TANKER_COOLDOWN = 1200
+EXFILL_COOLDOWN = 1200
 
 supportTimer = 0
 facTimer = 0
@@ -32,7 +32,7 @@ local function exfillCooldownHelp(something)
 end
 
 local function supportServicesRespawnHelp(something)
-    CommandCenter:MessageTypeToCoalition( string.format("Tanker drones and AWACS will respawn in 5 minutes!"), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition( string.format("AFAC drones will respawn in 5 minutes!"), MESSAGE.Type.Information )
 end
 
 -- Spawns -----------------------------------------------------------------------
@@ -53,8 +53,8 @@ function spawnRecon(something)
     ctld.JTACAutoLase(JFAC:GetName(), 1688, true,"all", 4)
     ctld.JTACAutoLase(AFAC:GetName(), 1687, true,"all", 3)
 end
-SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 3300, 3600)
-SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 12, 3600)
+SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 5300, 6000)
+SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 12, 6000)
 
 
 KC130Tanker = nil
@@ -148,7 +148,7 @@ function handleSupportRequest(text, coord)
     end
 
     local supportSpawn = nil
-    if text:find("arty") then
+    if text:find("artillery") then
         supportSpawn = artySpawn
     elseif text:find("tank") then
         supportSpawn = tankSpawn
@@ -262,6 +262,12 @@ function handleDebugRequest(text, coord)
         deployFighters(fighterMediumSpawn, coord)
     elseif text:find("fighters hard") then
         deployFighters(fighterHardSpawn, coord)
+    elseif text:find("cas easy") then
+        triggerCAS(casEasySpawn, coord)
+    elseif text:find("cas medium") then
+        triggerCAS(casMediumSpawn, coord)
+    elseif text:find("cas hard") then
+        triggerCAS(casHardSpawn, coord)
     elseif text:find("helos apache") then
         deployApache({"something"})
     elseif text:find("fire") then
