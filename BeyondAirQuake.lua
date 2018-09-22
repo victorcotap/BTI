@@ -20,7 +20,7 @@ function triggerFighters(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
             env.info(string.format("BTI: Sending fighter group %d to zone ", zoneFightersCounter))
-            local routeTask = spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(600), "cone" )
+            local routeTask = spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(400), "cone" )
             spawnGroup:SetTask(routeTask)
             local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 60000, { "Planes", "Battle airplanes" }, 1 )
             spawnGroup:PushTask(enrouteTask)
@@ -91,25 +91,23 @@ function AirQuakeZoneAttacked(attackedZone)
         return
     end
 
-    if zoneFightersCounter < maxFighterCap then
-        local spawn = nil
-        local switch = math.random(1,3)
-        -- if RedZonesCounter > BlueZonesCounter then
-        if switch == 1 then
-            spawn = fighterMediumSpawn
-        elseif switch == 2 then
-            spawn = fighterEasySpawn
-        else
-            spawn = fighterHardSpawn
-        end
 
-        triggerFighters(spawn, attackedZone:GetCoordinate())
-
-        zoneFightersCounter = zoneFightersCounter + 1
-        fighterTrack[zoneName] = true
+    local spawn = nil
+    local switch = math.random(1,3)
+    -- if RedZonesCounter > BlueZonesCounter then
+    if switch == 1 then
+        spawn = fighterMediumSpawn
+    elseif switch == 2 then
+        spawn = fighterEasySpawn
     else
-        env.info('BTI: No furball bozos available')
+        spawn = fighterHardSpawn
     end
+
+    triggerFighters(spawn, attackedZone:GetCoordinate())
+
+    zoneFightersCounter = zoneFightersCounter + 1
+    fighterTrack[zoneName] = true
+    
 end
 
 function AirQuakePermanentTrigger(something)
