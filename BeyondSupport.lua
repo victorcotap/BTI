@@ -172,7 +172,7 @@ function handleSupportRequest(text, coord)
             local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
             supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
             if text:find("jtac") then
-                ctld.JTACAutoLase(JFAC:GetName(), 1689, true,"all", 2)
+                ctld.JTACAutoLase(supportGroup:GetName(), 1689, true,"all", 2)
             end
             CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
         else

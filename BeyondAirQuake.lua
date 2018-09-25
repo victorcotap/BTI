@@ -19,14 +19,14 @@ local casTrack = {}
 function triggerFighters(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
+            spawnGroup:ClearTasks()
             env.info(string.format("BTI: Sending fighter group %d to zone ", zoneFightersCounter))
+            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
+            spawnGroup:SetTask(enrouteTask)
             local routeTask = spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(400), "cone" )
-            spawnGroup:SetTask(routeTask)
-            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 60000, { "Planes", "Battle airplanes" }, 1 )
-            spawnGroup:PushTask(enrouteTask)
+            spawnGroup:PushTask(routeTask)
         end 
     )
-
     spawn:Spawn()
 end
 
@@ -34,9 +34,11 @@ function triggerCAS(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
             env.info(string.format("BTI: Sending cas group to zone "))
-            local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(8000), UTILS.KnotsToMps(2700))
-            spawn:SetTask(orbitTask)
+            spawnGroup:ClearTasks()
             local casTask = spawnGroup:EnRouteTaskEngageTargets( 20000, { "All" }, 1 )
+            spawnGroup:SetTask(casTask)
+            local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(8000), UTILS.KnotsToMps(2700))
+            spawnGroup:PushTask(orbitTask)
         end
     )
     spawn:Spawn()
@@ -45,14 +47,17 @@ end
 function deployFighters(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
+            spawnGroup:ClearTasks()
             env.info(string.format("BTI: Deploying fighters at requested zone"))
+
             local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(18000) , UTILS.KnotsToMps(400))
-            spawnGroup:SetTask(orbitTask)
-            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 60000, { "Planes", "Battle airplanes" }, 1 )
-            spawnGroup:PushTask(enrouteTask)
+            -- spawnGroup:SetTask(orbitTask)
+            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
+            -- spawnGroup:PushTask(enrouteTask)
+            local combo = spawnGroup:TaskCombo({ orbitTask, enrouteTask }, 1)
+            spawnGroup:SetTask(combo)
         end
     )
-
     spawn:SpawnFromVec2(coord:GetVec2(), UTILS.FeetToMeters(5000), UTILS.FeetToMeters(25000))
 end
 -------------------------------------------------------------------------------
@@ -128,12 +133,14 @@ end
 
 function AirQuakePermanentRandomizer(something)
     local timeToRandom = 0
-    local switch = math.random(1,3)
+    local switch = math.random(1,4)
 
     if switch == 1 then
-        timeToRandom = 1200
+        timeToRandom = 900
     elseif switch == 2 then
-        timeToRandom = 2400
+        timeToRandom = 1800
+    elseif switch == 3 then
+        timeToRandom = 2700
     else
         timeToRandom = 3600
     end

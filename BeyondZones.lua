@@ -185,7 +185,7 @@ for keyIndex, zone in pairs(ZonesList) do
         local zoneToDestroy = ZONE:New(zoneName)
         local zoneRadiusToDestroy = ZONE_RADIUS:New(zoneName, zoneToDestroy:GetVec2(), 3850)
         local function destroyUnit(zoneUnit)
-            env.info(string.format("BTI: Found unit in zone %s, destroying", zoneName))
+            -- env.info(string.format("BTI: Found unit in zone %s, destroying", zoneName))
             zoneUnit:Destroy()
             return true
         end
