@@ -16,7 +16,7 @@ tankerTimer = 0
 exfillTimer = 0
 
 local function supportCooldownHelp(something)
-    CommandCenter:MessageTypeToCoalition( string.format("Support asset delivery is now available again. Use the following marker commands:\n-support arty\n-support tank\n-support repair\n-support sam\n-support apc\n-support infantry"), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition( string.format("Support asset delivery is now available again. Use the following marker commands:\n-support arty\n-support tank\n-support repair\n-support sam\n-support apc\n-support infantry\n-support jtac"), MESSAGE.Type.Information )
 end
 
 local function facCooldownHelp(something)
@@ -172,7 +172,11 @@ function handleSupportRequest(text, coord)
             local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
             supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
             if text:find("jtac") then
-                ctld.JTACAutoLase(supportGroup:GetName(), 1689, true,"all", 2)
+                supportSpawn:OnSpawnGroup(
+                    function(spawnGroup)
+                        ctld.JTACAutoLase(spawnGroup:GetName(), 1689, true, "all", 2)
+                    end
+                )
             end
             CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
         else
