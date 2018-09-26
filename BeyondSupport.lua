@@ -228,7 +228,9 @@ end
 ---------------------------------------------------------------------------------
 
 function handleCommandRequest(text, coord)
-    if text:find("smoke") then
+    if text:find("awacs") then
+        E2EWR = SPAWN:New('BLUE C EWR E2'):Spawn()
+    else if text:find("smoke") then
         if text:find("green") then
             coord:SmokeGreen()
         elseif text:find("orange") then
