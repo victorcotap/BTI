@@ -22,9 +22,9 @@ function triggerFighters(spawn, coord)
             spawnGroup:ClearTasks()
             env.info(string.format("BTI: Sending fighter group %d to zone ", zoneFightersCounter))
             local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
-            spawnGroup:SetTask(enrouteTask)
+            spawnGroup:SetTask(enrouteTask, 2)
             local routeTask = spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(400), "cone" )
-            spawnGroup:PushTask(routeTask)
+            spawnGroup:PushTask(routeTask, 4)
         end 
     )
     spawn:Spawn()
@@ -36,9 +36,9 @@ function triggerCAS(spawn, coord)
             env.info(string.format("BTI: Sending cas group to zone "))
             spawnGroup:ClearTasks()
             local casTask = spawnGroup:EnRouteTaskEngageTargets( 20000, { "All" }, 1 )
-            spawnGroup:SetTask(casTask)
+            spawnGroup:SetTask(casTask, 2)
             local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(8000), UTILS.KnotsToMps(2700))
-            spawnGroup:PushTask(orbitTask)
+            spawnGroup:PushTask(orbitTask, 4)
         end
     )
     spawn:Spawn()
@@ -54,7 +54,7 @@ function deployFighters(spawn, coord)
             -- spawnGroup:SetTask(orbitTask)
             local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
             -- spawnGroup:PushTask(enrouteTask)
-            local combo = spawnGroup:TaskCombo({ orbitTask, enrouteTask }, 1)
+            local combo = spawnGroup:TaskCombo({ orbitTask, enrouteTask }, 4)
             spawnGroup:SetTask(combo)
         end
     )
@@ -82,6 +82,8 @@ function AirQuakeZoneCounterCAS(attackedZone)
     end
 
     triggerCAS(spawn, attackedZone:GetCoordinate())
+    CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending Close Air Support to defend its attacked zone"), MESSAGE.Type.Information)
+
 end
 
 function AirQuakeZoneAttacked(attackedZone)
@@ -109,6 +111,7 @@ function AirQuakeZoneAttacked(attackedZone)
     end
 
     triggerFighters(spawn, attackedZone:GetCoordinate())
+    CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending QRF to defend its zone"), MESSAGE.Type.Information)
 
     zoneFightersCounter = zoneFightersCounter + 1
     fighterTrack[zoneName] = true
@@ -128,6 +131,8 @@ function AirQuakePermanentTrigger(something)
     end
     
     triggerFighters(spawn, HQ:GetCoordinate())
+    CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending a random patrol"), MESSAGE.Type.Information)
+
     zoneFightersCounter = zoneFightersCounter + 1
 end
 
@@ -145,6 +150,7 @@ function AirQuakePermanentRandomizer(something)
         timeToRandom = 3600
     end
     env.info(string.format('BTI: Air Quake time to random %d', timeToRandom))
+    CommandCenter:MessageTypeToCoalition(string.format("Rolling dices on enemy patrol CAP"), MESSAGE.Type.Information)
     SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandom)
 end
 

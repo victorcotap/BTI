@@ -36,6 +36,8 @@ local function supportServicesRespawnHelp(something)
 end
 
 -- Spawns -----------------------------------------------------------------------
+jtacName = 'BLUE Request jtac'
+
 artySpawn = SPAWN:New('BLUE Support arty')
 tankSpawn = SPAWN:New('BLUE Support tank')
 servicesSpawn = SPAWN:New('BLUE Support services')
@@ -43,7 +45,7 @@ apcSpawn = SPAWN:New('BLUE Support apc')
 samSpawn = SPAWN:New('BLUE Support sam')
 infantrySpawn = SPAWN:New('BLUE Support infantry')
 transportSpawn = SPAWN:New('BLUE Support transport')
-jtacSpawn = SPAWN:New('BLUE Support jtac')
+jtacSpawn = SPAWN:NewWithAlias('BLUE Support jtac', jtacName)
 GFAC = nil
 AFAC = nil
 JFAC = nil
@@ -92,7 +94,7 @@ function handleFACRequest(text, coord)
     if text:find("route") then
         fac:ClearTasks()
         local routeTask = fac:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(10000),  UTILS.KnotsToMps(110) )
-        fac:SetTask(routeTask)
+        fac:SetTask(routeTask, 2)
         CommandCenter:MessageTypeToCoalition( string.format("%s FAC is re-routed to the requested destination.\n%d minutes cooldown starting now", fac:GetName(), FAC_COOLDOWN / 60), MESSAGE.Type.Information )
         -- local facTask = fac:EnRouteTaskFAC( 10000, 2 )
         -- fac:PushTask(facTask)
@@ -129,9 +131,9 @@ function handleTankerRequest(text, coord)
 
         tanker:ClearTasks()
         local routeTask = tanker:TaskOrbitCircleAtVec2( coord:GetVec2(), altitude,  speed )
-        tanker:SetTask(routeTask)
+        tanker:SetTask(routeTask, 2)
         local tankerTask = tanker:EnRouteTaskTanker()
-        tanker:PushTask(tankerTask)
+        tanker:PushTask(tankerTask, 4)
         CommandCenter:MessageTypeToCoalition( string.format("%s Tanker is re-routed to the player requested destination.\n%d minutes cooldown starting now", tanker:GetName(), TANKER_COOLDOWN / 60), MESSAGE.Type.Information )
         tankerTimer = currentTime
         SCHEDULER:New(nil, tankerCooldownHelp, {"sdfsdfd"}, TANKER_COOLDOWN)
@@ -169,15 +171,16 @@ function handleSupportRequest(text, coord)
     local distance = coord:Get2DDistance(HQ:GetCoordinate())
     function spawnAsset(text)
         if spawnGroup:IsAlive() then
-            local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
-            supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
             if text:find("jtac") then
                 supportSpawn:OnSpawnGroup(
-                    function(spawnGroup)
-                        ctld.JTACAutoLase(spawnGroup:GetName(), 1689, true, "all", 2)
+                    function(jtacSpawnGroup)
+                        env.info(string.format( "BTI: Trying to create autolase jtac for %s",jtacSpawnGroup:GetName()))
+                        ctld.JTACAutoLase(jtacSpawnGroup:GetName(), 1686, true, "all", 2)
                     end
                 )
             end
+            local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
+            supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
             CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
         else
             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
@@ -185,7 +188,7 @@ function handleSupportRequest(text, coord)
     end
     local travelTime = distance / UTILS.KnotsToMps(375) + 10
     env.info(string.format('BTI: New Asset request. distance %d, travel time %d', distance, travelTime))
-    SCHEDULER:New(nil, spawnAsset, {"sdfsdfd"}, travelTime)
+    SCHEDULER:New(nil, spawnAsset, {text}, travelTime)
 
     CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the player requested destination\nETE is %d minutes.\n%d minutes cooldown starting now", spawnGroup:GetName(), travelTime / 60, SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
     supportTimer = currentTime
