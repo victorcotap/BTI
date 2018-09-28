@@ -137,21 +137,36 @@ function AirQuakePermanentTrigger(something)
 end
 
 function AirQuakePermanentRandomizer(something)
-    local timeToRandom = 0
-    local switch = math.random(1,4)
+    local timeToRandomA = 0
+    local timeToRandomB = 0
+    local switchA = math.random(1,4)
+    local switchB = math.random(1,4)
 
-    if switch == 1 then
-        timeToRandom = 900
-    elseif switch == 2 then
-        timeToRandom = 1800
-    elseif switch == 3 then
-        timeToRandom = 2700
+    if switchA == 1 then
+        timeToRandomA = 900
+    elseif switchA == 2 then
+        timeToRandomA = 1800
+    elseif switchA == 3 then
+        timeToRandomA = 2700
     else
-        timeToRandom = 3600
+        timeToRandomA = 3600
     end
-    env.info(string.format('BTI: Air Quake time to random %d', timeToRandom))
+
+    if switchB == 1 then
+        timeToRandomB = 900
+    elseif switchB == 2 then
+        timeToRandomB = 1800
+    elseif switchB == 3 then
+        timeToRandomB = 2700
+    else
+        timeToRandomB = 3600
+    end
+
+    env.info(string.format('BTI: Air Quake time to random A %d', timeToRandomA))
+    env.info(string.format('BTI: Air Quake time to random B %d', timeToRandomB))
     CommandCenter:MessageTypeToCoalition(string.format("Rolling dices on enemy patrol CAP"), MESSAGE.Type.Information)
-    SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandom)
+    SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandomA)
+    SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandomB)
 end
 
 SCHEDULER:New(nil, AirQuakePermanentRandomizer, {"something"}, 60, 3600)
