@@ -255,6 +255,12 @@ function handleCommandRequest(text, coord)
         else
             for i=10,1,-1 do coord:FlareWhite() end
         end
+    elseif text:find("weather") then
+        local currentPressure = coord:GetPressure(0)
+        local currentTemperature = coord:GetTemperature()
+        local currentWindDirection, currentWindStrengh = coord:GetWind()
+        local weatherString = string.format("Requested weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
+        CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
     end
 end
 
