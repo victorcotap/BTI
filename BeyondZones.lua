@@ -6,6 +6,7 @@ local TimeToEvaluate = 60
 
 BlueZonesCounter = 0
 RedZonesCounter = 0
+SelectedZonesName = {}
 
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
@@ -23,7 +24,8 @@ end
 function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
     CaptureZone = ZONE:New( zoneName )
-    local ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
+    ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
+    SelectedZonesName[#SelectedZonesName + 1] = zoneName
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
         if From ~= To then
@@ -31,7 +33,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             self:E( { Coalition = Coalition } )
             if Coalition == coalition.side.BLUE then
                 env.info(string.format("BTI: Zone %s is detected guarded, changing persistence", zoneName))
-
                 BeyondPersistedStore[line][keyIndex]["Coalition"] = coalition.side.BLUE
                 ZoneCaptureCoalition:Stop()
                 CommandCenter:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
@@ -52,7 +53,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
                     env.info(string.format("BTI: Sending helos to zone %s", ZoneCaptureCoalition:GetZoneName()))
                     local task = spawnGroup:TaskLandAtZone(ZoneCaptureCoalition.Zone, 60000, true)
                     spawnGroup:SetTask(task)
-                end 
+                end
             )
             captureHelos:Spawn()
         end
@@ -78,8 +79,10 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
             BlueZonesCounter = BlueZonesCounter + 1
             RedZonesCounter = RedZonesCounter - 1
+            GroundQuakeZoneCaptured(ZoneCaptureCoalition:GetZone())
             CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
+            BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.RED
             CommandCenter:MessageTypeToCoalition( string.format( "%s is captured by Iran, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         end
         
@@ -89,6 +92,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
     ZoneCaptureCoalition:__Guard(1)
     ZoneCaptureCoalition:MonitorDestroyedUnits()
+
     function ZoneCaptureCoalition:OnAfterDestroyedUnit(From, Event, To, unit, PlayerName)
         env.info(string.format('BTI: Detected destroyed unit %s', Event))
         AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())

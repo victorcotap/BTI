@@ -1,3 +1,4 @@
+
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
@@ -9,10 +10,16 @@ fighterEasySpawn = SPAWN:New('RED Mig21')
 casHardSpawn = SPAWN:New('RED Su34')
 casMediumSpawn = SPAWN:New('RED Su25TM')
 casEasySpawn = SPAWN:New('Red Mi28')
+groundArmorSpawn = SPAWN:New('RED G Armor')
+groundAllAroundSpawn = SPAWN:New('RED G All Around')
+groundSupplySpawn = SPAWN:New('RED G Supply')
+
 
 local zoneFightersCounter = 0
+local zoneGroundCounter = 0
 local fighterTrack = {}
 local casTrack = {}
+local groundTrack = {}
 -- local fighterResources = BeyondPersistedStore['']
 --------------------------------------------------------------------
 
@@ -60,8 +67,40 @@ function deployFighters(spawn, coord)
     )
     spawn:SpawnFromVec2(coord:GetVec2(), UTILS.FeetToMeters(5000), UTILS.FeetToMeters(25000))
 end
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 
+function triggerGroundTaskResponse(spawn, coord, distance, angle)
+    env.info(string.format("BTI: Deploying Ground Task at requested translate %d angle %d", distance, angle))
+    local newCoord = coord:Translate(UTILS.NMToMeters(16), angle)
+
+    spawn:OnSpawnGroup(
+        function ( spawnGroup )
+            spawnGroup:ClearTasks()
+            env.info(string.format("BTI: Deploying Ground Task Armor at requested zone"))
+            -- local routeTask = spawnGroup:TaskRouteToVec2(coord:GetVec2(), UTILS.KnotsToMps(50))
+            -- spawnGroup:SetTask(routeTask, 15);
+            spawnGroup:RouteGroundTo( coord, UTILS.KnotsToMps(50), Formation, DelaySeconds )
+        end
+    )
+
+    spawn:SpawnFromVec2(newCoord:GetVec2())
+end
+
+function triggerGroundSupply(spawn, startCoord, endCoord)
+    spawn:OnSpawnGroup(
+        function ( spawnGroup )
+            spawnGroup:ClearTasks()
+            env.info(string.format("BTI: Deploying Ground Task Supply at requested zone"))
+            spawnGroup:RouteGroundTo(endCoord, UTILS.KnotsToMps(50), Formation, DelaySeconds )
+        end
+    )
+
+    spawn:SpawnFromVec2(startCoord:GetVec2())
+
+end
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 function AirQuakeZoneCounterCAS(attackedZone)
     local zoneName = attackedZone.ZoneName
 
@@ -164,10 +203,82 @@ function AirQuakePermanentRandomizer(something)
 
     env.info(string.format('BTI: Air Quake time to random A %d', timeToRandomA))
     env.info(string.format('BTI: Air Quake time to random B %d', timeToRandomB))
-    CommandCenter:MessageTypeToCoalition(string.format("Rolling dices on enemy patrol CAP"), MESSAGE.Type.Information)
+    CommandCenter:MessageTypeToCoalition(string.format("Rolling dices on enemy patrol CAP..."), MESSAGE.Type.Information)
     SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandomA)
-    SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandomB)
+    -- SCHEDULER:New(nil, AirQuakePermanentTrigger, {"Something"}, timeToRandomB)
 end
 
 SCHEDULER:New(nil, AirQuakePermanentRandomizer, {"something"}, 60, 3600)
 env.info('BTI: Air Quake battle is ready')
+
+----------------------------------------------------------------------------------------
+
+function GroundQuakeZoneCaptured(attackedZone)
+    local zoneName = attackedZone.ZoneName
+
+    env.info(string.format('BTI: Evaluating GroundQuake Zone %s zoneGroundCounter %d', zoneName, zoneGroundCounter))
+
+    if groundTrack[zoneName] then
+        return
+    end
+
+    local spawn = nil
+    local angle = math.random(1,360)
+    local distance = math.random(10,16)
+    local switch = math.random(1,2)
+
+    if switch == 1 then
+        spawn = groundAllAroundSpawn
+    elseif switch == 2 then
+        spawn = groundArmorSpawn
+    end
+
+    triggerGroundTaskResponse(spawn, attackedZone:GetCoordinate(), distance, angle)
+
+    zoneGroundCounter = zoneGroundCounter + 1
+    groundTrack[zoneName] = true
+
+end
+
+function GroundQuakeSupplyTrigger(something)
+    local fromZoneSwitch = math.random(1, #SelectedZonesName)
+    env.info(string.format("BTI: Ground Quake Supply picker count %d", #SelectedZonesName))
+    local fromZoneName = SelectedZonesName[fromZoneSwitch]
+    local toZoneName = nil
+
+    local toZoneSwitch = math.random(1, #SelectedZonesName)
+    local randomToZone = SelectedZonesName[toZoneSwitch]
+    env.info(string.format( "BTI: Supply selected zones from %s to %s", fromZoneName, randomToZone))
+    if randomToZone == fromZoneName then
+        env.info(string.format("BTI: Found the same destination as start, disabling "))
+        return
+    else
+        toZoneName = randomToZone
+    end
+
+    local fromZone = ZONE:New(fromZoneName)
+    local toZone = ZONE:New(toZoneName)
+
+    CommandCenter:MessageTypeToCoalition(string.format("Our intel department has somne news!\nThe enemy is sending a convoy resupply one zone\nIt will depart %s and arrive at %s", fromZone.ZoneName, toZone.ZoneName), MESSAGE.Type.Information)
+    triggerGroundSupply(groundSupplySpawn, fromZone:GetCoordinate(), toZone:GetCoordinate())
+end
+
+function GroundQuakeSupplyRandomizer(something)
+    local timeToRandomA = 0
+    local switchA = math.random(1,4)
+
+    if switchA == 1 then
+        timeToRandomA = 900
+    elseif switchA == 2 then
+        timeToRandomA = 1800
+    elseif switchA == 3 then
+        timeToRandomA = 2700
+    else
+        timeToRandomA = 3600
+    end
+
+    env.info(string.format('BTI: Ground Quake Supply time to random A %d', timeToRandomA))
+    SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, timeToRandomA)
+end
+
+SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
