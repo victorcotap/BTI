@@ -12,8 +12,8 @@ casMediumSpawn = SPAWN:New('RED Su25TM')
 casEasySpawn = SPAWN:New('Red Mi28')
 groundArmorSpawn = SPAWN:New('RED G Armor')
 groundAllAroundSpawn = SPAWN:New('RED G All Around')
-groundSupplySpawn = SPAWN:New('RED G Supply')
-
+heloSupplyTransportSpawn = SPAWN:New('RED H Supply Transport')
+heloSupplyEscortSpawn = SPAWN:New('RED H Supply Escort')
 
 local zoneFightersCounter = 0
 local zoneGroundCounter = 0
@@ -86,12 +86,13 @@ function triggerGroundTaskResponse(spawn, coord, distance, angle)
     spawn:SpawnFromVec2(newCoord:GetVec2())
 end
 
-function triggerGroundSupply(spawn, startCoord, endCoord)
+function triggerHeloSupply(spawn, startCoord, endCoord)
     spawn:OnSpawnGroup(
         function ( spawnGroup )
             spawnGroup:ClearTasks()
-            env.info(string.format("BTI: Deploying Ground Task Supply at requested zone"))
-            spawnGroup:RouteGroundTo(endCoord, UTILS.KnotsToMps(50), Formation, DelaySeconds )
+            env.info(string.format("BTI: Deploying Helo Supply at requested zone"))
+            local task = spawnGroup:TaskLandAtVec2(endCoord:GetVec2(), 60000, true)
+            spawnGroup:SetTask(task)
         end
     )
 
@@ -242,25 +243,28 @@ end
 
 function GroundQuakeSupplyTrigger(something)
     local fromZoneSwitch = math.random(1, #SelectedZonesName)
-    env.info(string.format("BTI: Ground Quake Supply picker count %d", #SelectedZonesName))
+    env.info(string.format("BTI: Ground Quake Supply picker count name %d zones %d", #SelectedZonesName, #SelectedZonesCoalition))
+    env.info(string.format("BTI: SelectedZonesCoalition %s", UTILS.OneLineSerialize(SelectedZonesCoalition)))
     local fromZoneName = SelectedZonesName[fromZoneSwitch]
     local toZoneName = nil
 
-    local toZoneSwitch = math.random(1, #SelectedZonesName)
-    local randomToZone = SelectedZonesName[toZoneSwitch]
-    env.info(string.format( "BTI: Supply selected zones from %s to %s", fromZoneName, randomToZone))
-    if randomToZone == fromZoneName then
-        env.info(string.format("BTI: Found the same destination as start, disabling "))
-        return
-    else
-        toZoneName = randomToZone
+    for i = 1, 5 do
+        local toZoneSwitch = math.random(1, #SelectedZonesName)
+        local randomToZone = SelectedZonesName[toZoneSwitch]
+        env.info(string.format( "BTI: Supply selected zones from %s to %s", fromZoneName, randomToZone))
+        if randomToZone == fromZoneName then
+            env.info(string.format("BTI: Found the same destination as start, disabling "))
+        else
+            toZoneName = randomToZone
+        end
     end
 
     local fromZone = ZONE:New(fromZoneName)
     local toZone = ZONE:New(toZoneName)
 
     CommandCenter:MessageTypeToCoalition(string.format("Our intel department has somne news!\nThe enemy is sending a convoy resupply one zone\nIt will depart %s and arrive at %s", fromZone.ZoneName, toZone.ZoneName), MESSAGE.Type.Information)
-    triggerGroundSupply(groundSupplySpawn, fromZone:GetCoordinate(), toZone:GetCoordinate())
+    triggerHeloSupply(heloSupplyTransportSpawn, fromZone:GetCoordinate(), toZone:GetCoordinate())
+    triggerHeloSupply(heloSupplyEscortSpawn, fromZone:GetCoordinate(), toZone:GetCoordinate())
 end
 
 function GroundQuakeSupplyRandomizer(something)
@@ -282,3 +286,4 @@ function GroundQuakeSupplyRandomizer(something)
 end
 
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
+SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 80)

@@ -7,6 +7,7 @@ local TimeToEvaluate = 60
 BlueZonesCounter = 0
 RedZonesCounter = 0
 SelectedZonesName = {}
+SelectedZonesCoalition = {}
 
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
@@ -26,6 +27,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     CaptureZone = ZONE:New( zoneName )
     ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
     SelectedZonesName[#SelectedZonesName + 1] = zoneName
+    SelectedZonesCoalition[#SelectedZonesCoalition + 1] = ZoneCaptureCoalition
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
         if From ~= To then
