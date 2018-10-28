@@ -12,6 +12,7 @@ casMediumSpawn = SPAWN:New('RED Su25TM')
 casEasySpawn = SPAWN:New('Red Mi28')
 groundArmorSpawn = SPAWN:New('RED G Armor')
 groundAllAroundSpawn = SPAWN:New('RED G All Around')
+groundSAMSupplySpawn = SPAWN:New('RED G Supply SAM')
 heloSupplyTransportSpawn = SPAWN:New('RED H Supply Transport')
 heloSupplyEscortSpawn = SPAWN:New('RED H Supply Escort')
 
@@ -86,18 +87,36 @@ function triggerGroundTaskResponse(spawn, coord, distance, angle)
     spawn:SpawnFromVec2(newCoord:GetVec2())
 end
 
-function triggerHeloSupply(spawn, startCoord, endCoord)
-    spawn:OnSpawnGroup(
-        function ( spawnGroup )
-            spawnGroup:ClearTasks()
-            env.info(string.format("BTI: Deploying Helo Supply at requested zone"))
-            local task = spawnGroup:TaskLandAtVec2(endCoord:GetVec2(), 60000, true)
-            spawnGroup:SetTask(task)
+function triggerHeloSAMSupply(startCoord, endCoord)
+    local spawnSupply = heloSupplyTransportSpawn
+    local spawnEscort = heloSupplyEscortSpawn
+    local distance = startCoord:Get2DDistance(endCoord)
+    local travelTime = distance / UTILS.KnotsToMps(107) + 10
+
+    local function taskFunction( spawnGroup )
+        spawnGroup:ClearTasks()
+        env.info(string.format("BTI: Deploying Helo Supply at requested zone"))
+        local task = spawnGroup:TaskLandAtVec2(endCoord:GetVec2(), 60000, true)
+        spawnGroup:SetTask(task)
+    end
+
+    spawnSupply:OnSpawnGroup(taskFunction)
+    local supplyGroup = spawnSupply:SpawnFromVec2(startCoord:GetVec2())
+
+    spawnEscort:OnSpawnGroup(taskFunction)
+    spawnEscort:SpawnFromVec2(startCoord:GetVec2())
+
+    local function spawnSAM(something)
+        if supplyGroup:IsAlive() then
+            local samSpawnCoord = endCoord:GetRandomVec2InRadius( 2000, 500 )
+            groundSAMSupplySpawn:SpawnFromVec2(samSpawnCoord)
+            CommandCenter:MessageTypeToCoalition( string.format("Enemy successfully delivered resupply convoy, watch out for reinforcements..."), MESSAGE.Type.Information )
+        else
+            CommandCenter:MessageTypeToCoalition( string.format("You've denied an enemy resupply convoy. Good job!"), MESSAGE.Type.Information )
         end
-    )
+    end
 
-    spawn:SpawnFromVec2(startCoord:GetVec2())
-
+    SCHEDULER:New(nil, spawnSAM, {"something"}, travelTime)
 end
 
 -----------------------------------------------------------------------------------------------------
@@ -242,29 +261,39 @@ function GroundQuakeZoneCaptured(attackedZone)
 end
 
 function GroundQuakeSupplyTrigger(something)
-    local fromZoneSwitch = math.random(1, #SelectedZonesName)
     env.info(string.format("BTI: Ground Quake Supply picker count name %d zones %d", #SelectedZonesName, #SelectedZonesCoalition))
     env.info(string.format("BTI: SelectedZonesCoalition %s", UTILS.OneLineSerialize(SelectedZonesCoalition)))
-    local fromZoneName = SelectedZonesName[fromZoneSwitch]
-    local toZoneName = nil
 
+    local fromZoneCoalition = nil
     for i = 1, 5 do
-        local toZoneSwitch = math.random(1, #SelectedZonesName)
-        local randomToZone = SelectedZonesName[toZoneSwitch]
-        env.info(string.format( "BTI: Supply selected zones from %s to %s", fromZoneName, randomToZone))
-        if randomToZone == fromZoneName then
-            env.info(string.format("BTI: Found the same destination as start, disabling "))
-        else
-            toZoneName = randomToZone
+        local fromZoneSwitch = math.random(1, #SelectedZonesName)
+        local randomFromZoneCoalition = SelectedZonesCoalition[fromZoneSwitch]
+        if randomFromZoneCoalition:GetCoalition() ~= coalition.side.BLUE then
+            fromZoneCoalition = randomFromZoneCoalition
         end
     end
 
-    local fromZone = ZONE:New(fromZoneName)
-    local toZone = ZONE:New(toZoneName)
+    
+    local toZoneCoalition = nil
 
-    CommandCenter:MessageTypeToCoalition(string.format("Our intel department has somne news!\nThe enemy is sending a convoy resupply one zone\nIt will depart %s and arrive at %s", fromZone.ZoneName, toZone.ZoneName), MESSAGE.Type.Information)
-    triggerHeloSupply(heloSupplyTransportSpawn, fromZone:GetCoordinate(), toZone:GetCoordinate())
-    triggerHeloSupply(heloSupplyEscortSpawn, fromZone:GetCoordinate(), toZone:GetCoordinate())
+    for i = 1, 5 do
+        local toZoneSwitch = math.random(1, #SelectedZonesCoalition)
+        local randomToZoneCoalition = SelectedZonesCoalition[toZoneSwitch]
+        env.info(string.format("BTI: Supply selected zone coalition %s coalition %d", randomToZoneCoalition:GetZoneName(), randomToZoneCoalition:GetCoalition()))
+        if fromZoneCoalition:GetZoneName() == randomToZoneCoalition:GetZoneName() then
+            env.info(string.format("BTI: Found the same destination as start, ignoring "))
+        elseif fromZoneCoalition:GetCoalition() ~= coalition.side.BLUE then
+            toZoneCoalition = randomToZoneCoalition
+        end
+    end
+
+    local fromZone = fromZoneCoalition:GetZone()
+    local fromCoord = COORDINATE:NewFromVec2(fromZone:GetRandomVec2())
+    local toZone = toZoneCoalition:GetZone()
+    local toCoord = COORDINATE:NewFromVec2(toZone:GetRandomVec2())
+
+    CommandCenter:MessageTypeToCoalition(string.format("Our intel department has somne news!\nThe enemy is sending an airborn resupply convoy\nIt will depart %s and arrive at %s. Intercept !", fromZoneCoalition:GetZoneName(), toZoneCoalition:GetZoneName()), MESSAGE.Type.Information)
+    triggerHeloSAMSupply(fromCoord, toCoord)
 end
 
 function GroundQuakeSupplyRandomizer(something)
@@ -286,4 +315,6 @@ function GroundQuakeSupplyRandomizer(something)
 end
 
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
-SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 80)
+
+--DEBUG
+SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 120)
