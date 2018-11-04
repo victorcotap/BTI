@@ -18,9 +18,9 @@ heloSupplyEscortSpawn = SPAWN:New('RED H Supply Escort')
 
 local zoneFightersCounter = 0
 local zoneGroundCounter = 0
-local fighterTrack = {}
-local casTrack = {}
-local groundTrack = {}
+FighterTrack = {}
+CASTrack = {}
+GroundTrack = {}
 -- local fighterResources = BeyondPersistedStore['']
 --------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ function AirQuakeZoneCounterCAS(attackedZone)
 
     env.info(string.format('BTI: Evaluating AirQuake CAS Zone %s RedZonesCounter %d, BlueZonesCounter %d, zoneFightersCounter %d', zoneName, RedZonesCounter, BlueZonesCounter, zoneFightersCounter))
 
-    if casTrack[zoneName] then
+    if CASTrack[zoneName] then
         return
     end
 
@@ -141,8 +141,8 @@ function AirQuakeZoneCounterCAS(attackedZone)
     end
 
     triggerCAS(spawn, attackedZone:GetCoordinate())
+    CASTrack[zoneName] = true
     CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending Close Air Support to defend its attacked zone"), MESSAGE.Type.Information)
-
 end
 
 function AirQuakeZoneAttacked(attackedZone)
@@ -152,7 +152,7 @@ function AirQuakeZoneAttacked(attackedZone)
     local zoneName = attackedZone.ZoneName
 
     env.info(string.format('BTI: Evaluating AirQuake Zone %s RedZonesCounter %d, BlueZonesCounter %d, zoneFightersCounter %d', zoneName, RedZonesCounter, BlueZonesCounter, zoneFightersCounter))
-    if fighterTrack[zoneName] then
+    if FighterTrack[zoneName] then
         env.info(string.format('BTI: Forbidding air quake for zone %s', zoneName))
         return
     end
@@ -173,7 +173,7 @@ function AirQuakeZoneAttacked(attackedZone)
     CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending QRF to defend its zone"), MESSAGE.Type.Information)
 
     zoneFightersCounter = zoneFightersCounter + 1
-    fighterTrack[zoneName] = true
+    FighterTrack[zoneName] = true
     
 end
 
@@ -238,7 +238,7 @@ function GroundQuakeZoneCaptured(attackedZone)
 
     env.info(string.format('BTI: Evaluating GroundQuake Zone %s zoneGroundCounter %d', zoneName, zoneGroundCounter))
 
-    if groundTrack[zoneName] then
+    if GroundTrack[zoneName] then
         return
     end
 
@@ -256,17 +256,17 @@ function GroundQuakeZoneCaptured(attackedZone)
     triggerGroundTaskResponse(spawn, attackedZone:GetCoordinate(), distance, angle)
 
     zoneGroundCounter = zoneGroundCounter + 1
-    groundTrack[zoneName] = true
+    GroundTrack[zoneName] = true
 
 end
 
 function GroundQuakeSupplyTrigger(something)
-    env.info(string.format("BTI: Ground Quake Supply picker count name %d zones %d", #SelectedZonesName, #SelectedZonesCoalition))
+    env.info(string.format("BTI: Ground Quake Supply picker count name %d", #SelectedZonesCoalition))
     env.info(string.format("BTI: SelectedZonesCoalition %s", UTILS.OneLineSerialize(SelectedZonesCoalition)))
 
     local fromZoneCoalition = nil
     for i = 1, 5 do
-        local fromZoneSwitch = math.random(1, #SelectedZonesName)
+        local fromZoneSwitch = math.random(1, #SelectedZonesCoalition)
         local randomFromZoneCoalition = SelectedZonesCoalition[fromZoneSwitch]
         if randomFromZoneCoalition:GetCoalition() ~= coalition.side.BLUE then
             fromZoneCoalition = randomFromZoneCoalition

@@ -6,8 +6,8 @@ local TimeToEvaluate = 60
 
 BlueZonesCounter = 0
 RedZonesCounter = 0
-SelectedZonesName = {}
 SelectedZonesCoalition = {}
+ZoneCoalitionHeloCaptureMap = {}
 
 HQ = GROUP:FindByName("BLUE CC")
 CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
@@ -26,7 +26,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
     CaptureZone = ZONE:New( zoneName )
     ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
-    SelectedZonesName[#SelectedZonesName + 1] = zoneName
     SelectedZonesCoalition[#SelectedZonesCoalition + 1] = ZoneCaptureCoalition
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
@@ -58,6 +57,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
                 end
             )
             captureHelos:Spawn()
+            ZoneCoalitionHeloCaptureMap[ZoneCaptureCoalition:GetZoneName()] = true
         end
     end
 
