@@ -67,6 +67,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
             AirQuakeZoneCounterCAS(ZoneCaptureCoalition:GetZone())
+            GroundQuakeZoneCaptured(ZoneCaptureCoalition:GetZone())
             CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
             CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
@@ -81,7 +82,6 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.BLUE
             BlueZonesCounter = BlueZonesCounter + 1
             RedZonesCounter = RedZonesCounter - 1
-            GroundQuakeZoneCaptured(ZoneCaptureCoalition:GetZone())
             CommandCenter:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
             BeyondPersistedZones[line][keyIndex]["Coalition"] = coalition.side.RED
