@@ -18,9 +18,12 @@ heloSupplyEscortSpawn = SPAWN:New('RED H Supply Escort')
 
 local zoneFightersCounter = 0
 local zoneGroundCounter = 0
+
+-- Global ----------------------------------------------------------
 FighterTrack = {}
 CASTrack = {}
 GroundTrack = {}
+QUAKEHeloConvoys = {}
 -- local fighterResources = BeyondPersistedStore['']
 --------------------------------------------------------------------
 
@@ -104,7 +107,7 @@ function triggerHeloSAMSupply(startCoord, endCoord)
     local supplyGroup = spawnSupply:SpawnFromVec2(startCoord:GetVec2())
 
     spawnEscort:OnSpawnGroup(taskFunction)
-    spawnEscort:SpawnFromVec2(startCoord:GetVec2())
+    local escortGroup = spawnEscort:SpawnFromVec2(startCoord:GetVec2())
 
     local function spawnSAM(something)
         if supplyGroup:IsAlive() then
@@ -117,6 +120,8 @@ function triggerHeloSAMSupply(startCoord, endCoord)
     end
 
     SCHEDULER:New(nil, spawnSAM, {"something"}, travelTime)
+
+    return supplyGroup, escortGroup
 end
 
 -----------------------------------------------------------------------------------------------------
@@ -257,7 +262,6 @@ function GroundQuakeZoneCaptured(attackedZone)
 
     zoneGroundCounter = zoneGroundCounter + 1
     GroundTrack[zoneName] = true
-
 end
 
 function GroundQuakeSupplyTrigger(something)
@@ -293,7 +297,15 @@ function GroundQuakeSupplyTrigger(something)
     local toCoord = COORDINATE:NewFromVec2(toZone:GetRandomVec2())
 
     CommandCenter:MessageTypeToCoalition(string.format("Our intel department has somne news!\nThe enemy is sending an airborn resupply convoy\nIt will depart %s and arrive at %s. Intercept !", fromZoneCoalition:GetZoneName(), toZoneCoalition:GetZoneName()), MESSAGE.Type.Information)
-    triggerHeloSAMSupply(fromCoord, toCoord)
+    local supply, escort = triggerHeloSAMSupply(fromCoord, toCoord)
+    
+    QUAKEHeloConvoys[#QUAKEHeloConvoys + 1] = {
+        ["From"] = fromZoneCoalition:GetZoneName(),
+        ["To"] = toZoneCoalition:GetZoneName(),
+        ["Timer"] = os.time(),
+        ["Supply"] = supply,
+        ["Escort"] = escort
+    }
 end
 
 function GroundQuakeSupplyRandomizer(something)
@@ -317,4 +329,4 @@ end
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
 
 --DEBUG
-SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 120)
+SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 100)

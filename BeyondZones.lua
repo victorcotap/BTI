@@ -201,11 +201,4 @@ end
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function IntelBriefing(something)
-    -- CommandCenter:MessageTypeToCoalition("Intel Report to follow\n. Use F10 map markers to find coordinates for each zone.\nCapture them by escorting the convoy that spawns when the zone is undefended.")
-    env.info(string.format('BTI: Starting Intel Blue %d Red %d', BlueZonesCounter, RedZonesCounter))
-end
-
-SCHEDULER:New(nil, IntelBriefing, {"something"}, 20)
-
 

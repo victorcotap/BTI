@@ -5,17 +5,26 @@ local function ternary ( cond , T , F )
     if cond then return T else return F end
 end
 
+local function weatherStringForCoordinate(coord)
+    local currentPressure = coord:GetPressure(0)
+    local currentTemperature = coord:GetTemperature()
+    local currentWindDirection, currentWindStrengh = coord:GetWind()
+    local weatherString = string.format("Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
+    return weatherString
+end
+
 PlayerMap = {}
 local PlayerMenuMap = {}
 
 SetPlayer = SET_CLIENT:New():FilterCoalitions("blue"):FilterActive():FilterStart()
 
-function generateIntel()
+function generateIntel(playerGroup)
         --zones
-    local intelMessage = "ZONES\n\n"
+    local intelMessage = "|ZONES / AOs|\n\n"
     for i = 1, #SelectedZonesCoalition do
         local zoneCaptureCoalition = SelectedZonesCoalition[i]
         local zoneName = zoneCaptureCoalition:GetZoneName()
+        local zoneCoord = zoneCaptureCoalition:GetZone():GetCoordinate()
         local zoneCoalition = ternary(zoneCaptureCoalition:GetCoalition() == coalition.side.BLUE, "Blue", "Red")
         
         local zoneStatus = ""
@@ -53,35 +62,57 @@ function generateIntel()
             zoneCapture = "No capturing friendly forces have been sent yet"
         end
 
-        local zoneMessage = zoneName .. ":\nStatus: " .. zoneStatus .. "\n Enemy Support: " .. zoneCAS .. "\nEnemy Assets: " .. zoneConvoy 
+        local zoneWeatherString = weatherStringForCoordinate(zoneCoord)
+
+        local zoneMessage = "* " .. zoneName .. " *\nStatus: " .. zoneStatus .. "\nEnemy Support: " .. zoneCAS .. "\nEnemy Assets: " .. zoneConvoy .. "\n/Weather/: " .. zoneWeatherString 
         intelMessage = intelMessage .. zoneMessage .. "\n\n"
     end
 
-    -- local currentTime = os.time()
-    -- local tankerCooldown = string.format("%d minutes", (currentTime - tankerTimer) / 60)
-    -- local facCooldown = tostring((currentTime - facTimer) / 60)
-    -- local supportCooldown = tostring((currentTime - supportTimer) / 60)
-    -- local exfillCooldown = tostring((currentTime - exfillTimer) / 60)
+    local currentTime = os.time()
 
-    -- local cooldownReport = "Command Report:\nTankers routing available in " .. tankerCooldown .. "\nFAC drones routing available in " .. facCooldown .. "\nSupport delivery available in " .. supportCooldown .. "\nExfill services"
-    -- intelMessage = intelMessage .. "\n" .. cooldownReport
+--airborn threats
+    intelMessage = intelMessage .. "|Enemy Air Supply|\n"
+    intelMessage = intelMessage .. ternary(#QUAKEHeloConvoys == 0, "No enemy resupply operation launched yet", "Careful, the enemy is sending resupply SA-2s.\nIntercept them before they reach their destination") .. "\n"
+    for i = 1, #QUAKEHeloConvoys do
+        local convoy = QUAKEHeloConvoys[i]
+        local convoyTime = string.format("%d minutes", (currentTime - convoy["Timer"]) / 60)
+        local convoyReport = "From " .. convoy["From"] .. " to " .. convoy["To"] .. " started " .. convoyTime .. "ago"
+        intelMessage = intelMessage .. convoyReport
+    end
+    intelMessage = intelMessage .. "\n\n"
+
+    intelMessage = intelMessage .. "|COMMANDS|\nSee throughtheinferno.com/battle-the-inferno for help\n"
+    local tankerCooldown =  ternary(currentTime > tankerTimer + TANKER_COOLDOWN, "Ready for new command", string.format("Available in %d minutes", math.abs((currentTime - (tankerTimer + TANKER_COOLDOWN)) / 60)))
+    local facCooldown = ternary(currentTime > facTimer + FAC_COOLDOWN, "Ready for new command", string.format("Available in %d minutes", math.abs((currentTime - (facTimer + FAC_COOLDOWN)) / 60)))
+    local supportCooldown = ternary(currentTime > supportTimer + SUPPORT_COOLDOWN, "Ready for new command", string.format("Available in %d minutes", math.abs((currentTime - (supportTimer + SUPPORT_COOLDOWN)) / 60)))
+    local exfillCooldown = ternary(currentTime > exfillTimer + EXFILL_COOLDOWN, "Ready for new command", string.format("Available in %d minutes", math.abs((currentTime - (exfillTimer + EXFILL_COOLDOWN)) / 60)))
+        -- Number of C-17s in flight
+    local cooldownReport = "Tankers routing -> " .. tankerCooldown .. "\nFAC drones routing -> " .. facCooldown .. "\nSupport delivery -> " .. supportCooldown .. "\nExfill services -> " .. exfillCooldown
+    intelMessage = intelMessage .. "\n" .. cooldownReport .. "\n\n"
+
+    intelMessage = intelMessage .. "|CARRIER|\n"
+    local carrierPhase = ternary(CARRIERCycle == 1, "Launch & Recovery", "Planned Route")
+    local carrierPhaseTime = string.format("%d minutes", (currentTime - CARRIERTimer) / 60)
+    local carrierWeather = weatherStringForCoordinate(GROUP:FindByName("BLUE CV Fleet"):GetCoordinate())
+    local carrierATIS = carrierWeather .. " " .. ternary(CARRIERCycle == 1, "Deck is open, CASE I in effect", "Deck is closed, Marshall stack starting at 2000MSL")
+    local carrierReport = "Carrier Cycle: " .. carrierPhase .. "\nCarrier Cycle time remaining: " .. carrierPhaseTime .. "\nATIS: " .. carrierATIS
+    intelMessage = intelMessage .. carrierReport .. "\n\n"
+    
+    intelMessage = intelMessage .. "|ATIS|\n"
+    local coord = playerGroup:GetCoordinate()
+    local weatherString = "Weather for current position:\n" .. weatherStringForCoordinate(coord)
+    intelMessage = intelMessage .. weatherString .. "\n\n"
 
     return intelMessage
-    --QRF convoys
-    --QRF Airborn
-
-    --airborn threats
-    --support in flight
-    --carrier cycle
 end
 
 function displayIntelToGroup(playerClient)
     local playerGroup = playerClient:GetGroup()
-    local intelMessage = generateIntel()
+    local intelMessage = generateIntel(playerGroup)
 
     -- Generate intel message
 
-    MESSAGE:New( intelMessage, 15, "INTEL Report for " .. playerClient:GetPlayerName()):ToGroup(playerGroup)
+    MESSAGE:New( intelMessage, 20, "INTEL Report for " .. playerClient:GetPlayerName() .. "\n"):ToGroup(playerGroup)
 
 end
 
@@ -89,7 +120,7 @@ end
 --------------------------------------------------------------------------------------------------------
 
 local function permanentPlayerMenu(something)
-    env.info(string.format( "BTI: Starting permanent menus"))
+    -- env.info(string.format( "BTI: Starting permanent menus"))
     for playerID, alive in pairs(PlayerMap) do
         -- env.info(string.format( "BTI: Commencing Menus for playerID %s alive %s", playerID, tostring(alive)))
         local playerClient = CLIENT:FindByName(playerID)
@@ -116,7 +147,7 @@ local function permanentPlayerCheck(something)
     SetPlayer:ForEachClient(
         function (PlayerClient)
             local PlayerID = PlayerClient.ObjectName
-            PlayerClient:AddBriefing("Welcome to BTI \\o/! The intel menu will appear in your F10 radio menu after one minute")
+            PlayerClient:AddBriefing("Welcome to BTI|Battle The Inferno \\o/!\n\nThe intel menu will appear in your F10 radio menu after one minute\n\nPlease check the briefing for essential informations\nAlso visit http://throughtheinferno.com/battle-the-inferno for a tutorial concerning game mechanics on BTI")
 
             if PlayerClient:IsAlive() then
                 -- env.info(string.format( "BTI: Player in set group ID %s", PlayerID ))
@@ -130,7 +161,7 @@ local function permanentPlayerCheck(something)
             end
         end
     )
-    env.info(string.format("BTI: PlayerMap %s", UTILS.OneLineSerialize(PlayerMap)))
+    -- env.info(string.format("BTI: PlayerMap %s", UTILS.OneLineSerialize(PlayerMap)))
 end
 
 SCHEDULER:New(nil, permanentPlayerCheck, {"Something"}, 3, 10)

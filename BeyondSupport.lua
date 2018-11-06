@@ -295,6 +295,13 @@ function handleDebugRequest(text, coord)
         else
             coord:BigSmokeAndFireSmall()
         end
+    elseif text:find("dump") then
+        if text:find("zone") then
+            for i = 1, #SelectedZonesCoalition do
+                env.info(string.format("BTI: DUMP ZONE %s", UTILS.OneLineSerialize(SelectedZonesCoalition[i])))
+            end
+        elseif text:find("blabla") then
+        end
     end
 end
 

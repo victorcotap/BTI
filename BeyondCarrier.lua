@@ -8,9 +8,13 @@ Carrier = GROUP:FindByName("BLUE CV Fleet")
 TestCarrier = GROUP:FindByName("TEST CVN")
 Carrier:HandleEvent(EVENTS.Land)
 
+-- Globals ---------------------------------------------------------------
+CARRIERCycle = 0
+CARRIERTimer = 0
+CARRIERRecoveryLength = 700
+CARRIERRouteLength = 1000
 
-
--- Events
+-- Events ----------------------------------------------------------------
 
 function Carrier:OnEventLand(EventData)
     env.info(string.format("Carrier got an event from %s to %s", EventData.iniUnitName, EventData.tgtUnitName))
@@ -69,8 +73,10 @@ function routeCarrierBackToNextWaypoint(routePoints)
         env.info("BTI: Carrier back on track")
         sendCarrierRouting()
     end
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 700)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, 1000)
+    CARRIERCycle = 0
+    CARRIERTimer = os.time()
+    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, CARRIERRouteLength - 300)
+    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, CARRIERRouteLength)
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
@@ -92,13 +98,15 @@ function routeCarrierTemporary(routePoints)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
 
     sendWeatherTextFromCoordinate(currentCoordinate)
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, 400)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, 700)
+    CARRIERCycle = 1
+    CARRIERTimer = os.time()
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, CARRIERRecoveryLength - 300)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, CARRIERRecoveryLength)
 end
 
 -- Disable/Enable lines below for carrier ops training
-SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 540)
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 550)
+SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 10)
+SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 25)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 env.info("BTI: Carrier fleet is now on cyclic operations")
