@@ -70,16 +70,31 @@ function generateIntel(playerGroup)
 
     local currentTime = os.time()
 
---airborn threats
-    intelMessage = intelMessage .. "|Enemy Air Supply|\n"
-    intelMessage = intelMessage .. ternary(#QUAKEHeloConvoys == 0, "No enemy resupply operation launched yet", "Careful, the enemy is sending resupply SA-2s.\nIntercept them before they reach their destination") .. "\n"
-    for i = 1, #QUAKEHeloConvoys do
-        local convoy = QUAKEHeloConvoys[i]
+    intelMessage = intelMessage .. "|Enemy Air|\n *NON exhaustive list*\n"
+    local CASGroups = QUAKE[QUAKECAS]
+    for i = 1, #CASGroups do
+        local zoneName = CASGroups[i]["Zone"]
+        intelMessage = intelMessage .. "Enemy CAS is operating in " .. zoneName .. "\n"
+    end
+    local FightersGroups = QUAKE[QUAKEFighters]
+    for i = 1, #FightersGroups do
+        local zoneName = FightersGroups[i]["Zone"]
+        intelMessage = intelMessage .. "Enemy fighter sweep is patrolling around " .. zoneName .. "\n"
+    end
+    intelMessage = intelMessage .. "\n\n"
+
+
+    intelMessage = intelMessage .. "|Enemy Airborn Resupply|\n"
+    local convoys = QUAKE[QUAKEHeloConvoys]
+    intelMessage = intelMessage .. ternary(#convoys == 0, "No enemy resupply operation launched yet", "The enemy is sending resupply SA-2s. Intercept them before they reach their destination\n") .. "\n"
+    for i = 1, #convoys do
+        local convoy = convoys[i]
         local convoyTime = string.format("%d minutes", (currentTime - convoy["Timer"]) / 60)
-        local convoyReport = "From " .. convoy["From"] .. " to " .. convoy["To"] .. " started " .. convoyTime .. "ago"
+        local convoyReport = "From " .. convoy["From"] .. " to " .. convoy["To"] .. " started " .. convoyTime .. " ago\n"
         intelMessage = intelMessage .. convoyReport
     end
     intelMessage = intelMessage .. "\n\n"
+
 
     intelMessage = intelMessage .. "|COMMANDS|\nSee throughtheinferno.com/battle-the-inferno for help\n"
     local tankerCooldown =  ternary(currentTime > tankerTimer + TANKER_COOLDOWN, "Ready for new command", string.format("Available in %d minutes", math.abs((currentTime - (tankerTimer + TANKER_COOLDOWN)) / 60)))
@@ -90,6 +105,7 @@ function generateIntel(playerGroup)
     local cooldownReport = "Tankers routing -> " .. tankerCooldown .. "\nFAC drones routing -> " .. facCooldown .. "\nSupport delivery -> " .. supportCooldown .. "\nExfill services -> " .. exfillCooldown
     intelMessage = intelMessage .. "\n" .. cooldownReport .. "\n\n"
 
+
     intelMessage = intelMessage .. "|CARRIER|\n"
     local carrierPhase = ternary(CARRIERCycle == 1, "Launch & Recovery", "Planned Route")
     local carrierPhaseTime = string.format("%d minutes", (currentTime - CARRIERTimer) / 60)
@@ -98,6 +114,7 @@ function generateIntel(playerGroup)
     local carrierReport = "Carrier Cycle: " .. carrierPhase .. "\nCarrier Cycle time remaining: " .. carrierPhaseTime .. "\nATIS: " .. carrierATIS
     intelMessage = intelMessage .. carrierReport .. "\n\n"
     
+
     intelMessage = intelMessage .. "|ATIS|\n"
     local coord = playerGroup:GetCoordinate()
     local weatherString = "Weather for current position:\n" .. weatherStringForCoordinate(coord)

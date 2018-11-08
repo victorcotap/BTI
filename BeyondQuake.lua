@@ -23,10 +23,49 @@ local zoneGroundCounter = 0
 FighterTrack = {}
 CASTrack = {}
 GroundTrack = {}
-QUAKEHeloConvoys = {}
--- local fighterResources = BeyondPersistedStore['']
---------------------------------------------------------------------
+QUAKEHeloConvoys = "HeloConvoys"
+QUAKEFighters = "Air"
+QUAKECAS = "CAS"
+QUAKE = {
+    [QUAKEHeloConvoys] = {},
+    [QUAKEFighters] = {},
+    [QUAKECAS] = {}
+}
 
+-- Global sanitizer -------------------------------------------------
+---------------------------------------------------------------------
+function sanitizeQuake(something)
+    env.info("BTI: Sanitizing the universe")
+    -- Convoys
+    local convoys = QUAKE[QUAKEHeloConvoys]
+    for i = 1, #convoys do
+        local supply = convoys[i]["Supply"]
+        local escort = convoys[i]["Escort"]
+        if supply:IsAlive() and supply:AllOnGround() then
+            supply:Destroy()
+            escort:Destroy()
+            table.remove(convoys, i)
+        end
+    end
+
+    local CASGroups = QUAKE[QUAKECAS]
+    for i = 1, #CASGroups do
+        local CASGroup = CASGroups[i]["CASGroup"]
+        if CASGroup:IsAlive() == false then
+            table.remove(CASGroups, i)
+        end
+    end
+    local FightersGroups = QUAKE[QUAKEFighters]
+    for i = 1, #FightersGroups do
+        local fightersGroup = FightersGroups[i]["FightersGroup"]
+        if fightersGroup:IsAlive() == false or fightersGroup:InAir() == false then
+            table.remove(FightersGroups, i)
+        end
+    end
+end
+
+-- Trigger ----------------------------------------------------------
+---------------------------------------------------------------------
 function triggerFighters(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
@@ -38,7 +77,8 @@ function triggerFighters(spawn, coord)
             spawnGroup:PushTask(routeTask, 4)
         end 
     )
-    spawn:Spawn()
+    local fighterGroup = spawn:Spawn()
+    return fighterGroup
 end
 
 function triggerCAS(spawn, coord)
@@ -52,27 +92,11 @@ function triggerCAS(spawn, coord)
             spawnGroup:PushTask(orbitTask, 4)
         end
     )
-    spawn:Spawn()
+    local casGroup = spawn:Spawn()
+    return casGroup
 end
 
-function deployFighters(spawn, coord)
-    spawn:OnSpawnGroup(
-        function(spawnGroup)
-            spawnGroup:ClearTasks()
-            env.info(string.format("BTI: Deploying fighters at requested zone"))
-
-            local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(18000) , UTILS.KnotsToMps(400))
-            -- spawnGroup:SetTask(orbitTask)
-            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
-            -- spawnGroup:PushTask(enrouteTask)
-            local combo = spawnGroup:TaskCombo({ orbitTask, enrouteTask }, 4)
-            spawnGroup:SetTask(combo)
-        end
-    )
-    spawn:SpawnFromVec2(coord:GetVec2(), UTILS.FeetToMeters(5000), UTILS.FeetToMeters(25000))
-end
 -----------------------------------------------------------------------------------------------------
-
 function triggerGroundTaskResponse(spawn, coord, distance, angle)
     env.info(string.format("BTI: Deploying Ground Task at requested translate %d angle %d", distance, angle))
     local newCoord = coord:Translate(UTILS.NMToMeters(16), angle)
@@ -84,12 +108,15 @@ function triggerGroundTaskResponse(spawn, coord, distance, angle)
             -- local routeTask = spawnGroup:TaskRouteToVec2(coord:GetVec2(), UTILS.KnotsToMps(50))
             -- spawnGroup:SetTask(routeTask, 15);
             spawnGroup:RouteGroundTo( coord, UTILS.KnotsToMps(50), Formation, DelaySeconds )
+            -- ^ very costly
         end
     )
 
-    spawn:SpawnFromVec2(newCoord:GetVec2())
+    local groundSpawn = spawn:SpawnFromVec2(newCoord:GetVec2())
+    return groundSpawn
 end
 
+-----------------------------------------------------------------------------------------------------
 function triggerHeloSAMSupply(startCoord, endCoord)
     local spawnSupply = heloSupplyTransportSpawn
     local spawnEscort = heloSupplyEscortSpawn
@@ -145,9 +172,15 @@ function AirQuakeZoneCounterCAS(attackedZone)
         spawn = casHardSpawn
     end
 
-    triggerCAS(spawn, attackedZone:GetCoordinate())
+    local CASGroup = triggerCAS(spawn, attackedZone:GetCoordinate())
+    local cas = QUAKE[QUAKECAS]
+    cas[#cas] = {
+        ["Zone"] = zoneName,
+        ["CASGroup"] = CASGroup
+    }
     CASTrack[zoneName] = true
     CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending Close Air Support to defend its attacked zone"), MESSAGE.Type.Information)
+
 end
 
 function AirQuakeZoneAttacked(attackedZone)
@@ -162,7 +195,6 @@ function AirQuakeZoneAttacked(attackedZone)
         return
     end
 
-
     local spawn = nil
     local switch = math.random(1,3)
     -- if RedZonesCounter > BlueZonesCounter then
@@ -174,7 +206,12 @@ function AirQuakeZoneAttacked(attackedZone)
         spawn = fighterHardSpawn
     end
 
-    triggerFighters(spawn, attackedZone:GetCoordinate())
+    local fighterGroup = triggerFighters(spawn, attackedZone:GetCoordinate())
+    local figthersGroups = QUAKE[QUAKEFighters]
+    figthersGroups[#figthersGroups] = {
+        ["Zone"] = zoneName,
+        ["FightersGroup"] = fighterGroup
+    }
     CommandCenter:MessageTypeToCoalition(string.format("The enemy is sending QRF to defend its zone"), MESSAGE.Type.Information)
 
     zoneFightersCounter = zoneFightersCounter + 1
@@ -237,7 +274,7 @@ SCHEDULER:New(nil, AirQuakePermanentRandomizer, {"something"}, 60, 3600)
 env.info('BTI: Air Quake battle is ready')
 
 ----------------------------------------------------------------------------------------
-
+----------------------------------------------------------------------------------------
 function GroundQuakeZoneCaptured(attackedZone)
     local zoneName = attackedZone.ZoneName
 
@@ -264,6 +301,7 @@ function GroundQuakeZoneCaptured(attackedZone)
     GroundTrack[zoneName] = true
 end
 
+-- Helo Convoys --------------------------------------------------------------------------
 function GroundQuakeSupplyTrigger(something)
     env.info(string.format("BTI: Ground Quake Supply picker count name %d", #SelectedZonesCoalition))
     env.info(string.format("BTI: SelectedZonesCoalition %s", UTILS.OneLineSerialize(SelectedZonesCoalition)))
@@ -299,7 +337,8 @@ function GroundQuakeSupplyTrigger(something)
     CommandCenter:MessageTypeToCoalition(string.format("Our intel department has somne news!\nThe enemy is sending an airborn resupply convoy\nIt will depart %s and arrive at %s. Intercept !", fromZoneCoalition:GetZoneName(), toZoneCoalition:GetZoneName()), MESSAGE.Type.Information)
     local supply, escort = triggerHeloSAMSupply(fromCoord, toCoord)
     
-    QUAKEHeloConvoys[#QUAKEHeloConvoys + 1] = {
+    local convoys = QUAKE[QUAKEHeloConvoys]
+    convoys[#convoys + 1] = {
         ["From"] = fromZoneCoalition:GetZoneName(),
         ["To"] = toZoneCoalition:GetZoneName(),
         ["Timer"] = os.time(),
@@ -329,4 +368,7 @@ end
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
 
 --DEBUG
-SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 100)
+SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 70)
+
+
+SCHEDULER:New(nil, sanitizeQuake, {"something"}, 30, 90)
