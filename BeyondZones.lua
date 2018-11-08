@@ -144,8 +144,9 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 end
 
 
-
-
+local function InitZoneSideMissions(zonePersisted, zoneName)
+    QuakeZoneSideRandomMission(zonePersisted, zoneName)
+end
 
 -- Schedule & init zone engine -----------------------------------------------------------------------------------------------------------------------
 
@@ -183,9 +184,8 @@ for keyIndex, zone in pairs(ZonesList) do
     local seconds = keyIndex * interval
     local zoneName = zone["ZoneName"]
     if zone["Coalition"] ~= coalition.side.BLUE and SelectedZonesList[zoneName] == true then
-        -- if SelectedZonesList[zoneName] == true then
             SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
-        -- end
+            SCHEDULER:New(nil, InitZoneSideMissions, {zone, zoneName}, seconds + 5)
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
         local zoneToDestroy = ZONE:New(zoneName)

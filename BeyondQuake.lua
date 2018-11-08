@@ -15,7 +15,13 @@ groundAllAroundSpawn = SPAWN:New('RED G All Around')
 groundSAMSupplySpawn = SPAWN:New('RED G Supply SAM')
 heloSupplyTransportSpawn = SPAWN:New('RED H Supply Transport')
 heloSupplyEscortSpawn = SPAWN:New('RED H Supply Escort')
+groundSideArmorSpawn = SPAWN:New('RED G Armor Defense')
+groundSideArtySpawn = SPAWN:New('RED G Arty Defense')
+groundSideSAMSpawn = SPAWN:New('RED G SAM Defense')
+groundSideInfantrySpawn = SPAWN:New('RED G Infantry Defense')
+groundSidePatrolDefense = SPAWN:New('RED G Patrol Defense')
 
+local groundSideRandomSpawns = {groundSideArmorSpawn, groundSideArtySpawn, groundSideInfantrySpawn, groundSidePatrolDefense, groundSideSAMSpawn}
 local zoneFightersCounter = 0
 local zoneGroundCounter = 0
 
@@ -26,10 +32,12 @@ GroundTrack = {}
 QUAKEHeloConvoys = "HeloConvoys"
 QUAKEFighters = "Air"
 QUAKECAS = "CAS"
+QUAKEZoneSideMissions = "ZoneSideMissions"
 QUAKE = {
     [QUAKEHeloConvoys] = {},
     [QUAKEFighters] = {},
-    [QUAKECAS] = {}
+    [QUAKECAS] = {},
+    [QUAKEZoneSideMissions] = {}
 }
 
 -- Global sanitizer -------------------------------------------------
@@ -60,6 +68,19 @@ function sanitizeQuake(something)
         local fightersGroup = FightersGroups[i]["FightersGroup"]
         if fightersGroup:IsAlive() == false or fightersGroup:InAir() == false then
             table.remove(FightersGroups, i)
+        end
+    end
+
+    local ZonesSideMissions = QUAKE[QUAKEZoneSideMissions]
+    for i = 1, #ZonesSideMissions do
+        local zoneMissions = ZonesSideMissions[i]["Missions"]
+        env.info(string.format("BTI: Missions %s", UTILS.OneLineSerialize(zoneMissions)))
+        for i = 1, #zoneMissions do
+            env.info("BTI: sanitazing missions")
+            local group = zoneMissions[i]["Group"]
+            if group:IsAlive() == false then
+                env.info(string.format( "BTI: Should remove one side mission for %s", ZonesSideMissions[i]["Name"]))
+            end
         end
     end
 end
@@ -149,6 +170,13 @@ function triggerHeloSAMSupply(startCoord, endCoord)
     SCHEDULER:New(nil, spawnSAM, {"something"}, travelTime)
 
     return supplyGroup, escortGroup
+end
+
+------------------------------------------------------------------------------------------------------
+local function triggerGroundZoneSideMission(coord, spawn)
+    local randomSpawnCoord = coord:GetRandomVec2InRadius( 26000, 17000 )
+    local spawnGroup = spawn:SpawnFromVec2(randomSpawnCoord)
+    return spawnGroup
 end
 
 -----------------------------------------------------------------------------------------------------
@@ -366,9 +394,42 @@ function GroundQuakeSupplyRandomizer(something)
 end
 
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
-
 --DEBUG
-SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 70)
+SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 80)
 
 
+--Zone Side Mission ---------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+
+local function QuakeZoneRandomSideMissionPatrol(something)
+end
+
+function QuakeZoneSideRandomMission(zonePersisted, zoneName)
+    local zone = ZONE:New(zoneName)
+    local coord = zone:GetCoordinate()
+    local zoneSideMissions = {
+        ["Name"] = zoneName,
+        ["Missions"] = {}
+    }
+    
+    env.info(string.format( "BTI: Generating %d side missions for %s",zonePersisted["SideMissions"], zoneName))
+    for i = 1, zonePersisted["SideMissions"] do
+        env.info(string.format( "BTI: Triggering side mission %d for %s",i, zoneName ))
+        local switch = math.random( 1, #groundSideRandomSpawns)
+        local spawn = groundSideRandomSpawns[switch]
+        local sideMissionGroup = triggerGroundZoneSideMission(coord, spawn)
+        local missions = zoneSideMissions["Missions"]
+        missions[#missions] = {
+            ["Type"] = switch,
+            ["Group"] = sideMissionGroup
+        }
+    end
+    local quakeMissions = QUAKE[QUAKEZoneSideMissions]
+    quakeMissions[#quakeMissions + 1] = zoneSideMissions
+end
+
+
+
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
 SCHEDULER:New(nil, sanitizeQuake, {"something"}, 30, 90)

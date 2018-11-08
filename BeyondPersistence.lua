@@ -127,103 +127,128 @@ local someTable = {
     ["Coast"] = {
         [1] = {
             ["ZoneName"] = "Lego",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [2] = {
             ["ZoneName"] = "Devaron",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [3] = {
             ["ZoneName"] = "Cantonica",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [4] = {
             ["ZoneName"] = "Wobani",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [5] = {
             ["ZoneName"] = "Bespin",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [6] = {
             ["ZoneName"] = "Atollon",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [7] = {
             ["ZoneName"] = "Scarif",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [8] = {
             ["ZoneName"] = "Vardos",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [9] = {
             ["ZoneName"] = "Yavin",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [10] = {
             ["ZoneName"] = "Mustafar",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [11] = {
             ["ZoneName"] = "Shili",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [12] = {
             ["ZoneName"] = "Mortis",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [13] = {
             ["ZoneName"] = "Kessel",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [14] = {
             ["ZoneName"] = "Jedha",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [15] = {
             ["ZoneName"] = "Felucia",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [16] = {
             ["ZoneName"] = "Eadu",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [17] = {
             ["ZoneName"] = "Abafar",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [18] = {
             ["ZoneName"] = "Ando",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [19] = {
             ["ZoneName"] = "Dathomir",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [20] = {
             ["ZoneName"] = "Endor",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [21] = {
             ["ZoneName"] = "Malachor",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [22] = {
             ["ZoneName"] = "Onderon",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [23] = {
             ["ZoneName"] = "Rishi",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [24] = {
             ["ZoneName"] = "Maridun",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         },
         [25] = {
             ["ZoneName"] = "Batuu",
-            ["Coalition"] = 1
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
         }
     },
     ["Resources"] = {
