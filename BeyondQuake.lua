@@ -71,19 +71,17 @@ function sanitizeQuake(something)
         end
     end
 
-    -- TODO: Fix access
-    -- local ZonesSideMissions = QUAKE[QUAKEZoneSideMissions]
-    -- for i = 1, #ZonesSideMissions do
-    --     local zoneMissions = ZonesSideMissions[i]["Missions"]
-    --     env.info(string.format("BTI: Missions %s", UTILS.OneLineSerialize(zoneMissions)))
-    --     for i = 1, #zoneMissions do
-    --         env.info("BTI: sanitazing missions")
-    --         local group = zoneMissions[i]["Group"]
-    --         if group:IsAlive() == false then
-    --             env.info(string.format( "BTI: Should remove one side mission for %s", ZonesSideMissions[i]["Name"]))
-    --         end
-    --     end
-    -- end
+    for zoneName, zoneAO in pairs(QUAKE[QUAKEZonesAO]) do
+        local ZonesSideMissions = zoneAO["SideMissions"]
+        for i = 1, #ZonesSideMissions do
+            local group = ZonesSideMissions[i]["Group"]
+            if group:IsAlive() == false then
+                env.info(string.format( "BTI: Should remove one side mission for %s", zoneName))
+                ZonesSideMissions[i]["Finished"] = true
+            end
+        end
+    end
+    
 end
 
 -- Trigger ----------------------------------------------------------
@@ -425,8 +423,11 @@ function QUAKEZoneSideRandomMissions(zoneName)
         local sideMissionGroup = triggerGroundZoneSideMission(coord, spawn)
         zoneSideMissions[#zoneSideMissions + 1] = {
             ["Type"] = switch,
-            ["Group"] = sideMissionGroup
+            ["Group"] = sideMissionGroup,
+            ["Finished"] = false
         }
+        local Coord = sideMissionGroup:GetCoordinate()
+        Coord:MarkToCoalitionBlue("Mission " .. zoneName .. tostring(i) .. " Type " .. tostring(switch))
     end
     
     zoneAO["SideMissions"] = zoneSideMissions

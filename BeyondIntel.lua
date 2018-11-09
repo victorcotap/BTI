@@ -20,7 +20,7 @@ SetPlayer = SET_CLIENT:New():FilterCoalitions("blue"):FilterActive():FilterStart
 
 function generateIntel(playerGroup)
         --zones
-    local intelMessage = "|ZONES / AOs|\n\n"
+    local intelMessage = "|ZONES / AOs|\n"
     for i = 1, #SelectedZonesCoalition do
         local zoneCaptureCoalition = SelectedZonesCoalition[i]
         local zoneName = zoneCaptureCoalition:GetZoneName()
@@ -68,13 +68,15 @@ function generateIntel(playerGroup)
         intelMessage = intelMessage .. zoneMessage .. "\n\n"
         
         local zoneSideMissions = QUAKE[QUAKEZonesAO][zoneName]["SideMissions"]
-        env.info(string.format("BTI: Quake Missions %s", UTILS.OneLineSerialize(zoneSideMissions)))
         intelMessage = intelMessage .. "AO Dynamic Side Missions: "
         for i = 1, #zoneSideMissions do
-            env.info(string.format( "BTI: mission %d %s",i, UTILS.OneLineSerialize(mission)))
             local mission = zoneSideMissions[i]
-            local missionReport = "Type " .. tostring(mission["Type"]) .. ". "
-            intelMessage = intelMessage .. missionReport
+            if mission["Finished"] == false then
+                local missionReport = "Type " .. tostring(mission["Type"]) .. ". "
+                intelMessage = intelMessage .. missionReport
+            else
+                intelMessage = intelMessage .. "Finished. "
+            end
         end
         intelMessage = intelMessage .. "\n\n"
     end
