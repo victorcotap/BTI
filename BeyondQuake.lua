@@ -29,15 +29,15 @@ local zoneGroundCounter = 0
 FighterTrack = {}
 CASTrack = {}
 GroundTrack = {}
+QUAKEZonesAO = "Zones"
 QUAKEHeloConvoys = "HeloConvoys"
 QUAKEFighters = "Air"
 QUAKECAS = "CAS"
-QUAKEZoneSideMissions = "ZoneSideMissions"
 QUAKE = {
+    [QUAKEZonesAO] = {},
     [QUAKEHeloConvoys] = {},
     [QUAKEFighters] = {},
     [QUAKECAS] = {},
-    [QUAKEZoneSideMissions] = {}
 }
 
 -- Global sanitizer -------------------------------------------------
@@ -71,18 +71,19 @@ function sanitizeQuake(something)
         end
     end
 
-    local ZonesSideMissions = QUAKE[QUAKEZoneSideMissions]
-    for i = 1, #ZonesSideMissions do
-        local zoneMissions = ZonesSideMissions[i]["Missions"]
-        env.info(string.format("BTI: Missions %s", UTILS.OneLineSerialize(zoneMissions)))
-        for i = 1, #zoneMissions do
-            env.info("BTI: sanitazing missions")
-            local group = zoneMissions[i]["Group"]
-            if group:IsAlive() == false then
-                env.info(string.format( "BTI: Should remove one side mission for %s", ZonesSideMissions[i]["Name"]))
-            end
-        end
-    end
+    -- TODO: Fix access
+    -- local ZonesSideMissions = QUAKE[QUAKEZoneSideMissions]
+    -- for i = 1, #ZonesSideMissions do
+    --     local zoneMissions = ZonesSideMissions[i]["Missions"]
+    --     env.info(string.format("BTI: Missions %s", UTILS.OneLineSerialize(zoneMissions)))
+    --     for i = 1, #zoneMissions do
+    --         env.info("BTI: sanitazing missions")
+    --         local group = zoneMissions[i]["Group"]
+    --         if group:IsAlive() == false then
+    --             env.info(string.format( "BTI: Should remove one side mission for %s", ZonesSideMissions[i]["Name"]))
+    --         end
+    --     end
+    -- end
 end
 
 -- Trigger ----------------------------------------------------------
@@ -395,7 +396,7 @@ end
 
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
 --DEBUG
-SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 80)
+SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 100)
 
 
 --Zone Side Mission ---------------------------------------------------------------------------
@@ -404,28 +405,31 @@ SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 80)
 local function QuakeZoneRandomSideMissionPatrol(something)
 end
 
-function QuakeZoneSideRandomMission(zonePersisted, zoneName)
+function QUAKEZoneAOCreate(zonePersisted, zoneName)
+    QUAKE[QUAKEZonesAO][zoneName] = {
+        ["SideMissionsCount"] = zonePersisted["SideMissions"],
+        ["SideMissions"] = {}
+    }
+end
+
+function QUAKEZoneSideRandomMissions(zoneName)
     local zone = ZONE:New(zoneName)
     local coord = zone:GetCoordinate()
-    local zoneSideMissions = {
-        ["Name"] = zoneName,
-        ["Missions"] = {}
-    }
+    local zoneAO = QUAKE[QUAKEZonesAO][zoneName]
+    local zoneSideMissions = {}
     
-    env.info(string.format( "BTI: Generating %d side missions for %s",zonePersisted["SideMissions"], zoneName))
-    for i = 1, zonePersisted["SideMissions"] do
-        env.info(string.format( "BTI: Triggering side mission %d for %s",i, zoneName ))
+    env.info(string.format( "BTI: Generating %d side missions for %s",zoneAO["SideMissionsCount"], zoneName))
+    for i = 1, zoneAO["SideMissionsCount"] do
         local switch = math.random( 1, #groundSideRandomSpawns)
         local spawn = groundSideRandomSpawns[switch]
         local sideMissionGroup = triggerGroundZoneSideMission(coord, spawn)
-        local missions = zoneSideMissions["Missions"]
-        missions[#missions] = {
+        zoneSideMissions[#zoneSideMissions + 1] = {
             ["Type"] = switch,
             ["Group"] = sideMissionGroup
         }
     end
-    local quakeMissions = QUAKE[QUAKEZoneSideMissions]
-    quakeMissions[#quakeMissions + 1] = zoneSideMissions
+    
+    zoneAO["SideMissions"] = zoneSideMissions
 end
 
 

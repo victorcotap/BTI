@@ -145,7 +145,8 @@ end
 
 
 local function InitZoneSideMissions(zonePersisted, zoneName)
-    QuakeZoneSideRandomMission(zonePersisted, zoneName)
+    QUAKEZoneAOCreate(zonePersisted, zoneName)
+    QUAKEZoneSideRandomMissions(zoneName)
 end
 
 -- Schedule & init zone engine -----------------------------------------------------------------------------------------------------------------------
@@ -163,8 +164,8 @@ env.info(string.format( "BTI: Iterating through zones. Red %d, Blue %d", RedZone
 
 --------------------- Select Zones -----------------------------------------------------------------
 local maxZones = RedZonesCounter
-if maxZones > 4 then
-    maxZones = 4
+if maxZones > 3 then
+    maxZones = 3
 end
 
 local SelectedZonesList = {}

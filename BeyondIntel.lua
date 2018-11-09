@@ -67,15 +67,16 @@ function generateIntel(playerGroup)
         local zoneMessage = "* " .. zoneName .. " *\nStatus: " .. zoneStatus .. "\nEnemy Support: " .. zoneCAS .. "\nEnemy Assets: " .. zoneConvoy .. "\n/Weather/: " .. zoneWeatherString 
         intelMessage = intelMessage .. zoneMessage .. "\n\n"
         
-        local zoneSideMissions = QUAKE[QUAKEZoneSideMissions][i]
+        local zoneSideMissions = QUAKE[QUAKEZonesAO][zoneName]["SideMissions"]
         env.info(string.format("BTI: Quake Missions %s", UTILS.OneLineSerialize(zoneSideMissions)))
-        local missions = zoneSideMissions["Missions"]
-        for i = 1, #missions do
-            env.info("BTI: some whit")
-            local mission = missions[i]
-            local missionReport = zoneSideMissions["Name"] .. " side mission " .. tostring(i) .. " : Type " .. tostring(mission["Type"])
-            intelMessage = intelMessage .. missionReport .. "\n"
+        intelMessage = intelMessage .. "AO Dynamic Side Missions: "
+        for i = 1, #zoneSideMissions do
+            env.info(string.format( "BTI: mission %d %s",i, UTILS.OneLineSerialize(mission)))
+            local mission = zoneSideMissions[i]
+            local missionReport = "Type " .. tostring(mission["Type"]) .. ". "
+            intelMessage = intelMessage .. missionReport
         end
+        intelMessage = intelMessage .. "\n\n"
     end
 
     local currentTime = os.time()
@@ -139,7 +140,7 @@ function displayIntelToGroup(playerClient)
 
     -- Generate intel message
 
-    MESSAGE:New( intelMessage, 25, "INTEL Report for " .. playerClient:GetPlayerName() .. "\n"):ToGroup(playerGroup)
+    MESSAGE:New( intelMessage, 35, "INTEL Report for " .. playerClient:GetPlayerName() .. "\n"):ToGroup(playerGroup)
 
 end
 
