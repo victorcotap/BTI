@@ -251,6 +251,7 @@ local someTable = {
             ["SideMissions"] = 4
         }
     },
+    ["AAAAA"] = 3,
     ["Resources"] = {
         ["tank"] = 10,
         ["arty"] = 10,
@@ -264,6 +265,22 @@ local someTable = {
 }
 
 
+--------------------------------------------------------------------------------------------
+-- Persistence engine write -----------------------------------------------------------------
+function PERSISTENCERemoveSideMission(ZoneName)
+    local zones = BeyondPersistedStore["Coast"]
+    for key, zone in pairs(zones) do
+        local persistedZoneName = zone["ZoneName"]
+        if ZoneName == persistedZoneName then
+            local zoneSideMissions = zone["SideMissions"]
+            zone["SideMissions"] = zoneSideMissions - 1
+            break
+        end
+    end
+end
+
+--------------------------------------------------------------------------------------------
+-- Persistence engine core -----------------------------------------------------------------
 function readOrCreateZoneFile(stopLoop)
     local zoneFileTable,error = table.load( zoneFilePath )
     if not zoneFileTable and not stopLoop then
@@ -280,8 +297,6 @@ function saveZoneFile(zoneTableToSave)
     table.save(zoneTableToSave, zoneFilePath)
     env.info("BTI: Persistence Save file complete")
 end
-
-
 
 function startPersistenceEngine(something)
     local persistedTable = readOrCreateZoneFile(false)

@@ -19,9 +19,9 @@ groundSideArmorSpawn = SPAWN:New('RED G Armor Defense')
 groundSideArtySpawn = SPAWN:New('RED G Arty Defense')
 groundSideSAMSpawn = SPAWN:New('RED G SAM Defense')
 groundSideInfantrySpawn = SPAWN:New('RED G Infantry Defense')
-groundSidePatrolDefense = SPAWN:New('RED G Patrol Defense')
+groundSidePatrolDefenseSpawn = SPAWN:New('RED G Patrol Defense')
 
-local groundSideRandomSpawns = {groundSideArmorSpawn, groundSideArtySpawn, groundSideInfantrySpawn, groundSidePatrolDefense, groundSideSAMSpawn}
+local groundSideRandomSpawns = {groundSideArmorSpawn, groundSideArtySpawn, groundSideInfantrySpawn, groundSideSAMSpawn}
 local zoneFightersCounter = 0
 local zoneGroundCounter = 0
 
@@ -78,10 +78,14 @@ function sanitizeQuake(something)
             if group:IsAlive() == false then
                 env.info(string.format( "BTI: Should remove one side mission for %s", zoneName))
                 ZonesSideMissions[i]["Finished"] = true
+                PERSISTENCERemoveSideMission(zoneName)
             end
         end
+        local zoneConvoyGroup = zoneAO["Convoy"]["Group"]
+        if zoneConvoyGroup ~= nil and zoneConvoyGroup:IsAlive() == false then
+            zoneAO["Convoy"]["Finished"] = true
+        end
     end
-    
 end
 
 -- Trigger ----------------------------------------------------------
@@ -133,6 +137,24 @@ function triggerGroundTaskResponse(spawn, coord, distance, angle)
     )
 
     local groundSpawn = spawn:SpawnFromVec2(newCoord:GetVec2())
+    return groundSpawn
+end
+
+function triggerGroundZoneSideMissionPatrol(spawn, fromCoord, toCoord, r) --r = repeat
+    env.info("BTI: Deploying Side Mission Convoy for zone ")
+
+    spawn:OnSpawnGroup(
+        function ( spawnGroup )
+            spawnGroup:ClearTasks()
+            env.info(string.format("BTI: Routing Ground Side Mission Convoy"))
+            -- local routeTask = spawnGroup:TaskRouteToVec2(coord:GetVec2(), UTILS.KnotsToMps(50))
+            -- spawnGroup:SetTask(routeTask, 15);
+            spawnGroup:RouteGroundTo( toCoord, UTILS.KnotsToMps(50), Formation, DelaySeconds )
+            -- ^ very costly
+        end
+    )
+
+    local groundSpawn = spawn:SpawnFromVec2(fromCoord:GetVec2())
     return groundSpawn
 end
 
@@ -342,7 +364,6 @@ function GroundQuakeSupplyTrigger(something)
         end
     end
 
-    
     local toZoneCoalition = nil
 
     for i = 1, 5 do
@@ -400,13 +421,34 @@ SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 100)
 --Zone Side Mission ---------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
 
-local function QuakeZoneRandomSideMissionPatrol(something)
+local function QuakeZoneRandomSideMissionPatrol(zoneAO, zoneSideMissions)
+    local fromConvoySwitch = math.random(1, #zoneSideMissions)
+    local fromCoord = zoneSideMissions[fromConvoySwitch]["Group"]:GetCoordinate()
+
+    for i = 1, 4 do
+        local toConvoySwitch = math.random(1, #zoneSideMissions)
+        env.info(string.format("BTI: coonvoy selected selected zone side mission %s for %d", toConvoySwitch, fromConvoySwitch))
+        if fromConvoySwitch == toConvoySwitch then
+            env.info(string.format("BTI: Found the same destination as start, ignoring "))
+        else
+            local toCoord = zoneSideMissions[toConvoySwitch]["Group"]:GetCoordinate()
+            local convoyGroup = triggerGroundZoneSideMissionPatrol(groundSidePatrolDefenseSpawn, fromCoord, toCoord, true) --repeat
+            zoneAO["Convoy"] = {
+                ["Group"] = convoyGroup,
+                ["Finished"] = false
+            }
+            break
+        end
+    end
+
+    return zoneSideMissions
 end
 
 function QUAKEZoneAOCreate(zonePersisted, zoneName)
     QUAKE[QUAKEZonesAO][zoneName] = {
         ["SideMissionsCount"] = zonePersisted["SideMissions"],
-        ["SideMissions"] = {}
+        ["SideMissions"] = {},
+        ["Convoy"] = {}
     }
 end
 
@@ -430,10 +472,12 @@ function QUAKEZoneSideRandomMissions(zoneName)
         Coord:MarkToCoalitionBlue("Mission " .. zoneName .. tostring(i) .. " Type " .. tostring(switch))
     end
     
+    if #zoneSideMissions > 0 then
+        zoneSideMissions = QuakeZoneRandomSideMissionPatrol(zoneAO, zoneSideMissions)
+    end
+
     zoneAO["SideMissions"] = zoneSideMissions
 end
-
-
 
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------

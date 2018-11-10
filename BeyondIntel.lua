@@ -78,7 +78,9 @@ function generateIntel(playerGroup)
                 intelMessage = intelMessage .. "Finished. "
             end
         end
-        intelMessage = intelMessage .. "\n\n"
+        local zoneConvoy = QUAKE[QUAKEZonesAO][zoneName]["Convoy"]
+        intelMessage = intelMessage .. ternary(zoneConvoy["Finished"], "", "\nA ground patrol is operating in the vicinity of the side missions\n")
+        intelMessage = intelMessage .. "\n"
     end
 
     local currentTime = os.time()
@@ -94,19 +96,19 @@ function generateIntel(playerGroup)
         local zoneName = FightersGroups[i]["Zone"]
         intelMessage = intelMessage .. "Enemy fighter sweep is patrolling around " .. zoneName .. "\n"
     end
-    intelMessage = intelMessage .. "\n\n"
+    intelMessage = intelMessage .. "\n"
 
 
     intelMessage = intelMessage .. "|Enemy Airborn Resupply|\n"
     local convoys = QUAKE[QUAKEHeloConvoys]
-    intelMessage = intelMessage .. ternary(#convoys == 0, "No enemy resupply operation launched yet", "The enemy is sending resupply SA-2s. Intercept them before they reach their destination\n") .. "\n"
+    intelMessage = intelMessage .. ternary(#convoys == 0, "No enemy resupply operation launched yet", "The enemy is sending resupply SA-2s. Intercept them before they reach their destination") .. "\n"
     for i = 1, #convoys do
         local convoy = convoys[i]
         local convoyTime = string.format("%d minutes", (currentTime - convoy["Timer"]) / 60)
         local convoyReport = "From " .. convoy["From"] .. " to " .. convoy["To"] .. " started " .. convoyTime .. " ago\n"
         intelMessage = intelMessage .. convoyReport
     end
-    intelMessage = intelMessage .. "\n\n"
+    intelMessage = intelMessage .. "\n"
 
 
     intelMessage = intelMessage .. "|COMMANDS|\nSee throughtheinferno.com/battle-the-inferno for help\n"
@@ -116,7 +118,7 @@ function generateIntel(playerGroup)
     local exfillCooldown = ternary(currentTime > exfillTimer + EXFILL_COOLDOWN, "Ready for new command", string.format("Available in %d minutes", math.abs((currentTime - (exfillTimer + EXFILL_COOLDOWN)) / 60)))
         -- Number of C-17s in flight
     local cooldownReport = "Tankers routing -> " .. tankerCooldown .. "\nFAC drones routing -> " .. facCooldown .. "\nSupport delivery -> " .. supportCooldown .. "\nExfill services -> " .. exfillCooldown
-    intelMessage = intelMessage .. "\n" .. cooldownReport .. "\n\n"
+    intelMessage = intelMessage .. "\n" .. cooldownReport .. "\n"
 
 
     intelMessage = intelMessage .. "|CARRIER|\n"
@@ -125,13 +127,13 @@ function generateIntel(playerGroup)
     local carrierWeather = weatherStringForCoordinate(GROUP:FindByName("BLUE CV Fleet"):GetCoordinate())
     local carrierATIS = carrierWeather .. " " .. ternary(CARRIERCycle == 1, "Deck is open, CASE I in effect", "Deck is closed, Marshall stack starting at 2000MSL")
     local carrierReport = "Carrier Cycle: " .. carrierPhase .. "\nCarrier Cycle time remaining: " .. carrierPhaseTime .. "\nATIS: " .. carrierATIS
-    intelMessage = intelMessage .. carrierReport .. "\n\n"
+    intelMessage = intelMessage .. carrierReport .. "\n"
     
 
     intelMessage = intelMessage .. "|ATIS|\n"
     local coord = playerGroup:GetCoordinate()
     local weatherString = "Weather for current position:\n" .. weatherStringForCoordinate(coord)
-    intelMessage = intelMessage .. weatherString .. "\n\n"
+    intelMessage = intelMessage .. weatherString .. "\n"
 
     return intelMessage
 end
