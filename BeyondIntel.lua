@@ -72,7 +72,7 @@ function generateIntel(playerGroup)
         for i = 1, #zoneSideMissions do
             local mission = zoneSideMissions[i]
             if mission["Finished"] == false then
-                local missionReport = "Type " .. tostring(mission["Type"]) .. ". "
+                local missionReport = zoneName .. tostring(i) .. "-" .. tostring(mission["Type"]) .. ". "
                 intelMessage = intelMessage .. missionReport
             else
                 intelMessage = intelMessage .. "Finished. "
@@ -127,10 +127,10 @@ function generateIntel(playerGroup)
     local carrierWeather = weatherStringForCoordinate(GROUP:FindByName("BLUE CV Fleet"):GetCoordinate())
     local carrierATIS = carrierWeather .. " " .. ternary(CARRIERCycle == 1, "Deck is open, CASE I in effect", "Deck is closed, Marshall stack starting at 2000MSL")
     local carrierReport = "Carrier Cycle: " .. carrierPhase .. "\nCarrier Cycle time remaining: " .. carrierPhaseTime .. "\nATIS: " .. carrierATIS
-    intelMessage = intelMessage .. carrierReport .. "\n"
+    intelMessage = intelMessage .. carrierReport .. "\n\n"
     
 
-    intelMessage = intelMessage .. "|ATIS|\n"
+    -- intelMessage = intelMessage .. "|ATIS|\n"
     local coord = playerGroup:GetCoordinate()
     local weatherString = "Weather for current position:\n" .. weatherStringForCoordinate(coord)
     intelMessage = intelMessage .. weatherString .. "\n"
