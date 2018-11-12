@@ -168,22 +168,24 @@ if maxZones > 3 then
     maxZones = 3
 end
 
+maxZones = 3
 local SelectedZonesList = {}
-repeat
-    local r = math.random(1,24)
-    local selectedZone = ZonesList[r]
-    local name = selectedZone["ZoneName"]
-    if selectedZone["Coalition"] ~= coalition.side.BLUE then
+for order, zone in pairs(ZonesList) do
+    local name = zone["ZoneName"]
+    if zone["Coalition"] ~= coalition.side.BLUE then
         SelectedZonesList[name] = true
     end
-    env.info(string.format( "BTI: Selecting zone name %s", name))
-until ( tableLength(SelectedZonesList) == maxZones)
+    if tableLength(SelectedZonesList) == maxZones then
+        break
+    end
+end
 
 -------------------- Init Zones -----------------------------------------------------------------------
 local interval = 5
 for keyIndex, zone in pairs(ZonesList) do
     local seconds = keyIndex * interval
     local zoneName = zone["ZoneName"]
+    env.info(string.format( "BTI: Reading zone %s index %d", zoneName, keyIndex))
     if zone["Coalition"] ~= coalition.side.BLUE and SelectedZonesList[zoneName] == true then
             SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
             SCHEDULER:New(nil, InitZoneSideMissions, {zone, zoneName}, seconds + 5)

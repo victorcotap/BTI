@@ -46,6 +46,7 @@ samSpawn = SPAWN:New('BLUE Support sam')
 infantrySpawn = SPAWN:New('BLUE Support infantry')
 transportSpawn = SPAWN:New('BLUE Support transport')
 jtacSpawn = SPAWN:NewWithAlias('BLUE Support jtac', jtacName)
+sfacSpawn = SPAWN:NewWithAlias('BLUE FAC SFAC', 'BLUE FAC SFAC')
 GFAC = nil
 AFAC = nil
 JFAC = nil
@@ -73,6 +74,22 @@ function spawnServices(something)
 end
 
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 60, 7200)
+
+function SUPPORTSpawnSFAC(zone)
+    sfacSpawn:OnSpawnGroup(
+        function(jtacSpawnGroup)
+            jtacSpawnGroup:ClearTasks()
+            local routeTask = jtacSpawnGroup:TaskOrbitCircleAtVec2( zone:GetCoordinate():GetVec2(), UTILS.FeetToMeters(10000),  UTILS.KnotsToMps(110) )
+            jtacSpawnGroup:SetTask(routeTask, 2)
+            env.info(string.format( "BTI: Trying to create autolase jtac for %s",jtacSpawnGroup:GetName()))
+            ctld.JTACAutoLase(jtacSpawnGroup:GetName(), 1685, false, "all")
+        end
+    )
+
+    local randomSpawnCoord = zone:GetCoordinate():GetRandomVec2InRadius( 2000, 4500 )
+    local supportGroup = sfacSpawn:SpawnFromVec2(randomSpawnCoord)
+    CommandCenter:MessageTypeToCoalition( string.format("%s Airborn JTAC now deployed after Side Missions have been completed", supportGroup:GetName()), MESSAGE.Type.Information )
+end
 
 ---------------------------------------------------------------------------
 function handleFACRequest(text, coord)
@@ -186,7 +203,7 @@ function handleSupportRequest(text, coord)
             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
         end
     end
-    local travelTime = distance / UTILS.KnotsToMps(375) + 10
+    local travelTime = distance / UTILS.KnotsToMps(375) + 60
     env.info(string.format('BTI: New Asset request. distance %d, travel time %d', distance, travelTime))
     SCHEDULER:New(nil, spawnAsset, {text}, travelTime)
 

@@ -42,7 +42,7 @@ QUAKE = {
 
 -- Global sanitizer -------------------------------------------------
 ---------------------------------------------------------------------
-function sanitizeQuake(something)
+function QuakeEngine(something)
     env.info("BTI: Sanitizing the universe")
     -- Convoys
     local convoys = QUAKE[QUAKEHeloConvoys]
@@ -75,10 +75,14 @@ function sanitizeQuake(something)
         local ZonesSideMissions = zoneAO["SideMissions"]
         for i = 1, #ZonesSideMissions do
             local group = ZonesSideMissions[i]["Group"]
-            if group:IsAlive() == false then
+            local finished = ZonesSideMissions[i]["Finished"]
+            if group:IsAlive() == false and finished == false then
                 env.info(string.format( "BTI: Should remove one side mission for %s", zoneName))
                 ZonesSideMissions[i]["Finished"] = true
-                PERSISTENCERemoveSideMission(zoneName)
+                local sideMissionsLeft = PERSISTENCERemoveSideMission(zoneName)
+                if sideMissionsLeft == 0 then
+                    SUPPORTSpawnSFAC(ZONE:FindByName(zoneName))
+                end
             end
         end
         local zoneConvoyGroup = zoneAO["Convoy"]["Group"]
@@ -474,6 +478,8 @@ function QUAKEZoneSideRandomMissions(zoneName)
     
     if #zoneSideMissions > 0 then
         zoneSideMissions = QuakeZoneRandomSideMissionPatrol(zoneAO, zoneSideMissions)
+    else
+        SUPPORTSpawnSFAC(ZONE:FindByName(zoneName))
     end
 
     zoneAO["SideMissions"] = zoneSideMissions
@@ -481,4 +487,4 @@ end
 
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
-SCHEDULER:New(nil, sanitizeQuake, {"something"}, 30, 90)
+SCHEDULER:New(nil, QuakeEngine, {"something"}, 30, 90)

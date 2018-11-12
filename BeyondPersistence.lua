@@ -126,37 +126,37 @@ env.info(string.format("BTI: Persisted path %s", zoneFilePath))
 local someTable = {
     ["Coast"] = {
         [1] = {
-            ["ZoneName"] = "Lego",
+            ["ZoneName"] = "Kessel",
             ["Coalition"] = 1,
-            ["SideMissions"] = 4
+            ["SideMissions"] = 1
         },
         [2] = {
-            ["ZoneName"] = "Devaron",
+            ["ZoneName"] = "Felucia",
             ["Coalition"] = 1,
-            ["SideMissions"] = 4
+            ["SideMissions"] = 2
         },
         [3] = {
-            ["ZoneName"] = "Cantonica",
+            ["ZoneName"] = "Yavin",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [4] = {
-            ["ZoneName"] = "Wobani",
+            ["ZoneName"] = "Onderon",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [5] = {
-            ["ZoneName"] = "Bespin",
+            ["ZoneName"] = "Wobani",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [6] = {
-            ["ZoneName"] = "Atollon",
+            ["ZoneName"] = "Malachor",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [7] = {
-            ["ZoneName"] = "Scarif",
+            ["ZoneName"] = "Bespin",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
@@ -166,57 +166,57 @@ local someTable = {
             ["SideMissions"] = 4
         },
         [9] = {
-            ["ZoneName"] = "Yavin",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [10] = {
-            ["ZoneName"] = "Mustafar",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [11] = {
-            ["ZoneName"] = "Shili",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [12] = {
-            ["ZoneName"] = "Mortis",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [13] = {
-            ["ZoneName"] = "Kessel",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [14] = {
-            ["ZoneName"] = "Jedha",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [15] = {
-            ["ZoneName"] = "Felucia",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [16] = {
-            ["ZoneName"] = "Eadu",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 4
-        },
-        [17] = {
             ["ZoneName"] = "Abafar",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
-        [18] = {
+        [10] = {
+            ["ZoneName"] = "Rishi",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [11] = {
+            ["ZoneName"] = "Devaron",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [12] = {
+            ["ZoneName"] = "Atollon",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [13] = {
             ["ZoneName"] = "Ando",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
+        [14] = {
+            ["ZoneName"] = "Shili",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [15] = {
+            ["ZoneName"] = "Cantonica",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [16] = {
+            ["ZoneName"] = "Scarif",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [17] = {
+            ["ZoneName"] = "Eadu",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
+        [18] = {
+            ["ZoneName"] = "Batuu",
+            ["Coalition"] = 1,
+            ["SideMissions"] = 4
+        },
         [19] = {
-            ["ZoneName"] = "Dathomir",
+            ["ZoneName"] = "Maridun",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
@@ -226,30 +226,30 @@ local someTable = {
             ["SideMissions"] = 4
         },
         [21] = {
-            ["ZoneName"] = "Malachor",
+            ["ZoneName"] = "Mustafar",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [22] = {
-            ["ZoneName"] = "Onderon",
+            ["ZoneName"] = "Dathomir",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [23] = {
-            ["ZoneName"] = "Rishi",
+            ["ZoneName"] = "Jedha",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [24] = {
-            ["ZoneName"] = "Maridun",
+            ["ZoneName"] = "Lego",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
         },
         [25] = {
-            ["ZoneName"] = "Batuu",
+            ["ZoneName"] = "Mortis",
             ["Coalition"] = 1,
             ["SideMissions"] = 4
-        }
+        },
     },
     ["AAAAA"] = 3,
     ["Resources"] = {
@@ -274,7 +274,7 @@ function PERSISTENCERemoveSideMission(ZoneName)
         if ZoneName == persistedZoneName then
             local zoneSideMissions = zone["SideMissions"]
             zone["SideMissions"] = zoneSideMissions - 1
-            break
+            return zone["SideMissions"]
         end
     end
 end
