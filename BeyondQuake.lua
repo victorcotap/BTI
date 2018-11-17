@@ -76,6 +76,8 @@ function QuakeEngine(something)
         for i = 1, #ZonesSideMissions do
             local group = ZonesSideMissions[i]["Group"]
             local finished = ZonesSideMissions[i]["Finished"]
+            QuakeZoneSideMissionMarkerRefresh(zoneName, ZonesSideMissions[i])
+            env.info("BTI: sideMission after marker refresh ", UTILS.OneLineSerialize(ZonesSideMissions[i]))
             if group:IsAlive() == false and finished == false then
                 env.info(string.format( "BTI: Should remove one side mission for %s", zoneName))
                 ZonesSideMissions[i]["Finished"] = true
@@ -419,7 +421,7 @@ end
 
 SCHEDULER:New(nil, GroundQuakeSupplyRandomizer, {"something"}, 120, 3600)
 --DEBUG
-SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 100)
+-- SCHEDULER:New(nil, GroundQuakeSupplyTrigger, {"Something"}, 100)
 
 
 --Zone Side Mission ---------------------------------------------------------------------------
@@ -448,6 +450,19 @@ local function QuakeZoneRandomSideMissionPatrol(zoneAO, zoneSideMissions)
     return zoneSideMissions
 end
 
+function QuakeZoneSideMissionMarkerRefresh(zoneName, zoneSideMission)
+    local previousMarkId = zoneSideMission["Mark"]
+    local coord = zoneSideMission["Group"]:GetCoordinate()
+    local index = tostring(zoneSideMission["Index"])
+    if previousMarkId ~= nil then
+        coord:RemoveMark(previousMarkId)
+    end
+
+    local newMarkId = coord:MarkToCoalitionBlue(("Mission " .. zoneName .. " " .. tostring(index)))
+    zoneSideMission["Mark"] = newMarkId
+    return newMarkId
+end
+
 function QUAKEZoneAOCreate(zonePersisted, zoneName)
     QUAKE[QUAKEZonesAO][zoneName] = {
         ["SideMissionsCount"] = zonePersisted["SideMissions"],
@@ -470,10 +485,9 @@ function QUAKEZoneSideRandomMissions(zoneName)
         zoneSideMissions[#zoneSideMissions + 1] = {
             ["Type"] = switch,
             ["Group"] = sideMissionGroup,
-            ["Finished"] = false
+            ["Finished"] = false,
+            ["Index"] = i
         }
-        local Coord = sideMissionGroup:GetCoordinate()
-        Coord:MarkToCoalitionBlue("Mission " .. zoneName .. tostring(i) .. " Type " .. tostring(switch))
     end
     
     if #zoneSideMissions > 0 then

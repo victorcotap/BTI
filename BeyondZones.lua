@@ -67,6 +67,8 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
             GroundQuakeZoneCaptured(ZoneCaptureCoalition:GetZone())
+            AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
+            AirQuakeZoneCounterCAS(ZoneCaptureCoalition:GetZone())
             CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         else
             CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
@@ -92,7 +94,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 
     ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
     ZoneCaptureCoalition:__Guard(1)
-    ZoneCaptureCoalition:MonitorDestroyedUnits()
+    -- ZoneCaptureCoalition:MonitorDestroyedUnits()
 
     function ZoneCaptureCoalition:OnAfterDestroyedUnit(From, Event, To, unit, PlayerName)
         env.info(string.format('BTI: Detected destroyed unit %s', Event))
