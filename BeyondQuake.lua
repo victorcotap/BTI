@@ -76,7 +76,7 @@ function QuakeEngine(something)
         for i = 1, #ZonesSideMissions do
             local group = ZonesSideMissions[i]["Group"]
             local finished = ZonesSideMissions[i]["Finished"]
-            QuakeZoneSideMissionMarkerRefresh(zoneName, ZonesSideMissions[i])
+            
             env.info("BTI: sideMission after marker refresh ", UTILS.OneLineSerialize(ZonesSideMissions[i]))
             if group:IsAlive() == false and finished == false then
                 env.info(string.format( "BTI: Should remove one side mission for %s", zoneName))
@@ -85,6 +85,10 @@ function QuakeEngine(something)
                 if sideMissionsLeft == 0 then
                     SUPPORTSpawnSFAC(ZONE:FindByName(zoneName))
                 end
+                CommandCenter:MessageTypeToCoalition( string.format("Congratulations, you have successfully cleared side mission %s-%d. Progress will be persisted!", zoneName, i), MESSAGE.Type.Information )
+                trigger.action.removeMark(ZonesSideMissions[i]["Mark"])
+            elseif group:IsAlive() == true and finished == false then
+                QuakeZoneSideMissionMarkerRefresh(zoneName, ZonesSideMissions[i])
             end
         end
         local zoneConvoyGroup = zoneAO["Convoy"]["Group"]
