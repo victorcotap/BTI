@@ -77,7 +77,7 @@ function QuakeEngine(something)
             local group = ZonesSideMissions[i]["Group"]
             local finished = ZonesSideMissions[i]["Finished"]
             
-            -- env.info(string.format("BTI: %s sideMission after marker refresh alive %s %s",zoneName, tostring(group:IsAlive()), UTILS.OneLineSerialize(ZonesSideMissions[i])))
+            env.info(string.format("BTI: %s sideMission after marker refresh alive %s %s",zoneName, tostring(group:IsAlive()), UTILS.OneLineSerialize(ZonesSideMissions[i])))
             if group:IsAlive() == nil and finished == false then
                 env.info(string.format( "BTI: Should remove one side mission for %s", zoneName))
                 ZonesSideMissions[i]["Finished"] = true
