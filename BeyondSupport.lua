@@ -312,6 +312,17 @@ function handleDebugRequest(text, coord)
         else
             coord:BigSmokeAndFireSmall()
         end
+    elseif text:find("ground") then
+        if text:find("tank") then
+            local supportSpawn = tankSpawn
+            local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
+            supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
+        end
+        if text:find("apc") then
+            local supportSpawn = apcSpawn
+            local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
+            supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
+        end
     elseif text:find("dump") then
         if text:find("zone") then
             for i = 1, #SelectedZonesCoalition do
@@ -340,7 +351,7 @@ function markRemoved(Event)
             handleExfillRequest(text, coord)
         elseif Event.text:lower():find("-command") then
             handleCommandRequest(text, coord)
-        elseif Event.text:lower():find("-debug toto") then
+        elseif Event.text:lower():find("-debug") then
             handleDebugRequest(text, coord)
         end
     end
