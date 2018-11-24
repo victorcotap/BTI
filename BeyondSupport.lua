@@ -200,7 +200,7 @@ function handleSupportRequest(text, coord)
             supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
             CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
         else
-            CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", supportGroup:GetName()), MESSAGE.Type.Information )
+            CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", spawnGroup:GetName()), MESSAGE.Type.Information )
         end
     end
     local travelTime = distance / UTILS.KnotsToMps(375) + 60
