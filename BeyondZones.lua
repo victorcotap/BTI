@@ -66,11 +66,11 @@ function InitZoneCoalition(line, keyIndex, zoneName)
         local Coalition = self:GetCoalition()
         self:E({Coalition = Coalition})
         if Coalition == coalition.side.BLUE then
+            CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
+        else
             GroundQuakeZoneCaptured(ZoneCaptureCoalition:GetZone())
             AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
             AirQuakeZoneCounterCAS(ZoneCaptureCoalition:GetZone())
-            CommandCenter:MessageTypeToCoalition( string.format( "%s is under attack by Iran", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
-        else
             CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         end
     end
