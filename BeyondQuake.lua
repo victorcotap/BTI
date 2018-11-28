@@ -115,6 +115,21 @@ function triggerFighters(spawn, coord)
     return fighterGroup
 end
 
+function deployFighters(spawn, coord)
+    spawn:OnSpawnGroup(
+        function(spawnGroup)
+            spawnGroup:ClearTasks()
+            env.info(string.format("BTI: Sending fighter group %d to zone ", zoneFightersCounter))
+            local enrouteTask = spawnGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
+            spawnGroup:SetTask(enrouteTask, 2)
+            local orbitTask = spawnGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(22000), UTILS.KnotsToMps(350))
+            spawnGroup:PushTask(orbitTask, 4)
+        end 
+    )
+    local fighterGroup = spawn:SpawnFromVec2(coord:GetVec2())
+    return fighterGroup
+end
+
 function triggerCAS(spawn, coord)
     spawn:OnSpawnGroup(
         function(spawnGroup)
