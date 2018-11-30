@@ -94,7 +94,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
 
     ZoneCaptureCoalition:Start( 5, TimeToEvaluate )
     ZoneCaptureCoalition:__Guard(1)
-    -- ZoneCaptureCoalition:MonitorDestroyedUnits()
+    ZoneCaptureCoalition:MonitorDestroyedUnits()
 
     function ZoneCaptureCoalition:OnAfterDestroyedUnit(From, Event, To, unit, PlayerName)
         env.info(string.format('BTI: Detected destroyed unit %s', Event))
