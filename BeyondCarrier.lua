@@ -11,8 +11,8 @@ Carrier:HandleEvent(EVENTS.Land)
 -- Globals ---------------------------------------------------------------
 CARRIERCycle = 0
 CARRIERTimer = 0
-CARRIERRecoveryLength = 700
-CARRIERRouteLength = 1000
+CARRIERRecoveryLength = 1700
+CARRIERRouteLength = 1800
 
 -- Events ----------------------------------------------------------------
 
