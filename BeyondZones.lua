@@ -25,7 +25,7 @@ end
 function InitZoneCoalition(line, keyIndex, zoneName)
     env.info(string.format("BTI: Creating new Coalition Zone with index %d and name %s", keyIndex, zoneName))
     CaptureZone = ZONE:New( zoneName )
-    ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
+    local ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
     SelectedZonesCoalition[#SelectedZonesCoalition + 1] = ZoneCaptureCoalition
 
     function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
