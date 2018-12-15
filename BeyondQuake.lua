@@ -43,7 +43,7 @@ QUAKE = {
 -- Global sanitizer -------------------------------------------------
 ---------------------------------------------------------------------
 function QuakeEngine(something)
-    env.info("BTI: Sanitizing the universe")
+    -- env.info("BTI: Sanitizing the universe")
     -- Convoys
     local convoys = QUAKE[QUAKEHeloConvoys]
     for i = 1, #convoys do

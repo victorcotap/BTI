@@ -295,7 +295,7 @@ function readOrCreateZoneFile(stopLoop)
 end
 function saveZoneFile(zoneTableToSave)
     table.save(zoneTableToSave, zoneFilePath)
-    env.info("BTI: Persistence Save file complete")
+    -- env.info("BTI: Persistence Save file complete")
 end
 
 function startPersistenceEngine(something)

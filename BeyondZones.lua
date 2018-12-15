@@ -189,8 +189,8 @@ for keyIndex, zone in pairs(ZonesList) do
     local zoneName = zone["ZoneName"]
     env.info(string.format( "BTI: Reading zone %s index %d", zoneName, keyIndex))
     if zone["Coalition"] ~= coalition.side.BLUE and SelectedZonesList[zoneName] == true then
-            SCHEDULER:New(nil, InitZoneCoalition, {mainLine, keyIndex, zoneName}, seconds)
-            SCHEDULER:New(nil, InitZoneSideMissions, {zone, zoneName}, seconds + 5)
+        InitZoneCoalition(mainLine, keyIndex, zoneName)
+        InitZoneSideMissions(zone, zoneName)
     else
         env.info(string.format("BTI: We need to destroy this zone %s", zoneName))
         local zoneToDestroy = ZONE:New(zoneName)
