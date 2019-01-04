@@ -51,8 +51,17 @@ GFAC = nil
 AFAC = nil
 JFAC = nil
 function spawnRecon(something)
-    AFAC = SPAWN:New('BLUE FAC AFAC'):Spawn()
-    JFAC = SPAWN:New('BLUE FAC JFAC'):Spawn()
+    if AFAC ~= nil and AFAC:IsAlive() and AFAC:InAir() then
+        env.info("BTI: Forbidding AFAC spawn because alive and well")
+    else
+        AFAC = SPAWN:New('BLUE FAC AFAC'):Spawn()
+    end
+
+    if JFAC ~= nil and JFAC:IsAlive() and JFAC:InAir() then
+        env.info("BTI: Forbidding AFAC spawn because alive and well")
+    else
+        JFAC = SPAWN:New('BLUE FAC JFAC'):Spawn()
+    end
     ctld.JTACAutoLase(JFAC:GetName(), 1688, true,"all", 4)
     ctld.JTACAutoLase(AFAC:GetName(), 1687, true,"all", 3)
 end
