@@ -88,7 +88,7 @@ function routeCarrierTemporary(routePoints)
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
     local speed = 0
     if currentWindStrengh < UTILS.KnotsToMps(5) then
-        speed = UTILS.KnotsToMps(21)
+        speed = UTILS.KnotsToMps(22)
     elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
         speed = UTILS.KnotsToMps(19) - currentWindStrengh
     elseif currentWindStrengh > UTILS.KnotsToMps(23) then
