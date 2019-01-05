@@ -11,8 +11,8 @@ Carrier:HandleEvent(EVENTS.Land)
 -- Globals ---------------------------------------------------------------
 CARRIERCycle = 0
 CARRIERTimer = 0
-CARRIERRecoveryLength = 1700
-CARRIERRouteLength = 1800
+CARRIERRecoveryLength = 1900
+CARRIERRouteLength = 2000
 
 -- Events ----------------------------------------------------------------
 
@@ -88,11 +88,11 @@ function routeCarrierTemporary(routePoints)
     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
     local speed = 0
     if currentWindStrengh < UTILS.KnotsToMps(5) then
-        speed = UTILS.KnotsToMps(23)
+        speed = UTILS.KnotsToMps(21)
     elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
-        speed = UTILS.KnotsToMps(23) - currentWindStrengh
+        speed = UTILS.KnotsToMps(19) - currentWindStrengh
     elseif currentWindStrengh > UTILS.KnotsToMps(23) then
-        speed = UTILS.KnotsToMps(15)
+        speed = UTILS.KnotsToMps(12)
     end
     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
