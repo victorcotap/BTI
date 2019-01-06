@@ -123,7 +123,7 @@ airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 
 
-airbossStennis:AddRecoveryWindow("14:00", "18:30", 2, 20)
+airbossStennis:AddRecoveryWindow("14:00", "18:30", 1)
 -- airbossStennis:AddRecoveryWindow("15:00", "15:30", 2, 15)
 -- airbossStennis:AddRecoveryWindow("16:00", "16:30", 3, -20)
 -- airbossStennis:AddRecoveryWindow("17:00", "17:30", 1)
