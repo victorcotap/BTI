@@ -6,19 +6,14 @@ CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 Carrier = GROUP:FindByName("BLUE CV Fleet")
 TestCarrier = GROUP:FindByName("TEST CVN")
-Carrier:HandleEvent(EVENTS.Land)
 
 -- Globals ---------------------------------------------------------------
 CARRIERCycle = 0
 CARRIERTimer = 0
-CARRIERRecoveryLength = 1900
-CARRIERRouteLength = 2000
+CARRIERRecoveryLength = 1800
+CARRIERRouteLength = 1800
 
 -- Events ----------------------------------------------------------------
-
-function Carrier:OnEventLand(EventData)
-    env.info(string.format("Carrier got an event from %s to %s", EventData.iniUnitName, EventData.tgtUnitName))
-end
 
 -- Utils
 
@@ -105,8 +100,36 @@ function routeCarrierTemporary(routePoints)
 end
 
 -- Disable/Enable lines below for carrier ops training
-SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 10)
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 25)
+-- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 15)
+SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 30)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 env.info("BTI: Carrier fleet is now on cyclic operations")
+
+---------------------------------------------------------------------------
+-- AIRBOSS
+
+local airbossStennis = AIRBOSS:New("BLUE CVN", "CVN-74 Stennis")
+
+airbossStennis:SetTACAN(15, "X", "STN")
+airbossStennis:SetICLS(5, "LSO")
+airbossStennis:SetLSORadio(250)
+airbossStennis:SetMarshalRadio(252)
+airbossStennis:SetPatrolAdInfinitum(false)
+airbossStennis:SetCarrierControlledArea(35)
+airbossStennis:SetRecoveryCase(1)
+airbossStennis:SetMaxLandingPattern(3)
+airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
+airbossStennis:SetHandleAIOFF()
+
+
+airbossStennis:AddRecoveryWindow("14:00", "18:30", 2, 25)
+-- airbossStennis:AddRecoveryWindow("15:00", "15:30", 2, 15)
+-- airbossStennis:AddRecoveryWindow("16:00", "16:30", 3, -20)
+-- airbossStennis:AddRecoveryWindow("17:00", "17:30", 1)
+-- airbossStennis:AddRecoveryWindow("18:00", "18:30", 1)
+
+airbossStennis:SetDebugModeON() --disable
+airbossStennis:Start()
+
+---------------------------------------------------------------------------
