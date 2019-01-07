@@ -122,14 +122,23 @@ airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 
-
-airbossStennis:AddRecoveryWindow("14:00", "18:30", 1)
+airbossStennis:AddRecoveryWindow("14:00", "21:30", 1)
 -- airbossStennis:AddRecoveryWindow("15:00", "15:30", 2, 15)
 -- airbossStennis:AddRecoveryWindow("16:00", "16:30", 3, -20)
 -- airbossStennis:AddRecoveryWindow("17:00", "17:30", 1)
 -- airbossStennis:AddRecoveryWindow("18:00", "18:30", 1)
 
-airbossStennis:SetDebugModeON() --disable
+-- airbossStennis:SetDebugModeON() --disable
+
+
+local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
+carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
+carrierTanker:SetTakeoffAir()
+carrierTanker:SetTACAN(14, "SMC")
+carrierTanker:Start()
+airbossStennis:SetRecoveryTanker(carrierTanker)
+
 airbossStennis:Start()
+
 
 ---------------------------------------------------------------------------
