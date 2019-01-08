@@ -137,7 +137,7 @@ airbossStennis:SetRecoveryTanker(carrierTanker)
 airbossStennis:Start()
 
 
-local defaultOffset = 20
+local defaultOffset = 0
 function OpenCarrierRecovery(minutesRemainingOpen, case)
     if lockRecoveryRequest == true then
         CommandCenter:MessageTypeToCoalition("Sorry, carrier is already performing a recovery.\n Wait until the recovery is over before requesting another one", MESSAGE.Type.Information)
