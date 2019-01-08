@@ -148,6 +148,11 @@ function displayIntelToGroup(playerClient)
 
 end
 
+function requestCarrierRecovery(case)
+    env.info(string.format( "BTI: received demand for recovery case %d", case ))
+    OpenCarrierRecovery(23, case)
+end
+
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 
@@ -158,13 +163,21 @@ local function permanentPlayerMenu(something)
         local playerClient = CLIENT:FindByName(playerID)
         local playerGroup = playerClient:GetGroup()
         if alive and playerGroup ~= nil then
-            local IntelMenu = MENU_GROUP:New( playerGroup, "Intel" )
-            local  groupMenu = MENU_GROUP_COMMAND:New( playerGroup, "Request Intel Report", IntelMenu, displayIntelToGroup, playerClient )
-            PlayerMenuMap[playerID] = groupMenu
+            local IntelMenu = MENU_GROUP:New( playerGroup, "Commands" )
+            
+            local intelGroupMenu = MENU_GROUP_COMMAND:New( playerGroup, "Request Intel Report", IntelMenu, displayIntelToGroup, playerClient )
+            local carrierCASEIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE I Recovery ", IntelMenu, requestCarrierRecovery, 1 )
+            local carrierCASEIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE II Recovery ", IntelMenu, requestCarrierRecovery, 2 )
+            local carrierCASEIIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE III Recovery ", IntelMenu, requestCarrierRecovery, 3 )
+
+            local groupMenus = { intelGroupMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu }
+            PlayerMenuMap[playerID] = groupMenus
         else
-            local deleteGroupMenu = PlayerMenuMap[playerID]
-            if deleteGroupMenu ~= nil then
-                deleteGroupMenu:Remove()
+            local deleteGroupMenus = PlayerMenuMap[playerID]
+            if deleteGroupMenus ~= nil then
+                for i,menu in ipairs(deleteGroupMenus) do
+                    menu:Remove()
+                end
             end
             PlayerMenuMap[playerID] = nil
         end

@@ -10,7 +10,7 @@ TestCarrier = GROUP:FindByName("TEST CVN")
 -- Globals ---------------------------------------------------------------
 CARRIERCycle = 0
 CARRIERTimer = 0
-CARRIERRecoveryLength = 1800
+CARRIERRecoveryLength = 180
 CARRIERRouteLength = 1800
 
 -- Events ----------------------------------------------------------------
@@ -44,38 +44,33 @@ env.info("BTI: Carrier fleet is deployed, starting operations")
 
 CyclicCarrier = Carrier
 
-originalMissionRoute = CyclicCarrier:GetTaskRoute()
-if originalMissionRoute then
-    -- env.info("BTI: Got mission route")
-    if #originalMissionRoute > 1 then
-        env.info(string.format("BTI: We have %d points", #originalMissionRoute))
-    end
-end
-
+local currentMissionRoute = CyclicCarrier:GetTaskRoute()
 local index = 1
+local lockRecoveryRequest = false
 
 function routeCarrierBackToNextWaypoint(routePoints)
-    index = index + 1
+    -- index = index + 1
 
-    env.info(string.format("BTI: Trying to route back to the next waypoint index %d on route waypoints count %d", index, #originalMissionRoute))
+    env.info(string.format("BTI: Trying to route back to the next waypoint index %d on route waypoints count %d", index, #currentMissionRoute))
 
-    local nextPoint = originalMissionRoute[index]
+    local nextPoint = currentMissionRoute[index]
     if nextPoint then
         env.info("BTI: we have an extra point!")
-        table.remove(originalMissionRoute, 1)
-        local newTask = CyclicCarrier:TaskRoute(originalMissionRoute)
+        -- table.remove(currentMissionRoute, 1)
+        local newTask = CyclicCarrier:TaskRoute(currentMissionRoute)
         CyclicCarrier:SetTask(newTask)
         env.info("BTI: Carrier back on track")
         sendCarrierRouting()
     end
     CARRIERCycle = 0
     CARRIERTimer = os.time()
-    SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, CARRIERRouteLength - 300)
-    SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, CARRIERRouteLength)
+    -- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, CARRIERRouteLength - 300)
+    -- SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, CARRIERRouteLength)
+    lockRecoveryRequest = false
     env.info("BTI: carrier set to go back to into the wind in 1500")
 end
 
-function routeCarrierTemporary(routePoints)
+function routeCarrierTemporary(recoveryLength, routePoints)
     env.info("BTI: Going to route the carrier into the wind")
     local currentCoordinate = CyclicCarrier:GetCoordinate()
     local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
@@ -95,13 +90,14 @@ function routeCarrierTemporary(routePoints)
     sendWeatherTextFromCoordinate(currentCoordinate)
     CARRIERCycle = 1
     CARRIERTimer = os.time()
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, CARRIERRecoveryLength - 300)
-    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, CARRIERRecoveryLength)
+    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, recoveryLength - 300)
+    SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, recoveryLength)
+    lockRecoveryRequest = true
 end
 
 -- Disable/Enable lines below for carrier ops training
 -- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 15)
-SCHEDULER:New(nil, routeCarrierTemporary, {"originalMissionRoute"}, 30)
+-- SCHEDULER:New(nil, routeCarrierTemporary, {"currentMissionRoute"}, 30)
 CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)
 
 env.info("BTI: Carrier fleet is now on cyclic operations")
@@ -122,14 +118,14 @@ airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 
-airbossStennis:AddRecoveryWindow("14:00", "21:30", 1)
+-- create fake recovery window at the end of the mission play
+airbossStennis:AddRecoveryWindow("23:50", "23:55", 1)
 -- airbossStennis:AddRecoveryWindow("15:00", "15:30", 2, 15)
 -- airbossStennis:AddRecoveryWindow("16:00", "16:30", 3, -20)
 -- airbossStennis:AddRecoveryWindow("17:00", "17:30", 1)
 -- airbossStennis:AddRecoveryWindow("18:00", "18:30", 1)
 
 -- airbossStennis:SetDebugModeON() --disable
-
 
 local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
 carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
@@ -140,5 +136,23 @@ airbossStennis:SetRecoveryTanker(carrierTanker)
 
 airbossStennis:Start()
 
+
+local defaultOffset = 20
+function OpenCarrierRecovery(minutesRemainingOpen, case)
+    if lockRecoveryRequest == true then
+        CommandCenter:MessageTypeToCoalition("Sorry, carrier is already performing a recovery.\n Wait until the recovery is over before requesting another one", MESSAGE.Type.Information)
+        return
+    end
+
+    local turningMinutes = 2
+    currentMissionRoute = CyclicCarrier:GetTaskRoute()
+    local timeRecoveryOpen = timer.getAbsTime()+ turningMinutes*60
+    local timeRecoveryClose = timeRecoveryOpen + minutesRemainingOpen*60
+
+    routeCarrierTemporary((turningMinutes + minutesRemainingOpen) * 60)
+    airbossStennis:AddRecoveryWindow(UTILS.SecondsToClock(timeRecoveryOpen), UTILS.SecondsToClock(timeRecoveryClose), case, defaultOffset)
+    CommandCenter:MessageTypeToCoalition(string.format("Carrier will open CASE %d recovery window in 2 minutes.\n It will remain open for %d minutes", case, minutesRemainingOpen), MESSAGE.Type.Information)
+
+end
 
 ---------------------------------------------------------------------------
