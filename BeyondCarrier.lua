@@ -117,6 +117,7 @@ airbossStennis:SetRecoveryCase(1)
 airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
+airbossStennis:SetMenuMarkZones(false)
 
 -- create fake recovery window at the end of the mission play
 airbossStennis:AddRecoveryWindow("23:50", "23:55", 1)
@@ -132,6 +133,7 @@ carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
 carrierTanker:SetTakeoffAir()
 carrierTanker:SetTACAN(14, "SMC")
 carrierTanker:Start()
+carrierTanker:SetRadio(263, "AM")
 airbossStennis:SetRecoveryTanker(carrierTanker)
 
 airbossStennis:Start()
