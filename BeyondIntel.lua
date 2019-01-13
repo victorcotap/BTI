@@ -153,6 +153,10 @@ function requestCarrierRecovery(case)
     OpenCarrierRecovery(30, case)
 end
 
+function requestCarrierBeacon()
+    ActivateCarrierBeacons()
+end
+
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 
@@ -166,11 +170,14 @@ local function permanentPlayerMenu(something)
             local IntelMenu = MENU_GROUP:New( playerGroup, "Commands" )
             
             local intelGroupMenu = MENU_GROUP_COMMAND:New( playerGroup, "Request Intel Report", IntelMenu, displayIntelToGroup, playerClient )
+            local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
+            
             local carrierCASEIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE I Recovery ", IntelMenu, requestCarrierRecovery, 1 )
             local carrierCASEIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE II Recovery ", IntelMenu, requestCarrierRecovery, 2 )
             local carrierCASEIIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE III Recovery ", IntelMenu, requestCarrierRecovery, 3 )
 
-            local groupMenus = { intelGroupMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu }
+
+            local groupMenus = { intelGroupMenu, carrierBeaconMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]

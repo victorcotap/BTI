@@ -117,7 +117,9 @@ airbossStennis:SetRecoveryCase(1)
 airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
-airbossStennis:SetMenuMarkZones(false)
+airbossStennis:SetMenuMarkZones(true)
+airbossStennis:SetMenuSmokeZones(false)
+airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 
 -- create fake recovery window at the end of the mission play
 airbossStennis:AddRecoveryWindow("23:50", "23:55", 1)
@@ -134,6 +136,7 @@ carrierTanker:SetTakeoffAir()
 carrierTanker:SetTACAN(14, "SMC")
 carrierTanker:Start()
 carrierTanker:SetRadio(263, "AM")
+carrierTanker:SetRespawnOn()
 airbossStennis:SetRecoveryTanker(carrierTanker)
 
 airbossStennis:Start()
@@ -155,6 +158,12 @@ function OpenCarrierRecovery(minutesRemainingOpen, case)
     airbossStennis:AddRecoveryWindow(UTILS.SecondsToClock(timeRecoveryOpen), UTILS.SecondsToClock(timeRecoveryClose), case, defaultOffset)
     CommandCenter:MessageTypeToCoalition(string.format("Carrier will open CASE %d recovery window in 2 minutes.\n It will remain open for %d minutes", case, minutesRemainingOpen), MESSAGE.Type.Information)
 
+end
+
+function ActivateCarrierBeacons()
+    local carrierBeacon = BEACON:New(CyclicCarrier)
+    carrierBeacon:ActivateTACAN(15, "X", "STN", true)
+    carrierBeacon:ActivateICLS(5, "LSO")
 end
 
 ---------------------------------------------------------------------------
