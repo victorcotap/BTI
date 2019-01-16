@@ -119,6 +119,7 @@ airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 airbossStennis:SetMenuMarkZones(true)
 airbossStennis:SetMenuSmokeZones(false)
+airbossStennis:Load(nil, "Greenie Board.csv")
 airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 
 -- create fake recovery window at the end of the mission play
