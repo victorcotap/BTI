@@ -150,7 +150,7 @@ end
 
 function requestCarrierRecovery(case)
     env.info(string.format( "BTI: received demand for recovery case %d", case ))
-    OpenCarrierRecovery(30, case)
+    OpenCarrierRecovery(23, case)
 end
 
 function requestCarrierBeacon()
