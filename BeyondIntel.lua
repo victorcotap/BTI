@@ -157,6 +157,10 @@ function requestCarrierBeacon()
     ActivateCarrierBeacons()
 end
 
+function requestCarrierCancelRecovery()
+    CancelCarrierRecovery()
+end
+
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 
@@ -176,8 +180,9 @@ local function permanentPlayerMenu(something)
             local carrierCASEIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE II Recovery ", IntelMenu, requestCarrierRecovery, 2 )
             local carrierCASEIIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE III Recovery ", IntelMenu, requestCarrierRecovery, 3 )
 
-
-            local groupMenus = { intelGroupMenu, carrierBeaconMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu }
+            local carrierCancelMenu = MENU_GROUP_COMMAND:New( playerGroup, "Cancel Recovery", IntelMenu, requestCarrierCancelRecovery)
+ 
+            local groupMenus = { intelGroupMenu, carrierBeaconMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu, carrierCancelMenu }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]

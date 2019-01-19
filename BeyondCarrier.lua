@@ -167,4 +167,9 @@ function ActivateCarrierBeacons()
     carrierBeacon:ActivateICLS(5, "LSO")
 end
 
+function CancelCarrierRecovery()
+    routeCarrierBackToNextWaypoint()
+    CommandCenter:MessageTypeToCoalition("Carrier Recovery is cancelled.\nCarrier will return onto its original path.\n CAREFUL: The AIRBOSS will still behave as if a recovery window is open.\n Use the F10 radio menu to request a new recovery", MESSAGE.Type.Information)
+end
+
 ---------------------------------------------------------------------------
