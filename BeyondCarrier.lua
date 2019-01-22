@@ -113,11 +113,13 @@ airbossStennis:SetLSORadio(250)
 airbossStennis:SetMarshalRadio(252)
 airbossStennis:SetPatrolAdInfinitum(false)
 airbossStennis:SetCarrierControlledArea(40)
+airbossStennis:SetStaticWeather(false)
 airbossStennis:SetRecoveryCase(1)
 airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 airbossStennis:SetMenuMarkZones(true)
+airbossStennis:SetAirbossNiceGuy(false)
 airbossStennis:SetMenuSmokeZones(false)
 airbossStennis:Load(nil, "Greenie Board.csv")
 airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
@@ -169,7 +171,8 @@ end
 
 function CancelCarrierRecovery()
     routeCarrierBackToNextWaypoint()
-    CommandCenter:MessageTypeToCoalition("Carrier Recovery is cancelled.\nCarrier will return onto its original path.\n CAREFUL: The AIRBOSS will still behave as if a recovery window is open.\n Use the F10 radio menu to request a new recovery", MESSAGE.Type.Information)
+    airbossStennis:CloseCurrentRecoveryWindow()
+    CommandCenter:MessageTypeToCoalition("Carrier Recovery is cancelled.\nCarrier will return onto its original path.\nUse the F10 radio menu to request a new recovery", MESSAGE.Type.Information)
 end
 
 ---------------------------------------------------------------------------
