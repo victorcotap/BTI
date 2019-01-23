@@ -119,7 +119,7 @@ function handleFACRequest(text, coord)
 
     if text:find("route") then
         fac:ClearTasks()
-        local routeTask = fac:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(10000),  UTILS.KnotsToMps(110) )
+        local routeTask = fac:TaskOrbitCircleAtVec2( coord:GetVec2(), UTILS.FeetToMeters(14000),  UTILS.KnotsToMps(110) )
         fac:SetTask(routeTask, 2)
         CommandCenter:MessageTypeToCoalition( string.format("%s FAC is re-routed to the requested destination.\n%d minutes cooldown starting now", fac:GetName(), FAC_COOLDOWN / 60), MESSAGE.Type.Information )
         -- local facTask = fac:EnRouteTaskFAC( 10000, 2 )
@@ -202,6 +202,8 @@ function handleSupportRequest(text, coord)
                     function(jtacSpawnGroup)
                         env.info(string.format( "BTI: Trying to create autolase jtac for %s",jtacSpawnGroup:GetName()))
                         ctld.JTACAutoLase(jtacSpawnGroup:GetName(), 1686, true, "all", 2)
+                        local routeTask = jtacSpawnGroup:TaskOrbitCircleAtVec2( jtacSpawnGroup:GetCoordinate():GetVec2(), UTILS.FeetToMeters(14000),  UTILS.KnotsToMps(110) )
+                        jtacSpawnGroup:SetTask(routeTask, 2)
                     end
                 )
             end
