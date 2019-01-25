@@ -90,7 +90,7 @@ function routeCarrierTemporary(recoveryLength, routePoints)
     sendWeatherTextFromCoordinate(currentCoordinate)
     CARRIERCycle = 1
     CARRIERTimer = os.time()
-    SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, recoveryLength - 300)
+    -- SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, recoveryLength - 300)
     SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, recoveryLength)
     lockRecoveryRequest = true
 end
@@ -119,7 +119,7 @@ airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 airbossStennis:SetMenuMarkZones(true)
-airbossStennis:SetAirbossNiceGuy(true)
+airbossStennis:SetAirbossNiceGuy(false)
 airbossStennis:SetMenuSmokeZones(false)
 airbossStennis:Load(nil, "Greenie Board.csv")
 airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
