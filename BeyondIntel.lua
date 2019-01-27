@@ -121,13 +121,13 @@ function generateIntel(playerGroup)
     intelMessage = intelMessage .. "\n" .. cooldownReport .. "\n"
 
 
-    intelMessage = intelMessage .. "|CARRIER|\n"
-    local carrierPhase = ternary(CARRIERCycle == 1, "Launch & Recovery", "Planned Route")
-    local carrierPhaseTime = string.format("%d minutes", (currentTime - CARRIERTimer) / 60)
-    local carrierWeather = weatherStringForCoordinate(GROUP:FindByName("BLUE CV Fleet"):GetCoordinate())
-    local carrierATIS = carrierWeather .. " " .. ternary(CARRIERCycle == 1, "Deck is open, CASE I in effect", "Deck is closed, Marshall stack starting at 2000MSL")
-    local carrierReport = "Carrier Cycle: " .. carrierPhase .. "\nCarrier Cycle time remaining: " .. carrierPhaseTime .. "\nATIS: " .. carrierATIS
-    intelMessage = intelMessage .. carrierReport .. "\n\n"
+    -- intelMessage = intelMessage .. "|CARRIER|\n"
+    -- local carrierPhase = ternary(CARRIERCycle == 1, "Launch & Recovery", "Planned Route")
+    -- local carrierPhaseTime = string.format("%d minutes", (currentTime - CARRIERTimer) / 60)
+    -- local carrierWeather = weatherStringForCoordinate(GROUP:FindByName("BLUE CV Fleet"):GetCoordinate())
+    -- local carrierATIS = carrierWeather .. " " .. ternary(CARRIERCycle == 1, "Deck is open, CASE I in effect", "Deck is closed, Marshall stack starting at 2000MSL")
+    -- local carrierReport = "Carrier Cycle: " .. carrierPhase .. "\nCarrier Cycle time remaining: " .. carrierPhaseTime .. "\nATIS: " .. carrierATIS
+    -- intelMessage = intelMessage .. carrierReport .. "\n\n"
     
 
     -- intelMessage = intelMessage .. "|ATIS|\n"
@@ -154,7 +154,7 @@ end
 
 function requestCarrierRecovery(case)
     env.info(string.format( "BTI: received demand for recovery case %d", case ))
-    OpenCarrierRecovery(23, case)
+    OpenCarrierRecovery(29, case)
 end
 
 function requestCarrierBeacon()
@@ -178,8 +178,8 @@ local function permanentPlayerMenu(something)
             local IntelMenu = MENU_GROUP:New( playerGroup, "Commands" )
             
             local intelGroupMenu = MENU_GROUP_COMMAND:New( playerGroup, "Request Intel Report", IntelMenu, displayIntelToGroup, playerClient )
-            local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS", IntelMenu, requestTankerAWACSTasking)
-            local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
+            local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS", IntelMenu, requestTankerAWACSTasking)
+            local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
 
             local carrierCASEIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE I Recovery ", IntelMenu, requestCarrierRecovery, 1 )
             local carrierCASEIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE II Recovery ", IntelMenu, requestCarrierRecovery, 2 )
@@ -187,7 +187,7 @@ local function permanentPlayerMenu(something)
 
             local carrierCancelMenu = MENU_GROUP_COMMAND:New( playerGroup, "Cancel Recovery", IntelMenu, requestCarrierCancelRecovery)
  
-            local groupMenus = { intelGroupMenu, carrierBeaconMenu, tankerAWACSMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu, carrierCancelMenu }
+            local groupMenus = { intelGroupMenu, tankerAWACSMenu, carrierBeaconMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu, carrierCancelMenu }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]
