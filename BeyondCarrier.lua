@@ -114,6 +114,7 @@ airbossStennis:SetMarshalRadio(252)
 airbossStennis:SetPatrolAdInfinitum(false)
 airbossStennis:SetCarrierControlledArea(40)
 airbossStennis:SetStaticWeather(false)
+airbossStennis:SetMenuSingleCarrier(true)
 airbossStennis:SetRecoveryCase(1)
 airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
@@ -152,14 +153,28 @@ function OpenCarrierRecovery(minutesRemainingOpen, case)
         return
     end
 
-    local turningMinutes = 2
+    local turningMinutes = 1
     currentMissionRoute = CyclicCarrier:GetTaskRoute()
     local timeRecoveryOpen = timer.getAbsTime()+ turningMinutes*60
     local timeRecoveryClose = timeRecoveryOpen + minutesRemainingOpen*60
 
-    routeCarrierTemporary((turningMinutes + minutesRemainingOpen) * 60)
-    airbossStennis:AddRecoveryWindow(UTILS.SecondsToClock(timeRecoveryOpen), UTILS.SecondsToClock(timeRecoveryClose), case, defaultOffset)
-    CommandCenter:MessageTypeToCoalition(string.format("Carrier will open CASE %d recovery window in 2 minutes.\n It will remain open for %d minutes", case, minutesRemainingOpen), MESSAGE.Type.Information)
+    -- manual routing
+    -- routeCarrierTemporary((turningMinutes + minutesRemainingOpen) * 60)
+    
+    local currentCoordinate = CyclicCarrier:GetCoordinate()
+    local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
+    local speed = 0
+    if currentWindStrengh < UTILS.KnotsToMps(5) then
+        speed = UTILS.KnotsToMps(26)
+    elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
+        speed = UTILS.KnotsToMps(26) - currentWindStrengh
+    elseif currentWindStrengh > UTILS.KnotsToMps(23) then
+        speed = UTILS.KnotsToMps(10)
+    end
+    env.info(string.format( "BTI: Calculating carrier recovery speed for %f mps (%f kts) -> speed %f kt", currentWindStrengh, UTILS.MpsToKnots(currentWindStrengh), UTILS.MpsToKnots(speed) ))
+
+    airbossStennis:AddRecoveryWindow(UTILS.SecondsToClock(timeRecoveryOpen), UTILS.SecondsToClock(timeRecoveryClose), case, defaultOffset, true, speed)
+    CommandCenter:MessageTypeToCoalition(string.format("Carrier will open CASE %d recovery window in 1 minutes.\n It will remain open for %d minutes", case, minutesRemainingOpen), MESSAGE.Type.Information)
 
 end
 
