@@ -1,8 +1,8 @@
 env.info('BTI Spawn starting')
 
 
-HQ = GROUP:FindByName("BLUE CC")
-CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
+-- HQ = GROUP:FindByName("BLUE CC")
+-- CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
 
 --Interval Spawns
 
@@ -15,6 +15,9 @@ ctld.pickupZones = {
     { "CTLD Pickup", "blue", -1, "yes", 0 },
     { "LHA Tarawa", "none", -1, "yes", 0 }
 }
+
+-- ctld.activatePickupZone("CTLD Pickup")
+-- ctld.activatePickupZone("LHA Tarawa")
 
 -- function spawnBomberFerry(something)
 --     env.info('BTI: RED Bomber Ferry activated')
@@ -33,7 +36,5 @@ ctld.pickupZones = {
 --     env.info("BTI: Cargo delivered!")
 --     SPAWN:New('BLUE Arty Paladin'):Spawn()
 -- end
-
-
 
 env.info('BTI Spawn scheduled')
