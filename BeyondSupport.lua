@@ -84,6 +84,15 @@ end
 
 SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 60, 7200)
 
+function SUPPORTResetTankerAWACSTask()
+    local awacsTask = E2EWR:EnRouteTaskAWACS()
+    E2EWR:PushTask(awacsTask)
+    local tanker130Task = KC130Tanker:EnRouteTaskTanker()
+    KC130Tanker:PushTask(tanker130Task)
+    local tankerNavyTask = S3Tanker:EnRouteTaskTanker()
+    S3Tanker:PushTask(tankerNavyTask)
+end
+
 function SUPPORTSpawnSFAC(zone)
     sfacSpawn:OnSpawnGroup(
         function(jtacSpawnGroup)

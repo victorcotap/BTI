@@ -148,6 +148,10 @@ function displayIntelToGroup(playerClient)
 
 end
 
+function requestTankerAWACSTasking()
+    SUPPORTResetTankerAWACSTask()
+end
+
 function requestCarrierRecovery(case)
     env.info(string.format( "BTI: received demand for recovery case %d", case ))
     OpenCarrierRecovery(23, case)
@@ -174,15 +178,16 @@ local function permanentPlayerMenu(something)
             local IntelMenu = MENU_GROUP:New( playerGroup, "Commands" )
             
             local intelGroupMenu = MENU_GROUP_COMMAND:New( playerGroup, "Request Intel Report", IntelMenu, displayIntelToGroup, playerClient )
-            local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
-            
+            local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS", IntelMenu, requestTankerAWACSTasking)
+            local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
+
             local carrierCASEIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE I Recovery ", IntelMenu, requestCarrierRecovery, 1 )
             local carrierCASEIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE II Recovery ", IntelMenu, requestCarrierRecovery, 2 )
             local carrierCASEIIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE III Recovery ", IntelMenu, requestCarrierRecovery, 3 )
 
             local carrierCancelMenu = MENU_GROUP_COMMAND:New( playerGroup, "Cancel Recovery", IntelMenu, requestCarrierCancelRecovery)
  
-            local groupMenus = { intelGroupMenu, carrierBeaconMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu, carrierCancelMenu }
+            local groupMenus = { intelGroupMenu, carrierBeaconMenu, tankerAWACSMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu, carrierCancelMenu }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]

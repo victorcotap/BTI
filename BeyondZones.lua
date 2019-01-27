@@ -71,7 +71,7 @@ function InitZoneCoalition(line, keyIndex, zoneName)
             -- GroundQuakeZoneCaptured(ZoneCaptureCoalition:GetZone())
             AirQuakeZoneAttacked(ZoneCaptureCoalition:GetZone())
             AirQuakeZoneCounterCAS(ZoneCaptureCoalition:GetZone())
-            CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
+            -- CommandCenter:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Update )
         end
     end
 

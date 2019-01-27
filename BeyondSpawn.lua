@@ -11,6 +11,11 @@ function deployApache(something)
     apacheSpawn = apacheSpawn:Spawn()
 end
 
+ctld.pickupZones = {
+    { "CTLD Pickup", "blue", -1, "yes", 0 },
+    { "LHA Tarawa", "none", -1, "yes", 0 }
+}
+
 -- function spawnBomberFerry(something)
 --     env.info('BTI: RED Bomber Ferry activated')
 --     SPAWN:New('RED Bomber Ferry'):Spawn()
