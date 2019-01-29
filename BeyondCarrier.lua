@@ -110,7 +110,7 @@ local airbossStennis = AIRBOSS:New("BLUE CVN", "CVN-74 Stennis")
 airbossStennis:SetTACAN(15, "X", "STN")
 airbossStennis:SetICLS(5, "LSO")
 airbossStennis:SetLSORadio(250)
-airbossStennis:SetMarshalRadio(252)
+airbossStennis:SetMarshalRadio(250)
 airbossStennis:SetPatrolAdInfinitum(false)
 airbossStennis:SetCarrierControlledArea(45)
 airbossStennis:SetStaticWeather(false)
@@ -136,12 +136,16 @@ airbossStennis:AddRecoveryWindow("23:50", "23:55", 1)
 
 local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
 carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
-carrierTanker:SetTakeoffAir()
+carrierTanker:SetTakeoffHot()
 carrierTanker:SetTACAN(14, "SMC")
-carrierTanker:Start()
 carrierTanker:SetRadio(263, "AM")
 carrierTanker:SetRespawnOn()
+carrierTanker:Start()
 airbossStennis:SetRecoveryTanker(carrierTanker)
+
+RescueheloStennis=RESCUEHELO:New(UNIT:FindByName("BLUE CVN"), "BLUE Rescue Helo")
+RescueheloStennis:SetTakeoffHot()
+RescueheloStennis:Start()
 
 airbossStennis:Start()
 
