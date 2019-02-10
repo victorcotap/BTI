@@ -50,21 +50,21 @@ airbossStennis:SetLSORadio(250)
 airbossStennis:SetMarshalRadio(250)
 airbossStennis:SetPatrolAdInfinitum(false)
 airbossStennis:SetCarrierControlledArea(45)
-airbossStennis:SetStaticWeather(false)
+airbossStennis:SetStaticWeather(true)
 airbossStennis:SetMenuSingleCarrier(true)
 airbossStennis:SetRecoveryCase(1)
 airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
 airbossStennis:SetMenuMarkZones(true)
+airbossStennis:SetMenuSmokeZones(true)
 airbossStennis:SetAirbossNiceGuy(false)
-airbossStennis:SetMenuSmokeZones(false)
 airbossStennis:Load(nil, "Greenie Board.csv")
 airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 -- airbossStennis:SetDebugModeON() --disable
 
 -- create fake recovery window at the end of the mission play
-airbossStennis:AddRecoveryWindow("23:50", "23:55", 1)
+airbossStennis:AddRecoveryWindow("07:01", "23:55", 1, 0, false)
 
 local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
 carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
@@ -144,11 +144,6 @@ function ActivateCarrierBeacons()
     local carrierBeacon = BEACON:New(CyclicCarrier)
     carrierBeacon:ActivateTACAN(15, "X", "STN", true)
     carrierBeacon:ActivateICLS(5, "LSO")
-end
-
-function CancelCarrierRecovery()
-    airbossStennis:DeleteAllRecoveryWindows()
-    CommandCenter:MessageTypeToCoalition("Carrier Recoveries are cancelled.\nCarrier will return onto its original path.\nUse the F10 radio menu to request a new recovery", MESSAGE.Type.Information)
 end
 
 ---------------------------------------------------------------------------

@@ -87,59 +87,6 @@ function SUPPORTSpawnSFAC(zone)
     CommandCenter:MessageTypeToCoalition( string.format("%s Airborn JTAC now deployed after Side Missions have been completed", supportGroup:GetName()), MESSAGE.Type.Information )
 end
 
----------------------------------------------------------------------------
-
--------------------------------------------------------------------------------
--- function handleSupportRequest(text, coord)
-
---     local supportSpawn = nil
---     if text:find("artillery") then
---         supportSpawn = artySpawn
---     elseif text:find("tank") then
---         supportSpawn = tankSpawn
---     elseif text:find("services") then
---         supportSpawn = servicesSpawn
---     elseif text:find("jtac") then
---         supportSpawn = jtacSpawn
---     elseif text:find("apc") then
---         supportSpawn = apcSpawn
---     elseif text:find("sam") then
---         supportSpawn = samSpawn
---     elseif text:find("infantry") then
---         supportSpawn = infantrySpawn
---     end
-
---     local spawnGroup = transportSpawn:Spawn()
---     spawnGroup:TaskRouteToVec2( coord:GetVec2(), UTILS.KnotsToMps(550), "vee" )
---     local distance = coord:Get2DDistance(HQ:GetCoordinate())
---     function spawnAsset(text)
---         if spawnGroup:IsAlive() then
---             if text:find("jtac") then
---                 supportSpawn:OnSpawnGroup(
---                     function(jtacSpawnGroup)
---                         env.info(string.format( "BTI: Trying to create autolase jtac for %s",jtacSpawnGroup:GetName()))
---                         ctld.JTACAutoLase(jtacSpawnGroup:GetName(), 1686, true, "all", 2)
---                         local routeTask = jtacSpawnGroup:TaskOrbitCircleAtVec2( jtacSpawnGroup:GetCoordinate():GetVec2(), UTILS.FeetToMeters(14000),  UTILS.KnotsToMps(110) )
---                         jtacSpawnGroup:SetTask(routeTask, 2)
---                     end
---                 )
---             end
---             local supportGroup = supportSpawn:SpawnFromCoordinate(coord)
---             supportGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
---             CommandCenter:MessageTypeToCoalition( string.format("%s Support asset has arrived to the player requested destination.", supportGroup:GetName()), MESSAGE.Type.Information )
---         else
---             CommandCenter:MessageTypeToCoalition( string.format("%s has been killed. No support asset for you!", spawnGroup:GetName()), MESSAGE.Type.Information )
---         end
---     end
---     local travelTime = distance / UTILS.KnotsToMps(375) + 60
---     env.info(string.format('BTI: New Asset request. distance %d, travel time %d', distance, travelTime))
---     SCHEDULER:New(nil, spawnAsset, {text}, travelTime)
-
---     CommandCenter:MessageTypeToCoalition( string.format("%s is enroute to the player requested destination\nETE is %d minutes.\n%d minutes cooldown starting now", spawnGroup:GetName(), travelTime / 60, SUPPORT_COOLDOWN / 60), MESSAGE.Type.Information )
---     supportTimer = currentTime
---     SCHEDULER:New(nil, supportCooldownHelp, {text}, SUPPORT_COOLDOWN)
--- end
-
 --------------------------------------------------------------------------------
 local destroyZoneCount = 0
 function handleExfillRequest(text, coord)
@@ -164,7 +111,8 @@ end
 -- -z t90;-amount 5
 -- -z t89
 
-SpawnsTableConcurrent = {}
+local SpawnsTableConcurrent = {}
+local ZeusData = {}
 
 function handleZeusRequest(text, coord)
 
@@ -188,12 +136,14 @@ function handleZeusRequest(text, coord)
             spawnAmount = tonumber(value)
         elseif command:find("-altitude") or command:find("-a") then
             spawnAltitude = UTILS.FeetToMeters(tonumber(value))
-            env.info(string.format( "BTI: spawnAltitude %f", spawnAltitude))
+        elseif command:find("-task") or command:find("-t") then
+            spawnTask = value
         end
     end
 
     -- fetch spawn from table
     local spawnData = ZeusTable[spawnString]
+    local spawnSecondaryData = ZeusData[spawnString]
     local spawnType = spawnData["type"]
 
     -- prepare asset spawn
@@ -212,8 +162,16 @@ function handleZeusRequest(text, coord)
                     local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
                     spawnedGroup:SetTask(enrouteTask, 2)
                 end
-                
-                local orbitTask = spawnedGroup:TaskOrbitCircleAtVec2( coord:GetVec2(), spawnAltitude, UTILS.KnotsToMps(350))
+                local finalCoord = coord
+                local finalAltitude = spawnAltitude
+                local finalSpeed = UTILS.KnotsToMps(350)
+                if spawnSecondaryData ~= nil then
+                    finalCoord = spawnSecondaryData["coord"]
+                    finalAltitude = spawnSecondaryData["altitude"]
+                    finalSpeed = spawnSecondaryData["speed"]
+                    trigger.action.removeMark(spawnSecondaryData["mark"])
+                end
+                local orbitTask = spawnedGroup:TaskOrbitCircleAtVec2( finalCoord:GetVec2(), finalAltitude, finalSpeed)
                 spawnedGroup:PushTask(orbitTask, 4)
 
             elseif spawnType == "ground" then
@@ -230,10 +188,43 @@ function handleZeusRequest(text, coord)
     for i = 1, spawnAmount do
         spawn:SpawnFromVec2(coord:GetVec2(), spawnAltitude, spawnAltitude)
     end
-
-
+    
+    -- Remove Zeus Data and mark for secondary
+    ZeusData[spawnString] = nil
+    CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
 end
 
+
+function handleSecondaryRequest(arguments, coord, markID)
+    local spawnID = ""
+    local waypointAltitude = UTILS.FeetToMeters(10000)
+    local waypointRadius = UTILS.NMToMeters(10)
+    local waypointSpeed = UTILS.KnotsToMps(350)
+
+    for _,argument in pairs(arguments) do
+        local argumentValues = _split(argument, " ")
+        local command = argumentValues[1]
+        local value = argumentValues[2]
+
+        if command:find("-waypoint") or command:find("-patrol") then
+            spawnID = value
+        elseif command:find("-altitude") or command:find("-a") then
+            waypointAltitude = UTILS.FeetToMeters(tonumber(value))
+        elseif command:find("-radius") or command:find("-r") then
+            waypointRadius = UTILS.NMToMeters(tonumber(value))
+        elseif command:find("-speed") or command:find("-s") then
+            waypointSpeed = UTILS.KnotsToMps(tonumber(value))
+        end
+
+        ZeusData[spawnID] = {
+            ["coord"] = coord,
+            ["altitude"] = waypointAltitude,
+            ["radius"] = waypointRadius,
+            ["speed"] = waypointSpeed,
+            ["mark"] = markID
+        }
+    end
+end
 
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
@@ -308,11 +299,24 @@ function markRemoved(Event)
     end
 end
 
+function markChanged(Event)
+    if Event.text~=nil and Event.text:lower():find("-") then
+        local text = Event.text:lower()
+        local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
+        local coord = COORDINATE:NewFromVec3(vec3)
+        coord.y = coord:GetLandHeight()
+
+        local arguments = _split(text, ";")
+        handleSecondaryRequest(arguments, coord, Event.idx)
+    end
+end
+
 function SupportHandler:onEvent(Event)
     if Event.id == world.event.S_EVENT_MARK_ADDED then
         -- env.info(string.format("BTI: Support got event ADDED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
     elseif Event.id == world.event.S_EVENT_MARK_CHANGE then
-        -- env.info(string.format("BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        env.info(string.format("BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        markChanged(Event)
     elseif Event.id == world.event.S_EVENT_MARK_REMOVED then
         -- env.info(string.format("BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
         markRemoved(Event)

@@ -1,5 +1,5 @@
 env.info(string.format("BTI: Beginning CIA surveillance..."))
-
+_SETTINGS:SetPlayerMenuOff()
 -- Utils ---------------------------------------------------------------
 local function ternary ( cond , T , F )
     if cond then return T else return F end
@@ -67,17 +67,10 @@ local function permanentPlayerMenu(something)
         if alive and playerGroup ~= nil then
             local IntelMenu = MENU_GROUP:New( playerGroup, "Commands [WIP/Buggy]" )
             
-            local intelGroupMenu = MENU_GROUP_COMMAND:New( playerGroup, "Request Intel Report", IntelMenu, displayIntelToGroup, playerClient )
-            local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS", IntelMenu, requestTankerAWACSTasking)
+            local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS [WIP]", IntelMenu, requestTankerAWACSTasking)
             local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
-
-            local carrierCASEIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE I Recovery ", IntelMenu, requestCarrierRecovery, 1 )
-            local carrierCASEIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE II Recovery ", IntelMenu, requestCarrierRecovery, 2 )
-            local carrierCASEIIIMenu = MENU_GROUP_COMMAND:New( playerGroup, "Open CASE III Recovery ", IntelMenu, requestCarrierRecovery, 3 )
-
-            local carrierCancelMenu = MENU_GROUP_COMMAND:New( playerGroup, "Cancel Recovery", IntelMenu, requestCarrierCancelRecovery)
  
-            local groupMenus = { intelGroupMenu, tankerAWACSMenu, carrierBeaconMenu, carrierCASEIMenu, carrierCASEIIMenu, carrierCASEIIIMenu, carrierCancelMenu }
+            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]
@@ -100,13 +93,7 @@ local function permanentPlayerCheck(something)
         function (PlayerClient)
             local PlayerID = PlayerClient.ObjectName
             PlayerClient:AddBriefing("Welcome to PTI|Practice The Inferno \\o/!\n\n Head to http://tthroughtheinferno.com/practice-the-inferno for a complete list of ZEUS commands")
-
             if PlayerClient:IsAlive() then
-                -- env.info(string.format( "BTI: Player in set group ID %s", PlayerID ))
-                -- local playerName =  PlayerClient:GetPlayerName()
-                -- if playerName then
-                --     env.info(string.format( "BTI: Player alive name %s", playerName))
-                -- end
                 PlayerMap[PlayerID] = true
             else
                 PlayerMap[PlayerID] = false

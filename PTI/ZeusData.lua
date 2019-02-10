@@ -38,10 +38,8 @@ ZeusTable = {
     ["tornado"] = {
         ["type"] = "air",
     },
-    ["f14"] = {
-        ["type"] = "air",
-    },
-    ["f14"] = {
+    -- tankers
+    ["kc135"] = {
         ["type"] = "air",
     },
     -- Ground MBT Tanks
@@ -81,4 +79,37 @@ ZeusTable = {
     ["tpz"] = {
         ["type"] = "ground",
     },
+    -- SAMs
+    ["SAMsa2"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa3"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa6"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa10"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa11"] = {
+        ["type"] = "ground",
+    },
+    -- APC
+    ["APCbtr"] = {
+        ["type"] = "ground",
+    },
+    ["APCstryker"] = {
+        ["type"] = "ground",
+    },
+    ["APCm113"] = {
+        ["type"] = "ground",
+    },
+    ["APCcobra"] = {
+        ["type"] = "ground",
+    },
+    ["APCaav"] = {
+        ["type"] = "ground",
+    },
+
 }
