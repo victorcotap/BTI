@@ -55,6 +55,10 @@ function requestCarrierCancelRecovery()
     CancelCarrierRecovery()
 end
 
+function requestWipeAllAssets()
+    SUPPORTWipeSpawnedAssets()
+end
+
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 
@@ -69,8 +73,9 @@ local function permanentPlayerMenu(something)
             
             local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS [WIP]", IntelMenu, requestTankerAWACSTasking)
             local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
- 
-            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, }
+            local wipeSpawnedAssets = MENU_GROUP_COMMAND:New( playerGroup, "Wipe All Spawned Assets", IntelMenu, requestWipeAllAssets)
+
+            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, wipeSpawnedAssets }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]
