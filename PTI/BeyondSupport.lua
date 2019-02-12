@@ -83,6 +83,11 @@ function SUPPORTWipeSpawnedAssets()
     end
 end
 
+function SUPPORTWipeLastAsset()
+    local spawnedGroup = ZeusSpawnedAssets[#ZeusSpawnedAssets]
+    spawnedGroup:Destroy(false)
+end
+
 function SUPPORTResetTankerAWACSTask()
     local awacsTask = E2EWR:EnRouteTaskAWACS()
     E2EWR:PushTask(awacsTask)

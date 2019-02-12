@@ -42,6 +42,9 @@ ZeusTable = {
     ["kc135"] = {
         ["type"] = "air",
     },
+    ["predator"] = {
+        ["type"] = "air"
+    },
     -- Ground MBT Tanks
     ["SPGstryker"] = {
         ["type"] = "ground",
@@ -111,5 +114,42 @@ ZeusTable = {
     ["APCaav"] = {
         ["type"] = "ground",
     },
-
+    -- VEH
+    ["VEHjtac"] = {
+        ["type"] = "ground",
+    },
+    ["VEHgpu"] = {
+        ["type"] = "ground",
+    },
+    ["VEHtigr"] = {
+        ["type"] = "ground",
+    },
+    ["VEHlandrover"] = {
+        ["type"] = "ground",
+    },
+    ["VEHrearm"] = {
+        ["type"] = "ground",
+    },
+    ["VEHrefuel"] = {
+        ["type"] = "ground",
+    },
+    --FOR
+    ["FORtower"] = {
+        ["type"] = "ground",
+    },
+    ["FORhouse"] = {
+        ["type"] = "ground",
+    },
+    ["FORbarracks"] = {
+        ["type"] = "ground",
+    },
+    ["FORoutpost"] = {
+        ["type"] = "ground",
+    },
+    ["FORcheckpoint"] = {
+        ["type"] = "ground",
+    },
+    ["FORbunker"] = {
+        ["type"] = "ground",
+    },
 }
