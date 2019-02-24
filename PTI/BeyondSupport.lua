@@ -257,10 +257,8 @@ function handleSecondaryRequest(arguments, coord, markID)
             env.info("BTI: stop1.5")
             if command:find("-waypoint") then
                 type = "waypoint"
-                env.info("BTI: stop1.7")
             elseif command:find("-engageZone") then
                 type = "engageZone"
-                env.info("BTI: stop1.9")
             end
         elseif command:find("-altitude") or command:find("-a") then
             waypointAltitude = UTILS.FeetToMeters(tonumber(value))
@@ -275,17 +273,14 @@ function handleSecondaryRequest(arguments, coord, markID)
 
     env.info("BTI: stop2")
     if type:find("waypoint") then
-        env.info("BTI: stop3")
-
         ZeusWaypointData[spawnID] = {
             ["coord"] = coord,
             ["altitude"] = waypointAltitude,
             ["speed"] = waypointSpeed,
             ["mark"] = markID
         }
+        env.info("BTI: SpawnWaypointData " .. UTILS.OneLineSerialize(ZeusWaypointData[spawnID]))
     elseif type:find("engageZone") then
-        env.info("BTI: stop4")
-
         ZeusTaskData[spawnID] = {
             ["coord"] = coord,
             ["radius"] = zoneRadius,
@@ -294,7 +289,6 @@ function handleSecondaryRequest(arguments, coord, markID)
         }
         env.info("BTI: SpawnTaskingData " .. UTILS.OneLineSerialize(ZeusTaskData[spawnID]))
     end
-    env.info("BTI: stop5")
 end
 
 ---------------------------------------------------------------------------------
@@ -329,7 +323,17 @@ function handleCommandRequest(text, coord)
 end
 
 function handleDebugRequest(text, coord)
-
+    if text:find("fire") then
+        if text:find("big") then
+            coord:BigSmokeAndFireLarge()
+        elseif text:find("medium") then
+            coord:BigSmokeAndFireMedium()
+        elseif text:find("inferno") then
+            coord:BigSmokeAndFireHuge(1)
+        else
+            coord:BigSmokeAndFireSmall()
+        end
+    end
 end
 
 local function handleWeatherRequest(text, coord)

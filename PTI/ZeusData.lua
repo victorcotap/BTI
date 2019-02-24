@@ -1,5 +1,19 @@
 
 ZeusTable = {
+    --BLUE
+    ["predator"] = {
+        ["type"] = "air"
+    },
+    ["fuel"] = {
+        ["type"] = "ground"
+    },
+    ["rearm"] = {
+        ["type"] = "ground"
+    },
+    ["kc135"] = {
+        ["type"] = "air",
+    },
+    
     --Air Fighters
     ["f14"] = {
         ["type"] = "air",
@@ -37,13 +51,6 @@ ZeusTable = {
     --Air Bombers
     ["tornado"] = {
         ["type"] = "air",
-    },
-    -- tankers
-    ["kc135"] = {
-        ["type"] = "air",
-    },
-    ["predator"] = {
-        ["type"] = "air"
     },
     -- Ground MBT Tanks
     ["SPGstryker"] = {
@@ -150,6 +157,13 @@ ZeusTable = {
         ["type"] = "ground",
     },
     ["FORbunker"] = {
+        ["type"] = "ground",
+    },
+    --INF
+    ["INFsquad"] = {
+        ["type"] = "ground",
+    },
+    ["INFseals"] = {
         ["type"] = "ground",
     },
 }

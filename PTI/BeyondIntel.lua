@@ -77,8 +77,8 @@ local function permanentPlayerMenu(something)
             
             local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS [WIP]", IntelMenu, requestTankerAWACSTasking)
             local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
-            local wipeSpawnedAssets = MENU_GROUP_COMMAND:New( playerGroup, "Wipe All Spawned Assets", IntelMenu, requestWipeAllAssets)
-            local wipeLastAssets = MENU_GROUP_COMMAND:New( playerGroup, "Wipe All Spawned Assets", IntelMenu, requestWipeAllAssets)
+            local wipeSpawnedAssets = MENU_GROUP_COMMAND:New( playerGroup, "[DO NOT USE] Wipe All", IntelMenu, requestWipeAllAssets)
+            local wipeLastAssets = MENU_GROUP_COMMAND:New( playerGroup, "Wipe last Spawned Assets", IntelMenu, requestWipeLastAsset)
 
             local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, wipeLastAssets, wipeSpawnedAssets }
             PlayerMenuMap[playerID] = groupMenus
@@ -102,7 +102,7 @@ local function permanentPlayerCheck(something)
     SetPlayer:ForEachClient(
         function (PlayerClient)
             local PlayerID = PlayerClient.ObjectName
-            PlayerClient:AddBriefing("Welcome to PTI|Practice The Inferno \\o/!\n\n Head to http://tthroughtheinferno.com/practice-the-inferno for a complete list of ZEUS commands")
+            PlayerClient:AddBriefing("Welcome to PTI|Practice The Inferno \\o/!\n\n Head to http://throughtheinferno.com/practice-the-inferno for a complete list of ZEUS commands")
             if PlayerClient:IsAlive() then
                 PlayerMap[PlayerID] = true
             else
