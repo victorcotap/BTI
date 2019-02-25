@@ -59,6 +59,7 @@ airbossStennis:SetHandleAIOFF()
 airbossStennis:SetMenuMarkZones(true)
 airbossStennis:SetMenuSmokeZones(true)
 airbossStennis:SetAirbossNiceGuy(false)
+airbossStennis:SetSoundfilesFolder("Airboss Soundfiles/")
 airbossStennis:Load(nil, "Greenie Board.csv")
 airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 -- airbossStennis:SetDebugModeON() --disable
