@@ -4,16 +4,25 @@ ZeusTable = {
     ["predator"] = {
         ["type"] = "air"
     },
-    ["fuel"] = {
+    ["BLUrefuel"] = {
         ["type"] = "ground"
     },
-    ["rearm"] = {
+    ["BLUrearm"] = {
         ["type"] = "ground"
     },
     ["kc135"] = {
         ["type"] = "air",
     },
-    
+    ["BLUjtac"] = {
+        ["type"] = "ground",
+    },
+    ["BLUstryker"] = {
+        ["type"] = "ground",
+    },
+    ["BLUlav25"] = {
+        ["type"] = "ground",
+    },
+        
     --Air Fighters
     ["f14"] = {
         ["type"] = "air",
@@ -122,9 +131,6 @@ ZeusTable = {
         ["type"] = "ground",
     },
     -- VEH
-    ["VEHjtac"] = {
-        ["type"] = "ground",
-    },
     ["VEHgpu"] = {
         ["type"] = "ground",
     },
