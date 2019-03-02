@@ -4,9 +4,6 @@ ZeusTable = {
     ["predator"] = {
         ["type"] = "air"
     },
-    ["BLUrefuel"] = {
-        ["type"] = "ground"
-    },
     ["BLUrearm"] = {
         ["type"] = "ground"
     },
@@ -22,8 +19,20 @@ ZeusTable = {
     ["BLUlav25"] = {
         ["type"] = "ground",
     },
+    ["BLUsquad"] = {
+        ["type"] = "ground",
+    },
+    ["BLUseals"] = {
+        ["type"] = "ground",
+    },
         
     --Air Fighters
+    ["f4"] = {
+        ["type"] = "air",
+    },
+    ["f5"] = {
+        ["type"] = "air",
+    },
     ["f14"] = {
         ["type"] = "air",
     },
@@ -62,9 +71,6 @@ ZeusTable = {
         ["type"] = "air",
     },
     -- Ground MBT Tanks
-    ["SPGstryker"] = {
-        ["type"] = "ground",
-    },
     ["MBTt90"] = {
         ["type"] = "ground",
     },
@@ -108,10 +114,28 @@ ZeusTable = {
     ["SAMsa6"] = {
         ["type"] = "ground",
     },
+    ["SAMsa8"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa9"] = {
+        ["type"] = "ground",
+    },
     ["SAMsa10"] = {
         ["type"] = "ground",
     },
     ["SAMsa11"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa13"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa15"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa18"] = {
+        ["type"] = "ground",
+    },
+    ["SAMsa19"] = {
         ["type"] = "ground",
     },
     -- APC
