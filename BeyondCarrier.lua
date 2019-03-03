@@ -67,14 +67,14 @@ airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 -- create fake recovery window at the end of the mission play
 airbossStennis:AddRecoveryWindow("23:50", "23:55", 1)
 
-local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
-carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
-carrierTanker:SetTakeoffHot()
-carrierTanker:SetTACAN(14, "SMC")
-carrierTanker:SetRadio(263, "AM")
-carrierTanker:SetRespawnOn()
-carrierTanker:Start()
-airbossStennis:SetRecoveryTanker(carrierTanker)
+-- local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
+-- carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
+-- carrierTanker:SetTakeoffHot()
+-- carrierTanker:SetTACAN(14, "SMC")
+-- carrierTanker:SetRadio(263, "AM")
+-- carrierTanker:SetRespawnOn()
+-- carrierTanker:Start()
+-- airbossStennis:SetRecoveryTanker(carrierTanker)
 
 RescueheloStennis=RESCUEHELO:New(UNIT:FindByName("BLUE CVN"), "BLUE Rescue Helo")
 RescueheloStennis:SetTakeoffHot()
