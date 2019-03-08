@@ -509,11 +509,11 @@ function QUAKEZoneSideRandomMissions(zoneName)
         }
     end
     
-    if #zoneSideMissions > 0 then
-        zoneSideMissions = QuakeZoneRandomSideMissionPatrol(zoneAO, zoneSideMissions)
-    else
+    -- if #zoneSideMissions > 0 then
+    --     zoneSideMissions = QuakeZoneRandomSideMissionPatrol(zoneAO, zoneSideMissions)
+    -- else
         SUPPORTSpawnSFAC(ZONE:FindByName(zoneName))
-    end
+    -- end
 
     zoneAO["SideMissions"] = zoneSideMissions
 end
