@@ -25,7 +25,10 @@ ZeusTable = {
     ["BLUseals"] = {
         ["type"] = "ground",
     },
-        
+    ["BLUspeedboat"] = {
+        ["type"] = "ground",
+    },
+    -- RED
     --Air Fighters
     ["f4"] = {
         ["type"] = "air",
@@ -64,6 +67,16 @@ ZeusTable = {
         ["type"] = "air",
     },
     ["mirage"] = {
+        ["type"] = "air",
+    },
+    -- Helicopters
+    ["ka50"] = {
+        ["type"] = "air",
+    },
+    ["mi28"] = {
+        ["type"] = "air",
+    },
+    ["mi8"] = {
         ["type"] = "air",
     },
     --Air Bombers
