@@ -1,5 +1,8 @@
 env.info('BTI: Strategic Command initiating communication')
 
+local HQ = GROUP:FindByName("BLUE CC")
+local CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
+
 ------------------------------------------------------------------------------
 -- Globals -------------------------------------------------------------------
 A2GSquadrons = {}
@@ -15,6 +18,7 @@ A2GDispatcher = AI_A2G_DISPATCHER:New(A2GDetection)
 A2GDispatcher:SetDefenseReactivityHigh()
 A2GDispatcher:SetDefaultLanding(AI_A2G_DISPATCHER.Landing.AtRunway)
 A2GDispatcher:SetTacticalDisplay(false)
+A2GDispatcher:SetCommandCenter(CommandCenter)
 
 ------------------------------------------------------------------------------
 -- Zones ---------------------------------------------------------------------
