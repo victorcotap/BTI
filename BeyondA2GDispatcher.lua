@@ -18,7 +18,7 @@ A2GDispatcher:SetDefenseRadius(250000)
 A2GDispatcher:SetDefenseReactivityLow()
 A2GDispatcher:SetDefaultLanding(AI_A2G_DISPATCHER.Landing.AtRunway)
 A2GDispatcher:SetTacticalDisplay(false)
-A2GDispatcher:SetCommandCenter(CommandCenter)
+-- A2GDispatcher:SetCommandCenter(CommandCenter)
 
 ------------------------------------------------------------------------------
 -- Zones ---------------------------------------------------------------------
@@ -26,12 +26,15 @@ local zones = QUAKE[QUAKEZonesAO]
 for zoneName, zoneAO in pairs(zones) do
     env.info(string.format( "BTI: Preparing dispatcher for zone %s", zoneName ))
     local zone = ZONE:FindByName(zoneName)
-    -- local coord = zone:GetRandomCoordinate(10000, 20000)
     local coord = zone:GetCoordinate()
 
-    -- coord:MarkToCoalitionBlue("Defense zone " .. zoneName)
     A2GDispatcher:AddDefenseCoordinate(zoneName, coord)
-    -- A2GPatrolZone = zone
+    local zoneSideMissions = zoneAO["SideMissions"]
+    for i = 1, #zoneSideMissions do
+        local sideMissionGroup = zoneSideMissions[i]["Group"]
+        A2GDispatcher:AddDefenseCoordinate(zoneName .. tostring(i), sideMissionGroup:GetCoordinate())
+    end
+
 end
 
 -- A2GDispatcher:AddDefenseCoordinate("HQ", HQ:GetCoordinate())
