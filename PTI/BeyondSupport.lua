@@ -90,11 +90,14 @@ end
 
 function SUPPORTResetTankerAWACSTask()
     local awacsTask = E2EWR:EnRouteTaskAWACS()
-    E2EWR:PushTask(awacsTask)
-    local tanker130Task = KC135Tanker:EnRouteTaskTanker()
-    KC135Tanker:PushTask(tanker130Task)
-    -- local tankerNavyTask = S3Tanker:EnRouteTaskTanker()
-    -- S3Tanker:PushTask(tankerNavyTask)
+    local awacsRouteTask = E2EWR:TaskOrbitCircleAtVec2(E2EWR:GetCoordinate(), E2EWR:GetAltitude(), UTILS.KnotsToMps(307))
+    E2EWR:SetTask(awacsTask, 2)
+    E2EWR:PushTask(awacsRouteTask, 4)
+
+    local tanker130Task = KC130Tanker:EnRouteTaskTanker()
+    local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC130Tanker:GetCoordinate(), KC130Tanker:GetAltitude(), UTILS.KnotsToMps(307))
+    KC130Tanker:SetTask(tankerRouteTask, 2)
+    KC130Tanker:PushTask(tanker130Task, 2)
 end
 
 function SUPPORTSpawnSFAC(zone)
@@ -233,7 +236,9 @@ function handleZeusRequest(text, coord)
     -- Remove Zeus Data and mark for secondary
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
-    -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
+    if text:find("-h") == false then
+        CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
+    end
 end
 
 

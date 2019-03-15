@@ -83,6 +83,12 @@ ZeusTable = {
     ["tornado"] = {
         ["type"] = "air",
     },
+    ["tu142"] = {
+        ["type"] = "air",
+    },
+    ["tu160"] = {
+        ["type"] = "air",
+    },
     -- Ground MBT Tanks
     ["MBTt90"] = {
         ["type"] = "ground",
