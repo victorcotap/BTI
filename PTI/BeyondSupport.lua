@@ -230,7 +230,7 @@ function handleZeusRequest(text, coord)
 
     -- Spawn asset
     for i = 1, spawnAmount do
-        spawn:SpawnFromVec2(coord:GetRandomVec2InRadius( 100, 150 ), spawnAltitude, spawnAltitude)
+        spawn:SpawnFromVec2(coord:GetRandomVec2InRadius( 100, 300 ), spawnAltitude, spawnAltitude)
     end
     
     -- Remove Zeus Data and mark for secondary
