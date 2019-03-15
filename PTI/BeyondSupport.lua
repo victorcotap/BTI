@@ -236,9 +236,9 @@ function handleZeusRequest(text, coord)
     -- Remove Zeus Data and mark for secondary
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
-    if text:find("-h") == false then
+    -- if text:find("-h") == false then
         CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
-    end
+    -- end
 end
 
 
