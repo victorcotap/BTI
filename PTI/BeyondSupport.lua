@@ -90,12 +90,14 @@ end
 
 function SUPPORTResetTankerAWACSTask()
     local awacsTask = E2EWR:EnRouteTaskAWACS()
-    local awacsRouteTask = E2EWR:TaskOrbitCircleAtVec2(E2EWR:GetCoordinate(), E2EWR:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
+    local awacsEPLRS = E2EWR:TaskEPLRS(true)
+    local awacsRouteTask = E2EWR:TaskOrbitCircleAtVec2(E2EWR:GetUnit(1):GetCoordinate(), E2EWR:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
     E2EWR:SetTask(awacsTask, 2)
+    E2EWR:PushTask(awacsEPLRS)
     E2EWR:PushTask(awacsRouteTask, 4)
 
     local tanker130Task = KC130Tanker:EnRouteTaskTanker()
-    local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC130Tanker:GetCoordinate(), KC130Tanker:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
+    local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC130Tanker:GetUnit(1):GetCoordinate(), KC130Tanker:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
     KC130Tanker:SetTask(tankerRouteTask, 2)
     KC130Tanker:PushTask(tanker130Task, 2)
 end
