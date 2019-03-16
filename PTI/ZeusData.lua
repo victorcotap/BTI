@@ -1,13 +1,16 @@
 
 ZeusTable = {
     --BLUE
-    ["predator"] = {
+    ["BLUpredator"] = {
         ["type"] = "air"
     },
     ["BLUrearm"] = {
         ["type"] = "ground"
     },
-    ["kc135"] = {
+    ["BLUkc135basket"] = {
+        ["type"] = "air",
+    },
+    ["BLUkc135drogue"] = {
         ["type"] = "air",
     },
     ["BLUjtac"] = {

@@ -189,10 +189,7 @@ function handleZeusRequest(text, coord)
     spawn:OnSpawnGroup(
         function(spawnedGroup)
             if spawnType == "air" then
-                if spawnTask == "cap" then
-                    local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
-                    spawnedGroup:SetTask(enrouteTask, 2)
-                elseif spawnTaskingData ~= nil then
+                if spawnTaskingData ~= nil then
                     env.info("BTI: SpawnTaskingData " .. UTILS.OneLineSerialize(spawnTaskingData))
                     local engageTargets = ternary(spawnTaskingData["engage"] == "a", { "Air" }, { "Planes", "Battle airplanes", })
                     local enrouteEngageZoneTask = spawnedGroup:EnRouteTaskEngageTargetsInZone(
@@ -203,7 +200,16 @@ function handleZeusRequest(text, coord)
                     )
                     trigger.action.removeMark(spawnTaskingData["mark"])
                     spawnedGroup:SetTask(enrouteEngageZoneTask, 2)
+                elseif spawnTask == "cap" then
+                    local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
+                    spawnedGroup:SetTask(enrouteTask, 2)
+                elseif spawnTask == "jtac" then
+                    ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
+                elseif spawnTask == "tanker" then
+                    local tankerTask = spawnedGroup:EnRouteTaskTanker()
+                    spawnedGroup:SetTask(tankerTask)
                 end
+
 
                 local finalCoord = coord
                 local finalAltitude = spawnAltitude
@@ -236,9 +242,10 @@ function handleZeusRequest(text, coord)
     -- Remove Zeus Data and mark for secondary
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
-    -- if text:find("-h") == false then
+    if text:find("-x") then
         CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
-    -- end
+        -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset something times %d spawned", spawnAmount), MESSAGE.Type.Information )
+    end
 end
 
 
