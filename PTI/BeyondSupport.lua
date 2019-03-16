@@ -243,7 +243,8 @@ function handleZeusRequest(text, coord)
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
     if text:find("-x") then
-        CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
+        CommandCenter:MessageToAll( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount))
+        -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
         -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset something times %d spawned", spawnAmount), MESSAGE.Type.Information )
     end
 end
