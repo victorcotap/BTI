@@ -186,12 +186,6 @@ ZeusTable = {
     ["VEHlandrover"] = {
         ["type"] = "ground",
     },
-    ["VEHrearm"] = {
-        ["type"] = "ground",
-    },
-    ["VEHrefuel"] = {
-        ["type"] = "ground",
-    },
     --FOR
     ["FORtower"] = {
         ["type"] = "ground",
