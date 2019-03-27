@@ -10,7 +10,7 @@ ZeusTable = {
     ["BLUkc135basket"] = {
         ["type"] = "air",
     },
-    ["BLUkc135drogue"] = {
+    ["BLUkc135boom"] = {
         ["type"] = "air",
     },
     ["BLUjtac"] = {
