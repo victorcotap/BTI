@@ -80,12 +80,14 @@ function SUPPORTWipeSpawnedAssets()
     for i = 1, #ZeusSpawnedAssets do
         local spawnedGroup = ZeusSpawnedAssets[i]
         spawnedGroup:Destroy(false)
+        ZeusSpawnedAssets[i] = nil
     end
 end
 
 function SUPPORTWipeLastAsset()
     local spawnedGroup = ZeusSpawnedAssets[#ZeusSpawnedAssets]
     spawnedGroup:Destroy(false)
+    ZeusSpawnedAssets[#ZeusSpawnedAssets] = nil
 end
 
 function SUPPORTResetTankerAWACSTask()
