@@ -212,4 +212,17 @@ ZeusTable = {
     ["INFseals"] = {
         ["type"] = "ground",
     },
+    --BOA
+    ["BOAneus"] = {
+        ["type"] = "ground",
+    },
+    ["BOAkuznetsov"] = {
+        ["type"] = "ground",
+    },
+    ["BOAelnya"] = {
+        ["type"] = "ground",
+    },
+    ["BOAivanov"] = {
+        ["type"] = "ground",
+    },
 }
