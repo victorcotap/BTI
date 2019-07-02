@@ -1,7 +1,7 @@
 env.info("BTI: Starting Practice Range initialization");
 
 local strafePitA = {
-    "RANGEBunker",
+    "RANGEArmedHouse",
 }
 
 local bombtargets = {

@@ -51,11 +51,12 @@ airbossStennis:SetMarshalRadio(264)
 airbossStennis:SetPatrolAdInfinitum(false)
 airbossStennis:SetCarrierControlledArea(45)
 airbossStennis:SetStaticWeather(true)
-airbossStennis:SetMenuSingleCarrier(true)
+airbossStennis:SetMenuSingleCarrier()
 airbossStennis:SetRecoveryCase(1)
 airbossStennis:SetMaxLandingPattern(3)
 airbossStennis:SetDefaultPlayerSkill(AIRBOSS.Difficulty.Easy)
 airbossStennis:SetHandleAIOFF()
+airbossStennis:SetMenuRecovery(30, 20, true)
 airbossStennis:SetMenuMarkZones(true)
 airbossStennis:SetMenuSmokeZones(true)
 airbossStennis:SetAirbossNiceGuy(false)
@@ -65,7 +66,7 @@ airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 -- airbossStennis:SetDebugModeON() --disable
 
 -- create fake recovery window at the end of the mission play
-airbossStennis:AddRecoveryWindow("07:01", "23:55", 1, 0, false)
+-- local window1 = airbossStennis:AddRecoveryWindow("09:01", "23:55", 1, 0, false)
 
 local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
 carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
@@ -146,86 +147,3 @@ function ActivateCarrierBeacons()
     carrierBeacon:ActivateTACAN(15, "X", "STN", true)
     carrierBeacon:ActivateICLS(5, "LSO")
 end
-
----------------------------------------------------------------------------
----------------------------------------------------------------------------
----------------------------------------------------------------------------
--- Backup oldie
-
-
--- function sendCarrierLaunchRecoveryCycle()
---     CommandCenter:MessageTypeToCoalition("Carrier will turn into Launch/Recovery cycle in 5 minute!\nArco will reposition for recovery operation.\nWeather to follow", MESSAGE.Type.Information)
--- end
-
--- function sendCarrierRoutingCycle()
---     CommandCenter:MessageTypeToCoalition("Carrier launch/recovery cycle is over in 5 minute.\nCarrier will resume its original route higher speed.\nPunch it Chewie!", MESSAGE.Type.Information)
--- end
-
--- function sendCarrierRouting()
---     CommandCenter:MessageTypeToCoalition("Carrier will now turn to resume its original route", MESSAGE.Type.Information)
--- end
-
--- function sendWeatherTextFromCoordinate(coordinate)
---     local currentPressure = coordinate:GetPressure(0)
---     local currentTemperature = coordinate:GetTemperature()
---     local currentWindDirection, currentWindStrengh = coordinate:GetWind()
---     local weatherString = string.format("Carrier weather: Wind from %d@%.1fkts, BRC %d, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentWindDirection, currentPressure * 0.0295299830714, currentTemperature)
---     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
---     return weatherString
--- end
-
--- local currentMissionRoute = CyclicCarrier:GetTaskRoute()
--- local index = 1
--- local lockRecoveryRequest = false
-
--- function routeCarrierBackToNextWaypoint(routePoints)
---     -- index = index + 1
-
---     env.info(string.format("BTI: Trying to route back to the next waypoint index %d on route waypoints count %d", index, #currentMissionRoute))
-
---     local nextPoint = currentMissionRoute[index]
---     if nextPoint then
---         env.info("BTI: we have an extra point!")
---         -- table.remove(currentMissionRoute, 1)
---         local newTask = CyclicCarrier:TaskRoute(currentMissionRoute)
---         CyclicCarrier:SetTask(newTask)
---         env.info("BTI: Carrier back on track")
---         sendCarrierRouting()
---     end
---     CARRIERCycle = 0
---     CARRIERTimer = os.time()
---     -- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, CARRIERRouteLength - 300)
---     -- SCHEDULER:New(nil, routeCarrierTemporary, {"routePoints"}, CARRIERRouteLength)
---     lockRecoveryRequest = false
---     env.info("BTI: carrier set to go back to into the wind in 1500")
--- end
-
--- function routeCarrierTemporary(recoveryLength, routePoints)
---     env.info("BTI: Going to route the carrier into the wind")
---     local currentCoordinate = CyclicCarrier:GetCoordinate()
---     local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
---     env.info(string.format("Current wind from %d @ %f", currentWindDirection - 7, UTILS.MpsToKnots(currentWindStrengh)))
---     local intoTheWindCoordinate = currentCoordinate:Translate(30000, currentWindDirection)
---     local speed = 0
---     if currentWindStrengh < UTILS.KnotsToMps(5) then
---         speed = UTILS.KnotsToMps(22)
---     elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
---         speed = UTILS.KnotsToMps(19) - currentWindStrengh
---     elseif currentWindStrengh > UTILS.KnotsToMps(23) then
---         speed = UTILS.KnotsToMps(12)
---     end
---     CyclicCarrier:TaskRouteToVec2(intoTheWindCoordinate:GetVec2(), speed)
---     env.info(string.format("BTI: Carrier re-routed at speed %f", speed))
-
---     sendWeatherTextFromCoordinate(currentCoordinate)
---     CARRIERCycle = 1
---     CARRIERTimer = os.time()
---     -- SCHEDULER:New(nil, sendCarrierRoutingCycle, {"toto"}, recoveryLength - 300)
---     SCHEDULER:New(nil, routeCarrierBackToNextWaypoint, {"routePoints"}, recoveryLength)
---     lockRecoveryRequest = true
--- end
-
--- -- Disable/Enable lines below for carrier ops training
--- -- SCHEDULER:New(nil, sendCarrierLaunchRecoveryCycle, {"toto"}, 15)
--- -- SCHEDULER:New(nil, routeCarrierTemporary, {"currentMissionRoute"}, 30)
--- CommandCenter:MessageTypeToCoalition("Carrier will now observe cyclic operations", MESSAGE.Type.Information)

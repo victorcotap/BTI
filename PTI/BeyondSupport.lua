@@ -371,7 +371,7 @@ function markRemoved(Event)
         local coord = COORDINATE:NewFromVec3(vec3)
         coord.y = coord:GetLandHeight()
 
-        if text:find("-fac") then
+        if text:find("-fac") then   
             handleFACRequest(text, coord)
         elseif text:find("-tanker") then
             handleTankerRequest(text, coord)
