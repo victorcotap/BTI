@@ -63,6 +63,10 @@ function requestWipeLastAsset()
     SUPPORTWipeLastAsset()
 end
 
+function requestGenerateMaster()
+    TRACKINGGenerateMaster()
+end
+
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 
@@ -79,8 +83,9 @@ local function permanentPlayerMenu(something)
             local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
             local wipeSpawnedAssets = MENU_GROUP_COMMAND:New( playerGroup, "[DO NOT USE] Wipe All", IntelMenu, requestWipeAllAssets)
             local wipeLastAssets = MENU_GROUP_COMMAND:New( playerGroup, "Wipe last Spawned Assets", IntelMenu, requestWipeLastAsset)
+            local generateMaster = MENU_GROUP_COMMAND:New( playerGroup, "Generate Master", IntelMenu, requestGenerateMaster)
 
-            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, wipeLastAssets, wipeSpawnedAssets }
+            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, wipeLastAssets, wipeSpawnedAssets, generateMaster }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]

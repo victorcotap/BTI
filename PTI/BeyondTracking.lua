@@ -1,42 +1,14 @@
 env.info("BTI: Tracking here!")
 
-local master = {}
-local masterPath = "C:\\BTI\\MasterFile.json"
+local trackingMaster = {}
+local persistenceMaster = {}
+local trackingMasterPath = "C:\\BTI\\TrackingFile.json"
+local persistenceMasterPath = "C:\\BTI\\PersistenceMaster.json"
+
 
 -- debug -----------------------------------------------
--- json = require "json"
--- local json = dofile('json.lua')
--- env.info("BTI: After json")
--- UTILS.OneLineSerialize({"toto", "tata"})
--- -- local toto = JSONLib.decode('[1,2,3,{"x":10}]')
--- local toto = JSONLib.decode('{"toto" : 2, "tata": 4}')
-
--- UTILS.OneLineSerialize(toto)
--- env.info("BTI: env toto ", toto)
--- local encoded = JSONLib.encode(toto)
--- env.info("BTI: env encode " .. encoded)
-
-master = {
-    ["Coast"] = {
-        [1] = {
-            ["ZoneName"] = "Kessel",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 1
-        },
-        [2] = {
-            ["ZoneName"] = "Felucia",
-            ["Coalition"] = 1,
-            ["SideMissions"] = 2
-        },
-    },
+persistenceMaster = {
     ["AAAAA"] = "Test String",
-    ["Resources"] = {
-        ["tank"] = 10,
-        ["arty"] = 10,
-        ["apc"] = 10,
-        ["repair"] = 10,
-        ["result"] = 234356
-    },
     ["Support"] = {
         ["Helos"] = 2
     }
@@ -46,10 +18,12 @@ master = {
 -- File functions -----------------------------------------------------------------------------
 function loadFile(path)
     local file, err = io.open(path, "r")
-    local buffer, error = file:read("*a")
     if err ~= nil then
-        env.info("BTI: Error loading tracking master file" .. error)
+        env.info("BTI: Error loading tracking master file" .. err)
+        return nil
     end
+
+    local buffer, error = file:read("*a")
     return buffer
 end
 
@@ -61,35 +35,66 @@ end
 
 -- Tracking functions -----------------------------------------------------------------------------
 
-SetGroups = SET_GROUP:New():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
+function trackGroup(group, master)
+    local groupName = group.GroupName
+    local groupCategory = group:GetCategoryName()
+    local groupType = group:GetTypeName()
+    local groupCoord = group:GetCoordinate()
+    local lat, lon = coord.LOtoLL(groupCoord:GetVec3())
+    local groupAlive = group:IsAlive()
+    if groupName and lat and lon then
+        env.info(string.format("BTI: Tracking group %s of type %s and category %s alive %s coord lat %f lon %f", groupName, groupType, groupCategory, tostring(groupAlive), lat, lon))
+        master[groupName] = {
+            ["alive"] = groupAlive,
+            ["category"] = groupCategory,
+            ["type"] = groupType,
+            ["latitude"] = lat,
+            ["longitude"] = lon
+        }
+    end
+end
 
-function trackGroups()
-    env.info("BTI: trackikng groups")
-    SetGroups:ForEachGroup(
+SetPersistenceGroups = SET_GROUP:New():FilterActive():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
+SetTrackingGroups = SET_GROUP:New():FilterCoalitions("red"):FilterStart()
+
+function trackAliveGroups()
+    SetTrackingGroups:ForEachGroup(
         function (group)
-            local groupName = group.GroupName
-            local groupCoord = group:GetCoordinate()
-            local lat, lon = coord.LOtoLL(groupCoord:GetVec3())
-            local groupAlive = group:IsAlive()
-            if groupName and lat and lon then
-                env.info(string.format("BTI: Tracking group %s alive %s coord lat %f lon %f", groupName, tostring(groupAlive), lat, lon))
-                master[groupName] = {
-                    ["alive"] = groupAlive,
-                    ["latitude"] = lat,
-                    ["longitude"] = lon 
-                }
-            end
+            trackGroup(group, trackingMaster)
         end
     )
-    env.info("BTI: trackikng finished")
+    env.info("BTI: trackikng alive finished")
+end
 
+function trackPersistenceGroups()
+    SetPersistenceGroups:ForEachGroup(
+        function (group)
+            trackGroup(group, persistenceMaster)
+        end
+    )
+    env.info("BTI: trackikng persistence finished")
 end
 
 function applyMaster(master)
     env.info("BTI: apply master")
+    persistenceMaster = master
+    for groupName, group in pairs(persistenceMaster) do
+        env.info("BTI: Found group persisted " .. groupName .. ": " .. UTILS.OneLineSerialize(group))
+        local persistedGroup = persistenceMaster[groupName]
+        local dcsGroup = GROUP:FindByName(groupName)
+        if dcsGroup ~= nil and group["alive"] == false then
+            env.info("BTI: Destroying group")
+            dcsGroup:Destroy()
+        end
+    end
+    -- TODO foreach group of master, check if alive and destroy if not
 end
 
-function saveMasterTracking()
+function saveMasterTracking(master, masterPath)
+    if master == nil then
+        env.info("BTI: No master provided for saving")
+        return
+    end
     local newMasterJSON = JSONLib.encode(master)
     env.info("BTI: encoding new master JSON" .. newMasterJSON)
     saveFile(masterPath, newMasterJSON)
@@ -97,22 +102,21 @@ end
 
 -- Tracking Engine --------------------------------------------------------
 function startTrackingEngine()
-    local savedMasterBuffer = loadFile(masterPath)
+    local savedMasterBuffer = loadFile(persistenceMasterPath)
     if savedMasterBuffer ~= nil then
         local savedMaster = JSONLib.decode(savedMasterBuffer)
         applyMaster(savedMaster)
     else
         env.info("BTI: No Tracking master file found")
     end
-    SCHEDULER:New(nil, trackGroups, {"something"}, 4)
-    -- SCHEDULER:New(nil, saveMasterTracking, {"something"}, 10)
+    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 4, 60)
+    SCHEDULER:New(nil, saveMasterTracking, {persistenceMaster, persistenceMasterPath}, 10, 90)
+   
+    SCHEDULER:New(nil, trackAliveGroups, {"something"}, 30, 60)
+    SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 20, 90)
+
 end
 
-local masterJSON = JSONLib.encode(master)
-env.info("BTI: Master JSON " .. masterJSON)
-saveFile(masterPath, masterJSON)
-
 startTrackingEngine()
-
 
 env.info("BTI: Tracking better than google tracks your location")
