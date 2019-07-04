@@ -39,10 +39,15 @@ function trackGroup(group, master)
     local groupName = group.GroupName
     local groupCategory = group:GetCategoryName()
     local groupType = group:GetTypeName()
-    local groupCoord = group:GetCoordinate()
-    local lat, lon = coord.LOtoLL(groupCoord:GetVec3())
     local groupAlive = group:IsAlive()
-    if groupName and lat and lon then
+
+    local groupCoord = group:GetCoordinate()
+    local lat, lon = nil
+    if groupCoord ~= nil then
+        lat, lon = coord.LOtoLL(groupCoord:GetVec3())
+    end
+    -- local lat, lon = coord.LOtoLL(groupCoord:GetVec3())
+    if groupName then
         env.info(string.format("BTI: Tracking group %s of type %s and category %s alive %s coord lat %f lon %f", groupName, groupType, groupCategory, tostring(groupAlive), lat, lon))
         master[groupName] = {
             ["alive"] = groupAlive,
@@ -54,7 +59,7 @@ function trackGroup(group, master)
     end
 end
 
-SetPersistenceGroups = SET_GROUP:New():FilterActive():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
+SetPersistenceGroups = SET_GROUP:New():FilterActive(false):FilterCoalitions("red"):FilterCategoryGround():FilterStart()
 SetTrackingGroups = SET_GROUP:New():FilterCoalitions("red"):FilterStart()
 
 function trackAliveGroups()
