@@ -48,7 +48,7 @@ function trackGroup(group, master)
         lat, lon = coord.LOtoLL(groupCoord:GetVec3())
     end
     if groupName then
-        -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupName, groupCategory, groupType, groupAlive}))
+        env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupName, groupCategory, groupType, groupAlive}))
         master[groupName] = {
             ["alive"] = groupAlive,
             ["coalition"] = groupCoalition,
@@ -60,8 +60,8 @@ function trackGroup(group, master)
     end
 end
 
-SetPersistenceGroups = SET_GROUP:New():FilterActive(true):FilterCoalitions("red"):FilterCategoryGround():FilterStart()
-SetTrackingGroups = SET_GROUP:New():FilterActive():FilterStart()
+SetPersistenceGroups = SET_GROUP:New():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
+SetTrackingGroups = SET_GROUP:New():FilterStart()
 
 function trackAliveGroups()
     SetTrackingGroups:ForEachGroup(
