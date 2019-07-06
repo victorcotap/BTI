@@ -37,6 +37,7 @@ end
 
 function trackGroup(group, master)
     local groupName = group.GroupName
+    local groupCoalition = group:GetCoalition()
     local groupCategory = group:GetCategoryName()
     local groupType = group:GetTypeName()
     local groupAlive = group:IsAlive()
@@ -50,6 +51,7 @@ function trackGroup(group, master)
         -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupName, groupCategory, groupType, groupAlive}))
         master[groupName] = {
             ["alive"] = groupAlive,
+            ["coalition"] = groupCoalition,
             ["category"] = groupCategory,
             ["type"] = groupType,
             ["latitude"] = lat,
