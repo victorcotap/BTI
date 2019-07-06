@@ -46,9 +46,8 @@ function trackGroup(group, master)
     if groupCoord ~= nil then
         lat, lon = coord.LOtoLL(groupCoord:GetVec3())
     end
-    -- local lat, lon = coord.LOtoLL(groupCoord:GetVec3())
     if groupName then
-        env.info(string.format("BTI: Tracking group %s of type %s and category %s alive %s coord lat %f lon %f", groupName, groupType, groupCategory, tostring(groupAlive), lat, lon))
+        -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupName, groupCategory, groupType, groupAlive}))
         master[groupName] = {
             ["alive"] = groupAlive,
             ["category"] = groupCategory,
@@ -59,8 +58,8 @@ function trackGroup(group, master)
     end
 end
 
-SetPersistenceGroups = SET_GROUP:New():FilterActive(false):FilterCoalitions("red"):FilterCategoryGround():FilterStart()
-SetTrackingGroups = SET_GROUP:New():FilterCoalitions("red"):FilterStart()
+SetPersistenceGroups = SET_GROUP:New():FilterActive(true):FilterCoalitions("red"):FilterCategoryGround():FilterStart()
+SetTrackingGroups = SET_GROUP:New():FilterActive():FilterStart()
 
 function trackAliveGroups()
     SetTrackingGroups:ForEachGroup(
@@ -68,7 +67,7 @@ function trackAliveGroups()
             trackGroup(group, trackingMaster)
         end
     )
-    env.info("BTI: trackikng alive finished")
+    env.info("BTI: tracking alive finished")
 end
 
 function trackPersistenceGroups()
@@ -77,7 +76,7 @@ function trackPersistenceGroups()
             trackGroup(group, persistenceMaster)
         end
     )
-    env.info("BTI: trackikng persistence finished")
+    env.info("BTI: tracking persistence finished")
 end
 
 function applyMaster(master)
@@ -87,9 +86,10 @@ function applyMaster(master)
         env.info("BTI: Found group persisted " .. groupName .. ": " .. UTILS.OneLineSerialize(group))
         local persistedGroup = persistenceMaster[groupName]
         local dcsGroup = GROUP:FindByName(groupName)
-        if dcsGroup ~= nil and group["alive"] == false then
-            env.info("BTI: Destroying group")
-            dcsGroup:Destroy()
+        if dcsGroup ~= nil then
+            if group["alive"] == nil or group["alive"] == false then
+                dcsGroup:Destroy()
+            end
         end
     end
     -- TODO foreach group of master, check if alive and destroy if not
@@ -114,8 +114,8 @@ function startTrackingEngine()
     else
         env.info("BTI: No Tracking master file found")
     end
-    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 4, 60)
-    SCHEDULER:New(nil, saveMasterTracking, {persistenceMaster, persistenceMasterPath}, 10, 90)
+    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 4, 45)
+    SCHEDULER:New(nil, saveMasterTracking, {persistenceMaster, persistenceMasterPath}, 10, 80)
    
     SCHEDULER:New(nil, trackAliveGroups, {"something"}, 30, 60)
     SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 20, 90)
