@@ -1,18 +1,12 @@
 env.info("BTI: Tracking here!")
 
 local trackingMaster = {}
-local persistenceMaster = {}
+-- local persistenceMaster = {}
 local trackingMasterPath = "C:\\BTI\\TrackingFile.json"
-local persistenceMasterPath = "C:\\BTI\\PersistenceMaster.json"
+-- local persistenceMasterPath = "C:\\BTI\\PersistenceMaster.json"
 
 
 -- debug -----------------------------------------------
-persistenceMaster = {
-    ["AAAAA"] = "Test String",
-    ["Support"] = {
-        ["Helos"] = 2
-    }
-}
 
 
 -- File functions -----------------------------------------------------------------------------
@@ -48,7 +42,7 @@ function trackGroup(group, master)
         lat, lon = coord.LOtoLL(groupCoord:GetVec3())
     end
     if groupName then
-        env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupName, groupCategory, groupType, groupAlive}))
+        -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupCoalition, groupName, groupCategory, groupType, groupAlive}))
         master[groupName] = {
             ["alive"] = groupAlive,
             ["coalition"] = groupCoalition,
@@ -60,8 +54,8 @@ function trackGroup(group, master)
     end
 end
 
-SetPersistenceGroups = SET_GROUP:New():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
-SetTrackingGroups = SET_GROUP:New():FilterStart()
+SetPersistenceGroups = SET_GROUP:New():FilterActive():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
+SetTrackingGroups = SET_GROUP:New():FilterActive():FilterStart()
 
 function trackAliveGroups()
     SetTrackingGroups:ForEachGroup(
@@ -72,21 +66,34 @@ function trackAliveGroups()
     env.info("BTI: tracking alive finished")
 end
 
-function trackPersistenceGroups()
-    SetPersistenceGroups:ForEachGroup(
-        function (group)
-            trackGroup(group, persistenceMaster)
+function computePersistenceGroups()
+    for groupName, group in pairs(trackingMaster) do
+        env.info("BTI: Looking for group " .. groupName)
+        if group["alive"] and group["coalition"] == 1 then
+            local dcsGroup = GROUP:FindByName(groupName)
+            if dcsGroup ~= nil then
+                env.info("BTI: current group " .. UTILS.OneLineSerialize(dcsGroup))
+                if dcsGroup.IsActive == nil then
+                    env.info("BTI: marking group as dead")
+                    trackingMaster[groupName]["alive"] = false
+                end
+            else
+                env.info("BTI: can't find group, marking group as dead")
+                trackingMaster[groupName]["alive"] = false
+            end
         end
-    )
+    end
     env.info("BTI: tracking persistence finished")
+end
+
+function generateMaster()
 end
 
 function applyMaster(master)
     env.info("BTI: apply master")
-    persistenceMaster = master
-    for groupName, group in pairs(persistenceMaster) do
+    for groupName, group in pairs(master) do
         env.info("BTI: Found group persisted " .. groupName .. ": " .. UTILS.OneLineSerialize(group))
-        local persistedGroup = persistenceMaster[groupName]
+        local persistedGroup = master[groupName]
         local dcsGroup = GROUP:FindByName(groupName)
         if dcsGroup ~= nil then
             if group["alive"] == nil or group["alive"] == false then
@@ -109,18 +116,20 @@ end
 
 -- Tracking Engine --------------------------------------------------------
 function startTrackingEngine()
-    local savedMasterBuffer = loadFile(persistenceMasterPath)
+    local savedMasterBuffer = loadFile(trackingMasterPath)
     if savedMasterBuffer ~= nil then
         local savedMaster = JSONLib.decode(savedMasterBuffer)
         applyMaster(savedMaster)
     else
-        env.info("BTI: No Tracking master file found")
+        env.info("BTI: No Tracking master file found, reset in progress")
     end
-    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 4, 45)
-    SCHEDULER:New(nil, saveMasterTracking, {persistenceMaster, persistenceMasterPath}, 10, 80)
+    SCHEDULER:New(nil, trackAliveGroups, {"something"}, 5, 30)
+
+    SCHEDULER:New(nil, computePersistenceGroups, {"something"}, 10, 60)
+
+    -- SCHEDULER:New(nil, saveMasterTracking, {persistenceMaster, persistenceMasterPath}, 10, 80)
    
-    SCHEDULER:New(nil, trackAliveGroups, {"something"}, 30, 60)
-    SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 20, 90)
+    SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 30, 60)
 
 end
 
