@@ -41,6 +41,7 @@ function trackGroup(group, master)
     if groupCoord ~= nil then
         lat, lon = coord.LOtoLL(groupCoord:GetVec3())
     end
+
     if groupName then
         -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupCoalition, groupName, groupCategory, groupType, groupAlive}))
         master[groupName] = {
@@ -54,7 +55,6 @@ function trackGroup(group, master)
     end
 end
 
-SetPersistenceGroups = SET_GROUP:New():FilterActive():FilterCoalitions("red"):FilterCategoryGround():FilterStart()
 SetTrackingGroups = SET_GROUP:New():FilterActive():FilterStart()
 
 function trackAliveGroups()
@@ -71,10 +71,12 @@ function computePersistenceGroups()
         env.info("BTI: Looking for group " .. groupName)
         if group["alive"] and group["coalition"] == 1 then
             local dcsGroup = GROUP:FindByName(groupName)
+
             if dcsGroup ~= nil then
-                env.info("BTI: current group " .. UTILS.OneLineSerialize(dcsGroup))
-                if dcsGroup.IsActive == nil then
-                    env.info("BTI: marking group as dead")
+                local groupUnits = dcsGroup:GetUnits()
+                env.info("BTI: group units " .. UTILS.OneLineSerialize(groupUnits))
+                if #groupUnits == 0 then
+                    env.info("BTI: can't find units marking group as dead")
                     trackingMaster[groupName]["alive"] = false
                 end
             else
@@ -126,8 +128,6 @@ function startTrackingEngine()
     SCHEDULER:New(nil, trackAliveGroups, {"something"}, 5, 30)
 
     SCHEDULER:New(nil, computePersistenceGroups, {"something"}, 10, 60)
-
-    -- SCHEDULER:New(nil, saveMasterTracking, {persistenceMaster, persistenceMasterPath}, 10, 80)
    
     SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 30, 60)
 
