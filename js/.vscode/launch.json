@@ -2,6 +2,12 @@
     "version": "0.2.0",
     "configurations": [
       {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Core",
+        "program": "${workspaceFolder}/core/build/app.js"
+      },
+      {
         "name": "Chrome",
         "type": "chrome",
         "request": "launch",

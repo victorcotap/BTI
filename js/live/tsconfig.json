@@ -10,8 +10,10 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,

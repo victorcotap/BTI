@@ -1,5 +1,9 @@
 import React from 'react';
+import { BrowserRouter, Route, Link } from "react-router-dom";
+import Map from './ui/map';
+
 import './App.css';
+
 
 console.log("toto");
 
@@ -11,7 +15,9 @@ const App: React.FC = () => {
         <a>Map </a>
         <a>About</a>
       </header>
-        Toto
+      <div className="App-content">
+        <Map />
+      </div>
     </div>
   );
 }
