@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Link } from "react-router-dom";
+// import { BrowserRouter, Route, Link } from "react-router-dom";
 import Map from './ui/map';
 
 import './App.css';
@@ -11,9 +11,9 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <header>
-        <a>Briefing </a>
-        <a>Map </a>
-        <a>About</a>
+        <h3>Briefing </h3>
+        <h3>Map </h3>
+        <h3>About</h3>
       </header>
       <div className="App-content">
         <Map />

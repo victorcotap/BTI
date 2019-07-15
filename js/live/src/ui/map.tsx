@@ -7,6 +7,27 @@ const Mapbox = ReactMapboxGl({
 
 export default class Map extends React.Component {
 
+    async refreshData() {
+        try {
+            const newData = await fetch("http://localhost:3001/live", { 
+                method: 'GET', 
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const toto = await newData.text()
+            const newJSON = await newData.json()
+            console.log(newJSON);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    componentDidMount() {
+        this.refreshData()
+    }
+
     render() {
         return (
             <div>

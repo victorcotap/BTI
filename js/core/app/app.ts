@@ -1,8 +1,10 @@
 import express from 'express';
+import cors from 'cors';
+
 import liveDataRouter from './liveData';
 
 const app = express()
-
+app.use(cors());
 
 app.get('/', function(req, res) {
     res.send({"hello" : "world"})
