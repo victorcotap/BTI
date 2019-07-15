@@ -20,7 +20,10 @@ const util_1 = require("util");
 const readFile = util_1.promisify(fs.readFile);
 class TrackingStore {
     constructor(filePath) {
-        this.cache = { time: new Date() };
+        this.cache = {
+            time: new Date(),
+            currentGroups: Array()
+        };
         this.filePath = filePath;
         this.readTrackingFile();
     }
@@ -29,8 +32,7 @@ class TrackingStore {
             try {
                 const buffer = yield readFile(this.filePath, { encoding: 'utf-8' });
                 const json = JSON.parse(buffer);
-                const groups = json;
-                this.cache.currentGroups = groups;
+                this.cache.currentGroups = Object.values(json);
                 this.cache.time = new Date();
             }
             catch (error) {

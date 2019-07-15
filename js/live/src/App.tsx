@@ -4,9 +4,6 @@ import Map from './ui/map';
 
 import './App.css';
 
-
-console.log("toto");
-
 const App: React.FC = () => {
   return (
     <div className="App">
