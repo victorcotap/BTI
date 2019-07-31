@@ -4,10 +4,11 @@ var category;
 (function (category) {
     category["Airplane"] = "Airplane";
     category["Ground"] = "Ground Unit";
-})(category || (category = {}));
+    category["Ship"] = "Ship";
+})(category = exports.category || (exports.category = {}));
 var coalition;
 (function (coalition) {
     coalition[coalition["Blue"] = 2] = "Blue";
     coalition[coalition["Red"] = 1] = "Red";
-})(coalition || (coalition = {}));
+})(coalition = exports.coalition || (exports.coalition = {}));
 //# sourceMappingURL=group.js.map

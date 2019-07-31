@@ -35,6 +35,8 @@ function trackGroup(group, master)
     local groupCategory = group:GetCategoryName()
     local groupType = group:GetTypeName()
     local groupAlive = group:IsAlive()
+    local groupHeading = group:GetHeading()
+    local groupHeight = group:GetHeight()
 
     local groupCoord = group:GetCoordinate()
     local lat, lon = nil
@@ -50,7 +52,9 @@ function trackGroup(group, master)
             ["category"] = groupCategory,
             ["type"] = groupType,
             ["latitude"] = lat,
-            ["longitude"] = lon
+            ["longitude"] = lon,
+            ["heading"] = groupHeading,
+            ["height"] = groupHeight,
         }
     end
 end

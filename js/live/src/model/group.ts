@@ -1,4 +1,4 @@
-export enum category { Airplane = "Airplane", Ground = "Ground Unit"}
+export enum category { Airplane = "Airplane", Ground = "Ground Unit", Ship = "Ship"}
 export enum coalition {Blue = 2, Red = 1}
 
 export default interface Group {
@@ -8,4 +8,6 @@ export default interface Group {
     latitude: number,
     longitude: number,
     type: string,
+    heading: number,
+    height: number,
 }
