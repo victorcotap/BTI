@@ -36,7 +36,6 @@ export default class Map extends React.Component {
             if (groups) {
                 this.setState({ currentGroups: groups })
             }
-            console.log(currentGroups);
         } catch (error) {
             console.log(error);
         }
@@ -47,8 +46,6 @@ export default class Map extends React.Component {
     }
 
     render() {
-        // console.log(this.state.currentGroups);
-
         if (!this.state.currentGroups.length) {
             return (
                 <h2>Loading...</h2>
