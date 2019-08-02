@@ -1,8 +1,9 @@
 import React from 'react';
-import ReactMapboxGl, {Popup} from "react-mapbox-gl";
+import ReactMapboxGl from "react-mapbox-gl";
 
 import Group from '../model/group';
 import renderLayers from '../utils/layerRenderer';
+import GroupPopup from './GroupPopup';
 
 import './map.css';
 
@@ -59,7 +60,10 @@ export default class Map extends React.Component {
         }
         const {selectedGroup} = this.state;
         const layers = renderLayers(this.state.currentGroups, (group: Group) => this.groupClickHandler(group));
-        
+        let popup = undefined;
+        if (selectedGroup) {
+            popup = (<GroupPopup group={selectedGroup} />);
+        }
         return (
             <div>
                 <h1>Here is the map</h1>
@@ -72,14 +76,7 @@ export default class Map extends React.Component {
                     }}>
                     {layers}
                     {/* noop */}
-                    {selectedGroup ? <Popup key={selectedGroup.type} coordinates={[selectedGroup.longitude, selectedGroup.latitude]} offset={15}>
-                        <div className="PopupText">
-                            <h1>{selectedGroup.type}</h1>
-                            <span>Lon: {selectedGroup.longitude} Lat: {selectedGroup.latitude}</span><br />
-                            <span>{selectedGroup.height} meters</span><br />
-                            <span>{selectedGroup.heading} degrees</span>
-                        </div>
-                    </Popup> : null }
+                    {popup ? popup : null }
                 </Mapbox>
             </div>
         )

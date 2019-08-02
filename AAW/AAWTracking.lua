@@ -72,13 +72,11 @@ end
 
 function computePersistenceGroups()
     for groupName, group in pairs(trackingMaster) do
-        env.info("BTI: Looking for group " .. groupName)
         if group["alive"] and group["coalition"] == 1 then
             local dcsGroup = GROUP:FindByName(groupName)
 
             if dcsGroup ~= nil then
                 local groupUnits = dcsGroup:GetUnits()
-                env.info("BTI: group units " .. UTILS.OneLineSerialize(groupUnits))
                 if #groupUnits == 0 then
                     env.info("BTI: can't find units marking group as dead")
                     trackingMaster[groupName]["alive"] = false
