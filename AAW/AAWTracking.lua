@@ -98,11 +98,11 @@ end
 function applyMaster(master)
     env.info("BTI: apply master")
     for groupName, group in pairs(master) do
-        env.info("BTI: Found group persisted " .. groupName .. ": " .. UTILS.OneLineSerialize(group))
         local persistedGroup = master[groupName]
         local dcsGroup = GROUP:FindByName(groupName)
         if dcsGroup ~= nil then
             if group["alive"] == nil or group["alive"] == false then
+                env.info("BTI: Destroying dead group" .. groupName)
                 dcsGroup:Destroy()
             end
         end
