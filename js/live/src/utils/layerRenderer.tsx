@@ -1,8 +1,20 @@
 import React from 'react';
 
-
 import Group, { category, coalition } from '../model/group';
 import { Layer, Feature } from "react-mapbox-gl";
+
+import BlueAir from '../assets/Blue-Air.png';
+import BlueGround from '../assets/Blue-Ground.png';
+import RedAir from '../assets/Red-Air.png'
+import RedGround from '../assets/Red-Ground.png';
+const RedGroundImage = new Image(25, 25)
+RedGroundImage.src = RedGround;
+const RedAirImage = new Image(25, 25)
+RedAirImage.src = RedAir;
+const BlueGroundImage = new Image(25, 25)
+BlueGroundImage.src = BlueGround;
+const BlueAirImage = new Image(25, 25)
+BlueAirImage.src = BlueAir;
 
 
 function renderGroup(group: Group, clickHandler: (group: Group) => void) {
@@ -27,7 +39,8 @@ export default function renderLayers(groups: Group[], clickHandler: (group: Grou
         key="redGroundLayer"
         type="symbol"
         id="redGroundLayer"
-        layout={{ "icon-image": "fi-main-2" }}>
+        images={["Red-Ground", RedGroundImage]}
+        layout={{ "icon-image": "Red-Ground" }}>
         {redGroundGroups}
     </Layer>)
     const unitsLayers = [redGroundLayer]
@@ -37,7 +50,8 @@ export default function renderLayers(groups: Group[], clickHandler: (group: Grou
         key="redAirLayer"
         type="symbol"
         id="redAirLayer"
-        layout={{ "icon-image": "nz-state-2" }}>
+        images={["Red-Air", RedAirImage]}
+        layout={{ "icon-image": "Red-Air" }}>
         {redAirGroups}
     </Layer>)
     unitsLayers.push(redAirLayer)
@@ -47,7 +61,8 @@ export default function renderLayers(groups: Group[], clickHandler: (group: Grou
         key="blueGroundLayer"
         type="symbol"
         id="blueGroundLayer"
-        layout={{ "icon-image": "hu-state-2" }}>
+        images={["Blue-Ground", BlueGroundImage]}
+        layout={{ "icon-image": "Blue-Ground" }}>
         {blueGroundGroups}
     </Layer>)
     unitsLayers.push(blueGroundLayer)
@@ -57,7 +72,8 @@ export default function renderLayers(groups: Group[], clickHandler: (group: Grou
         key="blueAirLayer"
         type="symbol"
         id="blueAirLayer"
-        layout={{ "icon-image": "airfield-15" }}>
+        images={["Blue-Air", BlueAirImage]}
+        layout={{ "icon-image": "Blue-Air" }}>
         {blueAirGroups}
     </Layer>)
     unitsLayers.push(blueAirLayer);

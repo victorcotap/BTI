@@ -10,16 +10,15 @@ interface GroupPopupProps {
 }
 
 const GroupPopup: React.StatelessComponent<{group: Group}> = ({children, group}) => {
-    //TODO convert to different lat lon formats
-
-
     return (
         <Popup key={group.type} coordinates={[group.longitude, group.latitude]} offset={15}>
             <div className="PopupText">
-                <h2>{group.type}</h2>
-                <span>Lon: {group.longitude} Lat: {group.latitude}</span><br />
-                <span>{group.height} m</span><br />
-                <span>HDG {group.heading}</span>
+                <h1>{group.type}</h1>
+                <span>{group.LLDMS}</span><br />
+                <span>{group.MGRS}</span><br />
+                <span>{group.LLDDM}</span><br />
+                <span><b>Altitude: </b> {group.height} meters</span><br />
+                <span><b>HDG: </b>{group.heading}</span>
             </div>
         </Popup>
     )

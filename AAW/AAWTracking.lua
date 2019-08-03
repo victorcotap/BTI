@@ -39,9 +39,12 @@ function trackGroup(group, master)
     local groupHeight = group:GetHeight()
 
     local groupCoord = group:GetCoordinate()
-    local lat, lon = nil
+    local lat, lon, LLDMS, LLDDM, MGRS = nil
     if groupCoord ~= nil then
         lat, lon = coord.LOtoLL(groupCoord:GetVec3())
+        LLDMS = groupCoord:ToStringLLDMS()
+        LLDDM = groupCoord:ToStringLLDDM()
+        MGRS = groupCoord:ToStringMGRS()
     end
 
     if groupName then
@@ -53,6 +56,9 @@ function trackGroup(group, master)
             ["type"] = groupType,
             ["latitude"] = lat,
             ["longitude"] = lon,
+            ["LLDMS"] = LLDMS,
+            ["LLDDM"] = LLDDM,
+            ["MGRS"] = MGRS,
             ["heading"] = groupHeading,
             ["height"] = groupHeight,
         }
