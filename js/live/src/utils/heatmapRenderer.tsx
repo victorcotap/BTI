@@ -18,7 +18,7 @@ export default function renderHeatmap(groups: Group[]) {
             ["linear"],
             ["zoom"],
             0, 1,
-            9, 3
+            9, 2
         ],
         // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
         // Begin color ramp at 0-stop with a 0-transparancy color
@@ -39,15 +39,15 @@ export default function renderHeatmap(groups: Group[]) {
             "interpolate",
             ["linear"],
             ["zoom"],
-            0, 2,
-            9, 20
+            0, 1,
+            9, 23
         ],
         "heatmap-opacity": [
             "interpolate",
             ["linear"],
             ["zoom"],
-            7, 1,
-            9, 0
+            10, 1,
+            19, 0
         ],
     };
 

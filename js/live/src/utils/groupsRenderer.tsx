@@ -1,19 +1,23 @@
 import React from 'react';
 
-import Group, { category, coalition } from '../model/group';
+import Group, { category, coalition, attributes } from '../model/group';
 import { Layer, Feature } from "react-mapbox-gl";
 
 import BlueAir from '../assets/Blue-Air.png';
 import BlueGround from '../assets/Blue-Ground.png';
 import RedAir from '../assets/Red-Air.png'
 import RedGround from '../assets/Red-Ground.png';
-const RedGroundImage = new Image(25, 25)
+import RedSAM from '../assets/Red-SAM.png';
+
+const RedGroundImage = new Image(35, 35)
 RedGroundImage.src = RedGround;
-const RedAirImage = new Image(25, 25)
+const RedAirImage = new Image(35, 35)
 RedAirImage.src = RedAir;
-const BlueGroundImage = new Image(25, 25)
+const RedSAMImage = new Image(35, 35)
+RedSAMImage.src = RedSAM
+const BlueGroundImage = new Image(35, 35)
 BlueGroundImage.src = BlueGround;
-const BlueAirImage = new Image(25, 25)
+const BlueAirImage = new Image(35, 35)
 BlueAirImage.src = BlueAir;
 
 
@@ -55,6 +59,18 @@ export default function renderLayers(groups: Group[], clickHandler: (group: Grou
         {redAirGroups}
     </Layer>)
     unitsLayers.push(redAirLayer)
+
+    // const redSAMGroups = groups.filter((group) => group.category === category.Ground && group.coalition === coalition.Red && group.attributes[attributes.SAM]).map((group) => renderGroup(group, clickHandler));
+    // const redSAMLayer = (<Layer
+    //     key="redAirLayer"
+    //     type="symbol"
+    //     id="redAirLayer"
+    //     images={["Red-SAM", RedSAMImage]}
+    //     layout={{ "icon-image": "Red-SAM" }}>
+    //     {redSAMGroups}
+    // </Layer>)
+    // unitsLayers.push(redSAMLayer)
+
 
     const blueGroundGroups = groups.filter((group) => group.category === category.Ground && group.coalition === coalition.Blue).map((group) => renderGroup(group, clickHandler));
     const blueGroundLayer = (<Layer
