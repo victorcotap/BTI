@@ -13,7 +13,7 @@ const GroupPopup: React.StatelessComponent<{group: Group}> = ({children, group})
     return (
         <Popup key={group.type} coordinates={[group.longitude, group.latitude]} offset={15}>
             <div className="PopupText">
-                <h1>{group.type}</h1>
+                <h1>{group.displayName}</h1>
                 <span>{group.LLDMS}</span><br />
                 <span>{group.MGRS}</span><br />
                 <span>{group.LLDDM}</span><br />

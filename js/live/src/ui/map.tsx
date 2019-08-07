@@ -63,9 +63,9 @@ export default class Map extends React.Component {
         const {selectedGroup} = this.state;
         const groupLayers = renderLayers(this.state.currentGroups, (group: Group) => this.groupClickHandler(group));
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
-        console.log({heatmapLayer});
         let popup = undefined;
         if (selectedGroup) {
+            console.log(selectedGroup);
             popup = (<GroupPopup group={selectedGroup} />);
         }
         

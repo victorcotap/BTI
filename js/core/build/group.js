@@ -5,6 +5,7 @@ var category;
     category["Airplane"] = "Airplane";
     category["Ground"] = "Ground Unit";
     category["Ship"] = "Ship";
+    category["Helicopter"] = "Helicopter";
 })(category = exports.category || (exports.category = {}));
 var coalition;
 (function (coalition) {
