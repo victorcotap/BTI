@@ -18,11 +18,14 @@ var attributes;
     attributes["Helicopters"] = "Helicopters";
     attributes["Infantry"] = "New infantry";
     attributes["SAM"] = "SAM";
+    attributes["SAMRelated"] = "SAM related";
     attributes["AAA"] = "AAA";
     attributes["APC"] = "APC";
     attributes["Armor"] = "Armored vehicle";
     attributes["HeavyArmor"] = "HeavyArmoredUnits";
     attributes["LightArmor"] = "LightArmoredUnits";
     attributes["Artillery"] = "Artillery";
+    attributes["Trucks"] = "Trucks";
+    attributes["Cars"] = "Cars";
 })(attributes = exports.attributes || (exports.attributes = {}));
 //# sourceMappingURL=group.js.map

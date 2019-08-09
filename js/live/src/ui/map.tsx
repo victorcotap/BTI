@@ -7,6 +7,7 @@ import renderHeatmap from '../utils/heatmapRenderer';
 import GroupPopup from './GroupPopup';
 
 import './map.css';
+import config from '../config.json';
 
 const Mapbox = ReactMapboxGl({
     accessToken: "pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA"
@@ -24,7 +25,7 @@ export default class Map extends React.Component {
 
 
     private async fetchData() {
-        return fetch("http://localhost:3001/live", {
+        return fetch(config.coreTunnel + "/live", {
             method: 'GET',
             mode: 'cors',
             headers: {
