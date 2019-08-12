@@ -19,7 +19,7 @@ const trackingFilePath = "/BTI/TrackingFile.json";
 const store = new trackingStore_1.default(trackingFilePath);
 router.get('/', (request, response) => __awaiter(this, void 0, void 0, function* () {
     const currentTime = new Date();
-    if (currentTime.getTime() - store.cache.time.getTime() > 10000) {
+    if (currentTime.getTime() - store.cache.time.getTime() > 30000) {
         yield store.readTrackingFile();
     }
     response.json({ currentGroups: store.cache.currentGroups });

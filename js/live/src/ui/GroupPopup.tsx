@@ -6,10 +6,11 @@ import Group from '../model/group';
 import './map.css';
 
 interface GroupPopupProps {
-    group: Group
+    group: Group,
+    closePopup: () => void
 }
 
-const GroupPopup: React.StatelessComponent<{group: Group}> = ({children, group}) => {
+const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group, closePopup}) => {
     return (
         <Popup key={group.type} coordinates={[group.longitude, group.latitude]} offset={15}>
             <div className="PopupText">
@@ -17,8 +18,9 @@ const GroupPopup: React.StatelessComponent<{group: Group}> = ({children, group})
                 <span>{group.LLDMS}</span><br />
                 <span>{group.MGRS}</span><br />
                 <span>{group.LLDDM}</span><br />
-                <span><b>Altitude: </b> {group.height} meters</span><br />
-                <span><b>HDG: </b>{group.heading}</span>
+                <span><b>Altitude: </b> {group.height.toFixed(1)} meters</span><br />
+                <span><b>HDG: </b>{group.heading}</span><br />
+                <button onClick={closePopup}>Close</button>
             </div>
         </Popup>
     )

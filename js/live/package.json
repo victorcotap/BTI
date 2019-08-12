@@ -9,6 +9,7 @@
     "@types/react-dom": "16.8.4",
     "@types/react-map-gl": "^5.0.0",
     "@types/react-router-dom": "^4.3.4",
+    "dms-conversion": "^3.1.1",
     "mapbox-gl": "^1.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

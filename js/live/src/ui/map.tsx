@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactMapboxGl from "react-mapbox-gl";
+import MapboxGl, { MapMouseEvent } from 'mapbox-gl';
+import DmsCoordinates from 'dms-conversion';
 
 import Group from '../model/group';
 import renderLayers from '../utils/groupsRenderer';
@@ -16,6 +18,7 @@ const Mapbox = ReactMapboxGl({
 interface State {
     currentGroups: Group[],
     selectedGroup?: Group,
+    selectedPoint?: {lat: number, lng: number},
 }
 
 export default class Map extends React.Component {
@@ -47,11 +50,23 @@ export default class Map extends React.Component {
         }
     }
     private groupClickHandler(group: Group) {
-        this.setState({selectedGroup: group})
+        this.setState({selectedGroup: group});
+    }
+    private groupPopupClose() {
+        this.setState({selectedGroup: undefined});
+    }
+    private mapMouseMove(map: MapboxGl.Map, event: React.SyntheticEvent<MapMouseEvent>) {
+        //Todo: add a moving point display top state
+    }
+
+    private mapMouseClick(map: MapboxGl.Map, event: any) {
+        console.log(event);
+        this.setState({selectedPoint: event.lngLat});
     }
 
     componentDidMount() {
-        this.refreshData()
+        this.refreshData();
+        setInterval(() => this.refreshData(), 30000);
     }
 
     render() {
@@ -61,15 +76,26 @@ export default class Map extends React.Component {
             )
         }
 
-        const {selectedGroup} = this.state;
+        const {selectedGroup, selectedPoint} = this.state;
         const groupLayers = renderLayers(this.state.currentGroups, (group: Group) => this.groupClickHandler(group));
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
         let popup = undefined;
         if (selectedGroup) {
-            console.log(selectedGroup);
-            popup = (<GroupPopup group={selectedGroup} />);
+            popup = (<GroupPopup group={selectedGroup} closePopup={() => this.groupPopupClose()} />);
         }
-        
+        let cursorCoordinates = (<span>Click on the map to get coordinates</span>);
+        if(selectedPoint) {
+            const dms = new DmsCoordinates(selectedPoint.lat, selectedPoint.lng);
+            cursorCoordinates = (
+            <div>
+                <span>Latitude {selectedPoint.lat.toFixed(6)}</span><br />
+                <span>Longitude {selectedPoint.lng.toFixed(6)}</span><br />
+                <span>{dms.toString()}</span>
+            </div>
+            )
+        }
+        console.log({cursorCoordinates});
+
         return (
             <div>
                 <h1>Here is the map</h1>
@@ -77,15 +103,18 @@ export default class Map extends React.Component {
                     style={"mapbox://styles/victorcotap/cjypbpdul4n6j1cmpkt13719b"}
                     center={selectedGroup ? [selectedGroup.longitude, selectedGroup.latitude] : [41.644793131899, 42.18450951825]}
                     // zoom={selectedGroup ? [7] : [null]}
+                    onMouseMove={(map, event) => this.mapMouseMove(map, event)}
+                    onClick={(map, event) => this.mapMouseClick(map, event)}
                     containerStyle={{
                         height: "80vh",
-                        width: "90vw"
+                        width: "100vw"
                     }}>
                     {groupLayers}
                     {/* noop */}
                     {heatmapLayer}
-                    {popup ? popup : null }
+                    {popup}
                 </Mapbox>
+                {cursorCoordinates}
             </div>
         )
     }
