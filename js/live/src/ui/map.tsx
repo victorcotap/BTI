@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMapboxGl from "react-mapbox-gl";
-import MapboxGl, { MapMouseEvent } from 'mapbox-gl';
+import MapboxGl from 'mapbox-gl';
 import DmsCoordinates from 'dms-conversion';
 
 import Group from '../model/group';
@@ -25,6 +25,7 @@ export default class Map extends React.Component {
     state: State = {
         currentGroups: Array<Group>(),
     }
+    lastLocation?: [number, number] = undefined
 
 
     private async fetchData() {
@@ -53,17 +54,18 @@ export default class Map extends React.Component {
         this.setState({selectedGroup: group});
     }
     private groupPopupClose() {
+        if (this.state.selectedGroup) {
+            this.lastLocation = [this.state.selectedGroup.longitude, this.state.selectedGroup.latitude]
+        }
         this.setState({selectedGroup: undefined});
     }
-    private mapMouseMove(map: MapboxGl.Map, event: React.SyntheticEvent<MapMouseEvent>) {
-        //Todo: add a moving point display top state
+    private mapMouseMove(map: MapboxGl.Map, event: any) {
     }
 
     private mapMouseClick(map: MapboxGl.Map, event: any) {
-        console.log(event);
         this.setState({selectedPoint: event.lngLat});
     }
-
+ 
     componentDidMount() {
         this.refreshData();
         setInterval(() => this.refreshData(), 30000);
@@ -94,14 +96,14 @@ export default class Map extends React.Component {
             </div>
             )
         }
-        console.log({cursorCoordinates});
 
+        const center: [number, number] = this.lastLocation ? this.lastLocation : [41.644793131899, 42.18450951825];
         return (
             <div>
                 <h1>Here is the map</h1>
                 <Mapbox
                     style={"mapbox://styles/victorcotap/cjypbpdul4n6j1cmpkt13719b"}
-                    center={selectedGroup ? [selectedGroup.longitude, selectedGroup.latitude] : [41.644793131899, 42.18450951825]}
+                    center={selectedGroup ? [selectedGroup.longitude, selectedGroup.latitude] : center}
                     // zoom={selectedGroup ? [7] : [null]}
                     onMouseMove={(map, event) => this.mapMouseMove(map, event)}
                     onClick={(map, event) => this.mapMouseClick(map, event)}

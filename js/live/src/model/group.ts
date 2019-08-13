@@ -29,5 +29,5 @@ export default interface Group {
     heading: number,
     height: number,
     displayName: string,
-    attributes: { [key: string]: boolean }
+    properties: { [key: string]: boolean }
 }

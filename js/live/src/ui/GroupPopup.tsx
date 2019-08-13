@@ -11,6 +11,7 @@ interface GroupPopupProps {
 }
 
 const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group, closePopup}) => {
+    const altitude = group.height * 3.28084;
     return (
         <Popup key={group.type} coordinates={[group.longitude, group.latitude]} offset={15}>
             <div className="PopupText">
@@ -18,7 +19,7 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
                 <span>{group.LLDMS}</span><br />
                 <span>{group.MGRS}</span><br />
                 <span>{group.LLDDM}</span><br />
-                <span><b>Altitude: </b> {group.height.toFixed(1)} meters</span><br />
+                <span><b>Altitude: </b> {altitude.toFixed(0)} feet</span><br />
                 <span><b>HDG: </b>{group.heading}</span><br />
                 <button onClick={closePopup}>Close</button>
             </div>

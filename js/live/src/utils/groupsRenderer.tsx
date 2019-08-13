@@ -83,35 +83,35 @@ export default function renderLayers(groups: Group[], clickHandler: (group: Grou
     const redHeloLayer = renderGroupsLayer(redHeloGroups, renderImage(RedHelo), "Red-Helo")
     unitsLayers.push(redHeloLayer)
 
-    const redSAMGroups = redGroupsGround.filter((group) => group.attributes[attributes.SAM] || group.attributes[attributes.SAMRelated]).map((group) => renderGroup(group, clickHandler));
+    const redSAMGroups = redGroupsGround.filter((group) => group.properties[attributes.SAM] || group.properties[attributes.SAMRelated]).map((group) => renderGroup(group, clickHandler));
     const redSAMLayer = renderGroupsLayer(redSAMGroups, renderImage(RedSAM), "Red-SAM")
     unitsLayers.push(redSAMLayer);
 
-    const redAAAGroups = redGroupsGround.filter((group) => group.attributes[attributes.AAA]).map((group) => renderGroup(group, clickHandler));
+    const redAAAGroups = redGroupsGround.filter((group) => group.properties[attributes.AAA]).map((group) => renderGroup(group, clickHandler));
     const redAAALayer = renderGroupsLayer(redAAAGroups, renderImage(RedAAA), "Red-AAA")
     unitsLayers.push(redAAALayer);
 
-    const redAPCGroups = redGroupsGround.filter((group) => group.attributes[attributes.APC] || group.attributes[attributes.LightArmor]).map((group) => renderGroup(group, clickHandler));
+    const redAPCGroups = redGroupsGround.filter((group) => group.properties[attributes.APC] || group.properties[attributes.LightArmor]).map((group) => renderGroup(group, clickHandler));
     const redAPCLayer = renderGroupsLayer(redAPCGroups, renderImage(RedAPC), "Red-APC")
     unitsLayers.push(redAPCLayer);
 
-    const redArmorGroups = redGroupsGround.filter((group) => group.attributes[attributes.Armor] || group.attributes[attributes.HeavyArmor]).map((group) => renderGroup(group, clickHandler));
+    const redArmorGroups = redGroupsGround.filter((group) => group.properties[attributes.Armor] || group.properties[attributes.HeavyArmor]).map((group) => renderGroup(group, clickHandler));
     const redArmorLayer = renderGroupsLayer(redArmorGroups, renderImage(RedArmor), "Red-Armor")
     unitsLayers.push(redArmorLayer)
 
-    const redArtilleryGroups = redGroupsGround.filter((group) => group.attributes[attributes.Artillery]).map((group) => renderGroup(group, clickHandler));
+    const redArtilleryGroups = redGroupsGround.filter((group) => group.properties[attributes.Artillery]).map((group) => renderGroup(group, clickHandler));
     const redArtilleryLayer = renderGroupsLayer(redArtilleryGroups, renderImage(RedArtillery), "Red-Artillery")
     unitsLayers.push(redArtilleryLayer)
 
-    const redInfantryGroups = redGroupsGround.filter((group) => group.attributes[attributes.Infantry]).map((group) => renderGroup(group, clickHandler));
+    const redInfantryGroups = redGroupsGround.filter((group) => group.properties[attributes.Infantry]).map((group) => renderGroup(group, clickHandler));
     const redInfantryLayer = renderGroupsLayer(redInfantryGroups, renderImage(RedInfantry), "Red-Infantry")
     unitsLayers.push(redInfantryLayer)
 
-    const redFortificationsGroups = redGroupsGround.filter((group) => group.attributes[attributes.Fortifications]).map((group) => renderGroup(group, clickHandler));
+    const redFortificationsGroups = redGroupsGround.filter((group) => group.properties[attributes.Fortifications]).map((group) => renderGroup(group, clickHandler));
     const redFortificationsLayer = renderGroupsLayer(redFortificationsGroups, renderImage(RedFortifications), "Red-Fortifications")
     unitsLayers.push(redFortificationsLayer)
 
-    const redGroundGroups = redGroupsGround.filter((group) => group.attributes[attributes.Trucks] || group.attributes[attributes.Cars]).map((group) => renderGroup(group, clickHandler));
+    const redGroundGroups = redGroupsGround.filter((group) => group.properties[attributes.Trucks] || group.properties[attributes.Cars]).map((group) => renderGroup(group, clickHandler));
     const redGroundLayer = renderGroupsLayer(redGroundGroups, renderImage(RedGround), "Red-Ground")
     unitsLayers.push(redGroundLayer);
 
