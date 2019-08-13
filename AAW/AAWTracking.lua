@@ -47,7 +47,13 @@ function trackGroup(group, master)
         MGRS = groupCoord:ToStringMGRS()
     end
 
+    local displayName = nil
+    local properties = nil
     local attributes = group:GetDCSDesc()
+    if attributes ~= nil then
+        displayName = attributes["displayName"]
+        properties = attributes["attributes"]
+    end
     if groupName then
         -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupCoalition, groupName, groupCategory, groupType, groupAlive}))
         master[groupName] = {
@@ -62,8 +68,8 @@ function trackGroup(group, master)
             ["MGRS"] = MGRS,
             ["heading"] = groupHeading,
             ["height"] = groupHeight,
-            ["displayName"] = attributes["displayName"],
-            ["properties"] = attributes["attributes"],
+            ["displayName"] = displayName,
+            ["properties"] = properties,
         }
     end
 end
