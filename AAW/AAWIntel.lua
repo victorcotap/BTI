@@ -107,7 +107,7 @@ local function permanentPlayerCheck(something)
     SetPlayer:ForEachClient(
         function (PlayerClient)
             local PlayerID = PlayerClient.ObjectName
-            PlayerClient:AddBriefing("Welcome to PTI|Practice The Inferno \\o/!\n\n Head to http://throughtheinferno.com/practice-the-inferno for a complete list of ZEUS commands")
+            PlayerClient:AddBriefing("Welcome to AAW|APEX Advanced Warfare \\o/!\n\n")
             if PlayerClient:IsAlive() then
                 PlayerMap[PlayerID] = true
             else
@@ -120,5 +120,58 @@ end
 
 SCHEDULER:New(nil, permanentPlayerCheck, {"Something"}, 3, 10)
 SCHEDULER:New(nil, permanentPlayerMenu, {"something"}, 11, 15)
+
+--------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
+
+csar.csarMode = 1
+
+    --      0 - No Limit - NO Aircraft disabling
+    --      1 - Disable Aircraft when its down - Timeout to reenable aircraft
+    --      2 - Disable Aircraft for Pilot when he's shot down -- timeout to reenable pilot for aircraft
+    --      3 - Pilot Life Limit - No Aircraft Disabling -- timeout to reset lives?
+
+csar.maxLives = 8 -- Maximum pilot lives
+
+csar.countCSARCrash = false -- If you set to true, pilot lives count for CSAR and CSAR aircraft will count.
+
+csar.reenableIfCSARCrashes = true -- If a CSAR heli crashes, the pilots are counted as rescued anyway. Set to false to Stop this
+
+-- - I recommend you leave the option on below IF USING MODE 1 otherwise the
+-- aircraft will be disabled for the duration of the mission
+csar.disableAircraftTimeout = false -- Allow aircraft to be used after 20 minutes if the pilot isnt rescued
+csar.disableTimeoutTime = 10 -- Time in minutes for TIMEOUT
+
+csar.destructionHeight = 150 -- height in meters an aircraft will be destroyed at if the aircraft is disabled
+
+csar.enableForAI = false -- set to false to disable AI units from being rescued.
+
+csar.enableForRED = false -- enable for red side
+
+csar.enableForBLUE = true  -- enable for blue side
+
+csar.enableSlotBlocking = true -- if set to true, you need to put the csarSlotBlockGameGUI.lua
+-- in C:/Users/<YOUR USERNAME>/DCS/Scripts for 1.5 or C:/Users/<YOUR USERNAME>/DCS.openalpha/Scripts for 2.0
+-- For missions using FLAGS and this script, the CSAR flags will NOT interfere with your mission :)
+
+csar.bluesmokecolor = 4 -- Color of smokemarker for blue side, 0 is green, 1 is red, 2 is white, 3 is orange and 4 is blue
+csar.redsmokecolor = 1 -- Color of smokemarker for red side, 0 is green, 1 is red, 2 is white, 3 is orange and 4 is blue
+
+csar.requestdelay = 2 -- Time in seconds before the survivors will request Medevac
+
+csar.coordtype = 3 -- Use Lat/Long DDM (0), Lat/Long DMS (1), MGRS (2), Bullseye imperial (3) or Bullseye metric (4) for coordinates.
+csar.coordaccuracy = 1 -- Precision of the reported coordinates, see MIST-docs at http://wiki.hoggit.us/view/GetMGRSString
+-- only applies to _non_ bullseye coords
+
+csar.immortalcrew = false -- Set to true to make wounded crew immortal
+csar.invisiblecrew = false -- Set to true to make wounded crew insvisible
+
+csar.messageTime = 30 -- Time to show the intial wounded message for in seconds
+
+csar.loadDistance = 60 -- configure distance for pilot to get in helicopter in meters.
+
+csar.radioSound = "beacon.ogg" -- the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!
+
+csar.allowFARPRescue = true --allows pilot to be rescued by landing at a FARP or Airbase
 
 env.info(string.format("BTI: CIA back to the safe house"))
