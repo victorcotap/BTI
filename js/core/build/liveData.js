@@ -20,8 +20,10 @@ const store = new trackingStore_1.default(trackingFilePath);
 router.get('/', (request, response) => __awaiter(this, void 0, void 0, function* () {
     const currentTime = new Date();
     if (currentTime.getTime() - store.cache.time.getTime() > 30000) {
+        console.info('Live data cache is stale, refreshing');
         yield store.readTrackingFile();
     }
+    console.log('Live data access');
     response.json({ currentGroups: store.cache.currentGroups });
 }));
 exports.default = router;
