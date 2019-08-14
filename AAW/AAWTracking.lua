@@ -92,7 +92,7 @@ function computePersistenceGroups()
 
             if dcsGroup ~= nil then
                 local groupUnits = dcsGroup:GetUnits()
-                if #groupUnits == 0 then
+                if groupUnits == nil or #groupUnits == 0 then
                     env.info("BTI: can't find units marking group as dead")
                     trackingMaster[groupName]["alive"] = false
                 end
