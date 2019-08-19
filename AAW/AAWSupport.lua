@@ -122,10 +122,10 @@ end
 
 --------------------------------------------------------------------------------
 local destroyZoneCount = 0
-function handleExfillRequest(text, coord)
+function handleExfillRequest(text, baseCoord)
 
     local destroyZoneName = string.format("destroy %d", destroyZoneCount)
-    local zoneRadiusToDestroy = ZONE_RADIUS:New(destroyZoneName, coord:GetVec2(), 800)
+    local zoneRadiusToDestroy = ZONE_RADIUS:New(destroyZoneName, baseCoord:GetVec2(), 800)
     destroyZoneCount = destroyZoneCount + 1
     local function destroyUnit(zoneUnit)
         env.info(string.format("BTI: Found unit in zone %s", destroyZoneName))
@@ -148,7 +148,7 @@ end
 -- -z t90;-amount 5
 -- -z t89
 
-function handleZeusRequest(text, coord)
+function handleZeusRequest(text, baseCoord)
 
     local arguments = _split(text, ";")
     env.info("BTI: arguments " .. UTILS.OneLineSerialize(arguments))
@@ -215,7 +215,7 @@ function handleZeusRequest(text, coord)
                 end
 
 
-                local finalCoord = coord
+                local finalCoord = baseCoord
                 local finalAltitude = spawnAltitude
                 local finalSpeed = UTILS.KnotsToMps(350)
                 if spawnSecondaryData ~= nil then
@@ -232,15 +232,16 @@ function handleZeusRequest(text, coord)
                 if spawnTask == "jtac" then
                     ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
                 end
-                spawnedGroup:RouteToVec2(coord:GetRandomVec2InRadius( 20, 5 ), 5)
+                spawnedGroup:RouteToVec2(baseCoord:GetRandomVec2InRadius( 20, 5 ), 5)
             end
             table.insert( ZeusSpawnedAssets, spawnedGroup )
         end
     )
 
     -- Spawn asset
+    env.info("BTI: spawn coord" .. UTILS.OneLineSerialize(baseCoord:GetRandomVec2InRadius(100, 300)))
     for i = 1, spawnAmount do
-        spawn:SpawnFromVec2(coord:GetRandomVec2InRadius( 100, 300 ), spawnAltitude, spawnAltitude)
+        spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius( 100, 300 ), spawnAltitude, spawnAltitude)
     end
     
     -- Remove Zeus Data and mark for secondary
@@ -254,7 +255,7 @@ function handleZeusRequest(text, coord)
 end
 
 
-function handleSecondaryRequest(arguments, coord, markID)
+function handleSecondaryRequest(arguments, baseCoord, markID)
     local spawnID = ""
     local waypointAltitude = UTILS.FeetToMeters(10000)
     local zoneRadius = UTILS.NMToMeters(10)
@@ -291,7 +292,7 @@ function handleSecondaryRequest(arguments, coord, markID)
     env.info("BTI: stop2")
     if type:find("waypoint") then
         ZeusWaypointData[spawnID] = {
-            ["coord"] = coord,
+            ["coord"] = baseCoord,
             ["altitude"] = waypointAltitude,
             ["speed"] = waypointSpeed,
             ["mark"] = markID
@@ -299,7 +300,7 @@ function handleSecondaryRequest(arguments, coord, markID)
         env.info("BTI: SpawnWaypointData " .. UTILS.OneLineSerialize(ZeusWaypointData[spawnID]))
     elseif type:find("engageZone") then
         ZeusTaskData[spawnID] = {
-            ["coord"] = coord,
+            ["coord"] = baseCoord,
             ["radius"] = zoneRadius,
             ["engage"] = engageTarget,
             ["mark"] = markID
@@ -311,52 +312,52 @@ end
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 
-function handleCommandRequest(text, coord)
+function handleCommandRequest(text, baseCoord)
     if text:find("awacs") then
         E2EWR = SPAWN:New('BLUE C EWR E2'):Spawn()
     elseif text:find("smoke") then
         if text:find("green") then
-            coord:SmokeGreen()
+            baseCoord:SmokeGreen()
         elseif text:find("orange") then
-            coord:SmokeOrange()
+            baseCoord:SmokeOrange()
         elseif text:find("blue") then
-            coord:SmokeBlue()
+            baseCoord:SmokeBlue()
         elseif text:find("red") then
-            coord:SmokeRed()
+            baseCoord:SmokeRed()
         else
-            coord:SmokeWhite()
+            baseCoord:SmokeWhite()
         end
     elseif text:find("flare") then
         if text:find("green") then
-            for i=10,1,-1 do coord:FlareGreen() end
+            for i=10,1,-1 do baseCoord:FlareGreen() end
         elseif text:find("yellow") then
-            for i=10,1,-1 do coord:FlareYellow() end
+            for i=10,1,-1 do baseCoord:FlareYellow() end
         elseif text:find("red") then
-            for i=10,1,-1 do coord:FlareRed() end
+            for i=10,1,-1 do baseCoord:FlareRed() end
         else
-            for i=10,1,-1 do coord:FlareWhite() end
+            for i=10,1,-1 do baseCoord:FlareWhite() end
         end
     end
 end
 
-function handleDebugRequest(text, coord)
+function handleDebugRequest(text, baseCoord)
     if text:find("fire") then
         if text:find("big") then
-            coord:BigSmokeAndFireLarge()
+            baseCoord:BigSmokeAndFireLarge()
         elseif text:find("medium") then
-            coord:BigSmokeAndFireMedium()
+            baseCoord:BigSmokeAndFireMedium()
         elseif text:find("inferno") then
-            coord:BigSmokeAndFireHuge(1)
+            baseCoord:BigSmokeAndFireHuge(1)
         else
-            coord:BigSmokeAndFireSmall()
+            baseCoord:BigSmokeAndFireSmall()
         end
     end
 end
 
-local function handleWeatherRequest(text, coord)
-    local currentPressure = coord:GetPressure(0)
-    local currentTemperature = coord:GetTemperature()
-    local currentWindDirection, currentWindStrengh = coord:GetWind()
+local function handleWeatherRequest(text, baseCoord)
+    local currentPressure = baseCoord:GetPressure(0)
+    local currentTemperature = baseCoord:GetTemperature()
+    local currentWindDirection, currentWindStrengh = baseCoord:GetWind()
     local weatherString = string.format("Requested weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
 end
@@ -367,26 +368,26 @@ function markRemoved(Event)
     if Event.text~=nil and Event.text:lower():find("-") then 
         -- local text = Event.text:lower()
         local text = Event.text
-        local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-        local coord = COORDINATE:NewFromVec3(vec3)
-        coord.y = coord:GetLandHeight()
+        local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z}
+        local baseCoord = COORDINATE:NewFromVec3(vec3)
+        baseCoord.y = baseCoord:GetLandHeight()
 
         if text:find("-fac") then   
-            handleFACRequest(text, coord)
+            handleFACRequest(text, baseCoord)
         elseif text:find("-tanker") then
-            handleTankerRequest(text, coord)
+            handleTankerRequest(text, baseCoord)
         elseif text:find("-support") then
-            handleSupportRequest(text, coord)
+            handleSupportRequest(text, baseCoord)
         elseif text:find("-destroy") then
-            handleExfillRequest(text, coord)
+            handleExfillRequest(text, baseCoord)
         elseif text:find("-command") then
-            handleCommandRequest(text, coord)
+            handleCommandRequest(text, baseCoord)
         elseif text:find("-debug") then
-            handleDebugRequest(text, coord)
+            handleDebugRequest(text, baseCoord)
         elseif text:find("-weather") then
-            handleWeatherRequest(text, coord)
+            handleWeatherRequest(text, baseCoord)
         elseif text:find("-z") then
-            handleZeusRequest(text, coord)
+            handleZeusRequest(text, baseCoord)
         end
     end
 end
@@ -396,22 +397,22 @@ function markChanged(Event)
         -- local text = Event.text:lower()
         local text = Event.text
         local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
-        local coord = COORDINATE:NewFromVec3(vec3)
-        coord.y = coord:GetLandHeight()
+        local baseCoord = COORDINATE:NewFromVec3(vec3)
+        baseCoord.y = baseCoord:GetLandHeight()
 
         local arguments = _split(text, ";")
-        handleSecondaryRequest(arguments, coord, Event.idx)
+        handleSecondaryRequest(arguments, baseCoord, Event.idx)
     end
 end
 
 function SupportHandler:onEvent(Event)
     if Event.id == world.event.S_EVENT_MARK_ADDED then
-        -- env.info(string.format("BTI: Support got event ADDED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        env.info(string.format("BTI: Support got event ADDED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
     elseif Event.id == world.event.S_EVENT_MARK_CHANGE then
         env.info(string.format("BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
         markChanged(Event)
     elseif Event.id == world.event.S_EVENT_MARK_REMOVED then
-        -- env.info(string.format("BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        env.info(string.format("BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
         markRemoved(Event)
     end
 end
