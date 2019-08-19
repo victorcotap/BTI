@@ -51,7 +51,7 @@ export default function renderHeatmap(groups: Group[]) {
         ],
     };
 
-    const features = groups.filter((group: Group) => group.coalition === coalition.Red || group.alive === true).map((group: Group) => {
+    const features = groups.filter((group: Group) => group.coalition === coalition.Red && group.alive === true).map((group: Group) => {
         const key = `heat${group.type}${group.latitude}${group.longitude}`;
         return (
             <Feature key={key} properties={group} coordinates={[group.longitude, group.latitude]} />
