@@ -1,3 +1,23 @@
+-- File global functions
+-- File functions -----------------------------------------------------------------------------
+function loadFile(path)
+  local file, err = io.open(path, "r")
+  if err ~= nil then
+      env.info("BTI: Error loading tracking master file" .. err)
+      return nil
+  end
+
+  local buffer, error = file:read("*a")
+  return buffer
+end
+
+function saveFile(path, buffer)
+  local file,err = io.open( path, "wb" )
+  file:write(buffer)
+  file:close()
+end
+
+
 --
 -- json.lua
 --

@@ -123,7 +123,15 @@ SCHEDULER:New(nil, permanentPlayerMenu, {"something"}, 11, 15)
 
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
-
+local CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
+local savedCSARBuffer = loadFile(CSARTrackingPath)
+if savedCSARBuffer ~= nil then
+    local savedCSAR = JSONLib.decode(savedCSARBuffer)
+    csar.currentlyDisabled = savedCSAR
+    env.info("CSARPersisted: CSAR master file found, applied master")
+else
+    env.info("CSARPersisted: No CSAR master file found, reset in progress")
+end
 csar.csarMode = 1
 
     --      0 - No Limit - NO Aircraft disabling

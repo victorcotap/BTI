@@ -2,34 +2,12 @@ env.info("BTI: Tracking here!")
 
 local trackingMaster = {}
 -- local persistenceMaster = {}
-local trackingMasterPath = "C:\\BTI\\TrackingFile.json"
+local trackingMasterPath = "C:\\BTI\\Tracking\\TrackingFile.json"
 -- local persistenceMasterPath = "C:\\BTI\\PersistenceMaster.json"
-
-
--- debug -----------------------------------------------
-
-
--- File functions -----------------------------------------------------------------------------
-function loadFile(path)
-    local file, err = io.open(path, "r")
-    if err ~= nil then
-        env.info("BTI: Error loading tracking master file" .. err)
-        return nil
-    end
-
-    local buffer, error = file:read("*a")
-    return buffer
-end
-
-function saveFile(path, buffer)
-    local file,err = io.open( path, "wb" )
-    file:write(buffer)
-    file:close()
-end
 
 -- Tracking functions -----------------------------------------------------------------------------
 
-function trackGroup(group, master)
+local function trackGroup(group, master)
     local groupName = group.GroupName
     local groupCoalition = group:GetCoalition()
     local groupCategory = group:GetCategoryName()
@@ -108,7 +86,7 @@ end
 function generateMaster()
 end
 
-function applyMaster(master)
+local function applyMaster(master)
     env.info("BTI: apply master")
     for groupName, group in pairs(master) do
         local persistedGroup = master[groupName]
