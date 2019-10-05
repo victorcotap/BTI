@@ -147,7 +147,7 @@ end
 local function saveCSARTracking(csarCurrentlyDisabled)
     env.info("CSARPersisted: OHAI")
     CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
-    newCSARJSON = JSONLib.encode(csar.currentlyDisabled)
+    newCSARJSON = JSONLib.encode(csarCurrentlyDisabled)
     env.info("CSARPersisted: Encoded CSAR " .. newCSARJSON)
     saveFile(CSARTrackingPath, newCSARJSON)
     env.info("CSARPersisted: Saved CSARPersisted tracking file ")
@@ -515,7 +515,7 @@ function csar.enableAircraft(_name, _playerName)
 
         if _details ~= nil then
             csar.currentlyDisabled[_name] = nil -- {timeout =  (csar.disableTimeoutTime*60) + timer.getTime(),desc="",noPilot = _crashed,unitId=_unit:getID() }
-
+            saveCSARTracking(csar.currentlyDisabled)
             --use flag to reenable
             trigger.action.setUserFlag("CSAR_AIRCRAFT" .. _details.unitId, 0)
         end
