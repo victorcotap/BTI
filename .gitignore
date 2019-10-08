@@ -40,5 +40,5 @@ luac.out
 *.hex
 
 # Tracking files
-/Tracking
-
+TrackingFile.json
+CSARTracking.json
