@@ -87,7 +87,7 @@ local function permanentPlayerCheck(something)
             end
         end
     )
-    env.info(string.format("BTI: PlayerMap %s", UTILS.OneLineSerialize(PlayerMap))) -- { [P F18 #001] = true/false, }
+    -- env.info(string.format("BTI: PlayerMap %s", UTILS.OneLineSerialize(PlayerMap))) -- { [P F18 #001] = true/false, }
 end
 
 SCHEDULER:New(nil, permanentPlayerCheck, {"Something"}, 3, 10)
@@ -115,7 +115,6 @@ end
 local function saveCSARTracking(csarCurrentlyDisabled)
     local master = { disabled = csarCurrentlyDisabled, data = currentCSARData }
     newCSARJSON = JSONLib.encode(master)
-    env.info("CSARPersisted: Encoded CSAR " .. newCSARJSON)
     saveFile(CSARTrackingPath, newCSARJSON)
     env.info("CSARPersisted: Saved CSARPersisted tracking file ")
 end
@@ -220,7 +219,7 @@ local function randomizeA2A(something)
     end
 end
 
-SCHEDULER:New(nil, randomizeA2A, {"something"}, 1200, 600)
+SCHEDULER:New(nil, randomizeA2A, {"something"}, 1200, 3600)
 
 
 
