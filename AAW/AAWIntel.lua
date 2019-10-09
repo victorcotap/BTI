@@ -13,6 +13,7 @@ PlayerMap = {}
 local PlayerMenuMap = {}
 
 SetPlayer = SET_CLIENT:New():FilterCoalitions("blue"):FilterActive():FilterStart()
+local SetSlots = SET_CLIENT:New():FilterCoalitions("blue")
 
 -- COMMANDS ----------------------------------------------------------------------------------------------
 function requestTankerAWACSTasking()
@@ -190,6 +191,36 @@ csar.radioSound = "beacon.ogg" -- the name of the sound file to use for the Pilo
 csar.allowFARPRescue = true --allows pilot to be rescued by landing at a FARP or Airbase
 
 env.info(string.format("BTI: CIA back to the safe house"))
+
+----------------------------------------------------------------------------------------------------------
+-- A2A ---------------------------------------------------------------------------------------------------
+local A2APatrols = {
+    "Mirage-Tbilisi",
+    "F5Sochi",
+    "F4Mozdok",
+    "C101Gudauta"
+}
+
+local function randomizeA2A(something)
+    local probability = math.random( 1, 2 )
+    env.info(string.format( "BTI: A2A probability %d", probability ))
+    if probability == 2 then
+        local switch = math.random( 1, #A2APatrols)
+        env.info(string.format( "BTI: A2A switch %d", switch ))
+
+        if switch == 1 then
+            MirageTbilisi = true
+        elseif switch == 2 then
+            F5Sochi = true
+        elseif switch == 3 then
+            F4Mozdok = true
+        elseif switch == 4 then
+            C101Gudauta = true
+        end
+    end
+end
+
+SCHEDULER:New(nil, randomizeA2A, {"something"}, 1200, 600)
 
 
 
