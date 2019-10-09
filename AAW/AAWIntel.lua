@@ -14,29 +14,6 @@ local PlayerMenuMap = {}
 
 SetPlayer = SET_CLIENT:New():FilterCoalitions("blue"):FilterActive():FilterStart()
 
--- INTEL -------------------------------------------------------------------------------------------------
---Backup for future intel
-function generateIntel(playerGroup)
-        --zones
-    local intelMessage = "|ZONES / AOs|\n"
-
-    local function weatherStringForCoordinate(coord)
-        local currentPressure = coord:GetPressure(0)
-        local currentTemperature = coord:GetTemperature()
-        local currentWindDirection, currentWindStrengh = coord:GetWind()
-        local weatherString = string.format("Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
-        return weatherString
-    end
-
-    return intelMessage
-end
-
-function displayIntelToGroup(playerClient)
-    local playerGroup = playerClient:GetGroup()
-    local intelMessage = generateIntel(playerGroup)
-    MESSAGE:New( intelMessage, 35, "INTEL Report for " .. playerClient:GetPlayerName() .. "\n"):ToGroup(playerGroup)
-end
-
 -- COMMANDS ----------------------------------------------------------------------------------------------
 function requestTankerAWACSTasking()
     SUPPORTResetTankerAWACSTask()
@@ -69,7 +46,6 @@ end
 
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
-
 local function permanentPlayerMenu(something)
     -- env.info(string.format( "BTI: Starting permanent menus"))
     for playerID, alive in pairs(PlayerMap) do
@@ -77,15 +53,14 @@ local function permanentPlayerMenu(something)
         local playerClient = CLIENT:FindByName(playerID)
         local playerGroup = playerClient:GetGroup()
         if alive and playerGroup ~= nil then
-            local IntelMenu = MENU_GROUP:New( playerGroup, "Commands [WIP/Buggy]" )
+            local IntelMenu = MENU_GROUP:New( playerGroup, "DO NOT USE(for real)[Buggy]" )
             
             local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS [WIP]", IntelMenu, requestTankerAWACSTasking)
             local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
             local wipeSpawnedAssets = MENU_GROUP_COMMAND:New( playerGroup, "[DO NOT USE] Wipe All", IntelMenu, requestWipeAllAssets)
             local wipeLastAssets = MENU_GROUP_COMMAND:New( playerGroup, "Wipe last Spawned Assets", IntelMenu, requestWipeLastAsset)
-            local generateMaster = MENU_GROUP_COMMAND:New( playerGroup, "Generate Master", IntelMenu, requestGenerateMaster)
 
-            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, wipeLastAssets, wipeSpawnedAssets, generateMaster }
+            local groupMenus = { tankerAWACSMenu, carrierBeaconMenu, wipeLastAssets, wipeSpawnedAssets }
             PlayerMenuMap[playerID] = groupMenus
         else
             local deleteGroupMenus = PlayerMenuMap[playerID]
@@ -99,10 +74,6 @@ local function permanentPlayerMenu(something)
     end
 end
 
---------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------
-
-
 local function permanentPlayerCheck(something)
     SetPlayer:ForEachClient(
         function (PlayerClient)
@@ -115,7 +86,7 @@ local function permanentPlayerCheck(something)
             end
         end
     )
-    -- env.info(string.format("BTI: PlayerMap %s", UTILS.OneLineSerialize(PlayerMap)))
+    env.info(string.format("BTI: PlayerMap %s", UTILS.OneLineSerialize(PlayerMap))) -- { [P F18 #001] = true/false, }
 end
 
 SCHEDULER:New(nil, permanentPlayerCheck, {"Something"}, 3, 10)
@@ -124,14 +95,50 @@ SCHEDULER:New(nil, permanentPlayerMenu, {"something"}, 11, 15)
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 local CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
-local savedCSARBuffer = loadFile(CSARTrackingPath)
-if savedCSARBuffer ~= nil then
-    local savedCSAR = JSONLib.decode(savedCSARBuffer)
-    csar.currentlyDisabled = savedCSAR
-    env.info("CSARPersisted: CSAR master file found, applied master")
-else
-    env.info("CSARPersisted: No CSAR master file found, reset in progress")
+local currentCSARData = {}
+
+local function loadCSARTracking()
+    local savedCSARBuffer = loadFile(CSARTrackingPath)
+    if savedCSARBuffer ~= nil then
+        local savedCSAR = JSONLib.decode(savedCSARBuffer)
+        local savedDisabled = savedCSAR["disabled"]
+        if savedDisabled ~= nil then
+            csar.currentlyDisabled = savedDisabled
+            env.info("CSARPersisted: CSAR master file found, applied master " .. UTILS.OneLineSerialize(csar.currentlyDisabled))
+        end
+    else
+        env.info("CSARPersisted: No CSAR master file found, reset in progress")
+    end
 end
+
+local function saveCSARTracking(csarCurrentlyDisabled)
+    local master = { disabled = csarCurrentlyDisabled, data = currentCSARData }
+    newCSARJSON = JSONLib.encode(master)
+    env.info("CSARPersisted: Encoded CSAR " .. newCSARJSON)
+    saveFile(CSARTrackingPath, newCSARJSON)
+    env.info("CSARPersisted: Saved CSARPersisted tracking file ")
+end
+
+function saveCSARSlotDisabledEvent(csarCurrentlyDisabled, slotName, crashedPlayerName)
+    env.info("CSAR: disabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(crashedPlayerName))
+    currentCSARData[slotName] = {
+        disabled = true,
+        crashedPlayerName = crashedPlayerName,
+    }
+    saveCSARTracking(csarCurrentlyDisabled)
+end
+function saveCSARSlotEnabledEvent(csarCurrentlyDisabled, slotName, rescuePlayerName)
+    env.info("CSAR: enabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(rescuePlayerName))
+    currentCSARData[slotName] = {
+        disabled = true,
+        rescuePlayerName = rescuePlayerName,
+    }
+    saveCSARTracking(csarCurrentlyDisabled)
+end
+
+
+loadCSARTracking()
+-- Regular CSAR init
 csar.csarMode = 1
 
     --      0 - No Limit - NO Aircraft disabling
@@ -183,3 +190,28 @@ csar.radioSound = "beacon.ogg" -- the name of the sound file to use for the Pilo
 csar.allowFARPRescue = true --allows pilot to be rescued by landing at a FARP or Airbase
 
 env.info(string.format("BTI: CIA back to the safe house"))
+
+
+
+-- INTEL -------------------------------------------------------------------------------------------------
+--Backup for future intel
+-- function generateIntel(playerGroup)
+--         --zones
+--     local intelMessage = "|ZONES / AOs|\n"
+
+--     local function weatherStringForCoordinate(coord)
+--         local currentPressure = coord:GetPressure(0)
+--         local currentTemperature = coord:GetTemperature()
+--         local currentWindDirection, currentWindStrengh = coord:GetWind()
+--         local weatherString = string.format("Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
+--         return weatherString
+--     end
+
+--     return intelMessage
+-- end
+
+-- function displayIntelToGroup(playerClient)
+--     local playerGroup = playerClient:GetGroup()
+--     local intelMessage = generateIntel(playerGroup)
+--     MESSAGE:New( intelMessage, 35, "INTEL Report for " .. playerClient:GetPlayerName() .. "\n"):ToGroup(playerGroup)
+-- end
