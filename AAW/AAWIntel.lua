@@ -116,7 +116,7 @@ local function saveCSARTracking(csarCurrentlyDisabled)
     local master = { ["disabled"] = csarCurrentlyDisabled, ["data"] = currentCSARData }
     newCSARJSON = JSONLib.encode(master)
     saveFile(CSARTrackingPath, newCSARJSON)
-    env.info("CSARPersisted: Saved CSARPersisted tracking file ")
+    env.info("CSARPersisted: Saved CSARPersisted tracking file " .. UTILS.OneLineSerialize(master))
 end
 
 function saveCSARSlotDisabledEvent(csarCurrentlyDisabled, slotName, crashedPlayerName)
