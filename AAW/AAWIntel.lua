@@ -113,7 +113,7 @@ local function loadCSARTracking()
 end
 
 local function saveCSARTracking(csarCurrentlyDisabled)
-    local master = { disabled = csarCurrentlyDisabled, data = currentCSARData }
+    local master = { ["disabled"] = csarCurrentlyDisabled, ["data"] = currentCSARData }
     newCSARJSON = JSONLib.encode(master)
     saveFile(CSARTrackingPath, newCSARJSON)
     env.info("CSARPersisted: Saved CSARPersisted tracking file ")
