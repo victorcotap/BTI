@@ -8,6 +8,7 @@ function loadFile(path)
   end
 
   local buffer, error = file:read("*a")
+  file:close()
   return buffer
 end
 

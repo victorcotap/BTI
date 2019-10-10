@@ -94,14 +94,15 @@ SCHEDULER:New(nil, permanentPlayerCheck, {"Something"}, 3, 10)
 SCHEDULER:New(nil, permanentPlayerMenu, {"something"}, 11, 15)
 
 --------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------
+--- CSAR -----------------------------------------------------------------------------------------------
 local CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
-local currentCSARData = {}
+local currentCSARData = { ["records"] = {} }
 
 local function loadCSARTracking()
     local savedCSARBuffer = loadFile(CSARTrackingPath)
     if savedCSARBuffer ~= nil then
         local savedCSAR = JSONLib.decode(savedCSARBuffer)
+        currentCSARData = savedCSAR
         local savedDisabled = savedCSAR["disabled"]
         if savedDisabled ~= nil then
             csar.currentlyDisabled = savedDisabled
@@ -112,32 +113,50 @@ local function loadCSARTracking()
     end
 end
 
-local function saveCSARTracking(csarCurrentlyDisabled)
-    local master = { ["disabled"] = csarCurrentlyDisabled, ["data"] = currentCSARData }
+local function saveCSARTracking()
+    local master = currentCSARData
     newCSARJSON = JSONLib.encode(master)
     saveFile(CSARTrackingPath, newCSARJSON)
-    env.info("CSARPersisted: Saved CSARPersisted tracking file " .. UTILS.OneLineSerialize(master))
+    -- env.info("CSARPersisted: Saved CSARPersisted tracking file " .. UTILS.OneLineSerialize(master))
 end
 
+local function computeSlotList()
+    local slotTable = {}
+    SetSlots:FilterOnce()
+    SetSlots:ForEachClient(
+        function(SlotClient)
+            local slotName = SlotClient.ObjectName
+            table.insert( slotTable, slotName)
+        end
+    )
+    currentCSARData["slots"] = slotTable
+    saveCSARTracking()
+end
+loadCSARTracking()
+computeSlotList()
+
+-- Exposed function to Dynamic Loader
 function saveCSARSlotDisabledEvent(csarCurrentlyDisabled, slotName, crashedPlayerName)
     env.info("CSAR: disabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(crashedPlayerName))
-    currentCSARData[slotName] = {
+    currentCSARData["disabled"] = csarCurrentlyDisabled
+    currentCSARData["records"][slotName] = {
         disabled = true,
         crashedPlayerName = crashedPlayerName,
     }
-    saveCSARTracking(csarCurrentlyDisabled)
+    saveCSARTracking()
 end
 function saveCSARSlotEnabledEvent(csarCurrentlyDisabled, slotName, rescuePlayerName)
     env.info("CSAR: enabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(rescuePlayerName))
-    currentCSARData[slotName] = {
+    currentCSARData["disabled"] = csarCurrentlyDisabled
+    currentCSARData["records"][slotName] = {
         disabled = true,
         rescuePlayerName = rescuePlayerName,
     }
-    saveCSARTracking(csarCurrentlyDisabled)
+    saveCSARTracking()
 end
 
 
-loadCSARTracking()
+
 -- Regular CSAR init
 csar.csarMode = 1
 
