@@ -4,7 +4,7 @@ import TrackingStore from './trackingStore';
 
 const router = express.Router();
 const cacheTime = 60;
-const trackingFilePath = "/BTI/TrackingFile.json";
+const trackingFilePath = "/BTI/Tracking/TrackingFile.json";
 
 const store = new TrackingStore(trackingFilePath);
 
