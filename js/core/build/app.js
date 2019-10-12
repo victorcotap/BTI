@@ -12,7 +12,7 @@ app.get('/', function (req, res) {
     res.send({ "hello": "world" });
 });
 app.use('/live', liveData_1.default);
-app.listen(3001, function () {
+app.listen(10407, function () {
     console.log("Core is online");
 });
 //# sourceMappingURL=app.js.map
