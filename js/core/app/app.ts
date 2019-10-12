@@ -12,6 +12,6 @@ app.get('/', function(req, res) {
 
 app.use('/live', liveDataRouter);
 
-app.listen(3001, function() {
+app.listen(10407, function() {
     console.log("Core is online");
 });
