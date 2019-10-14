@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly ./app/app.ts",
-    "prod": "tsc && node ./build/app.js"
+    "prod": "tsc && node ./build/app/app.js"
   },
   "author": "Topper",
   "license": "ISC",
@@ -17,5 +17,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "typescript": "^3.5.3"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^1.0.0-pre.43"
   }
 }
