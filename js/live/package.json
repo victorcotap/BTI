@@ -7,14 +7,14 @@
     "@types/node": "12.6.2",
     "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
-    "@types/react-map-gl": "^5.0.0",
-    "@types/react-router-dom": "^4.3.4",
+    "@types/react-map-gl": "^5.0.2",
+    "@types/react-router-dom": "^4.3.5",
     "dms-conversion": "^3.1.1",
-    "mapbox-gl": "^1.1.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-mapbox-gl": "^4.5.1",
-    "react-router-dom": "^5.0.1",
+    "mapbox-gl": "^1.4.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-mapbox-gl": "^4.6.1",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.0.1",
     "typescript": "3.5.3"
   },
@@ -38,8 +38,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "ngrok": "^3.2.4"
   }
 }

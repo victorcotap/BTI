@@ -1,19 +1,21 @@
 export enum category { Airplane = "Airplane", Ground = "Ground Unit", Ship = "Ship", Helicopter = "Helicopter"}
 export enum coalition {Blue = 2, Red = 1}
 export enum attributes { 
-    Fortifications = "Fortifications", 
-    Helicopters = "Helicopters",
-    Infantry = "New infantry",
-    SAM = "SAM",
-    SAMRelated = "SAM related",
     AAA = "AAA",
     APC = "APC",
     Armor = "Armored vehicle",
-    HeavyArmor = "HeavyArmoredUnits",
-    LightArmor = "LightArmoredUnits",
+    AircraftCarrier = "AircraftCarrier",
     Artillery = "Artillery",
-    Trucks = "Trucks",
     Cars = "Cars",
+    Fortifications = "Fortifications", 
+    HeavyArmor = "HeavyArmoredUnits",
+    Helicopters = "Helicopters",
+    Infantry = "New infantry",
+    LightArmor = "LightArmoredUnits",
+    SAM = "SAM",
+    SAMRelated = "SAM related",
+    ShipSAM = "Armed Air Defence",
+    Trucks = "Trucks",
 }
 
 export default interface Group {
@@ -29,5 +31,5 @@ export default interface Group {
     heading: number,
     height: number,
     displayName: string,
-    properties: { [key: string]: boolean }
+    attributes: { [key: string]: boolean }
 }

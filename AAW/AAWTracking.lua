@@ -26,11 +26,11 @@ local function trackGroup(group, master)
     end
 
     local displayName = nil
-    local properties = nil
-    local attributes = group:GetDCSDesc()
-    if attributes ~= nil then
-        displayName = attributes["displayName"]
-        properties = attributes["attributes"]
+    local attributes = nil
+    local descAttributes = group:GetDCSDesc()
+    if descAttributes ~= nil then
+        displayName = descAttributes["displayName"]
+        attributes = descAttributes["attributes"]
     end
     if groupName then
         -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupCoalition, groupName, groupCategory, groupType, groupAlive}))
@@ -47,7 +47,7 @@ local function trackGroup(group, master)
             ["heading"] = groupHeading,
             ["height"] = groupHeight,
             ["displayName"] = displayName,
-            ["properties"] = properties,
+            ["attributes"] = attributes,
         }
     end
 end

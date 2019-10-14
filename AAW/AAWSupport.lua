@@ -60,7 +60,7 @@ end
 
 
 -- KC130Tanker = nil
-KC135Tanker = nil
+KC135MPRS = nil
 -- S3Tanker = nil
 E2EWR = nil
 function spawnServices(something)
@@ -68,11 +68,12 @@ function spawnServices(something)
     CommandCenter:MessageTypeToCoalition( string.format("AWACS and Tanker are now respawning. Next respawn in 2 hours"), MESSAGE.Type.Information )
     E2EWR = SPAWN:New('BLUE C EWR E3'):Spawn()
     -- KC130Tanker = SPAWN:New('BLUE REFUK KC130'):Spawn()
-    KC135Tanker = SPAWN:New('BLUE C REFUK 135'):Spawn()
+    KC135MPRS = SPAWN:New('BLUE C REFUK 135'):Spawn()
+    KC135Boom = SPAWN:New('BLUE C REFUS 135'):Spawn()
     -- S3Tanker = SPAWN:New('BLUE C REFUK KC130 Navy'):Spawn()
 end
 
-SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 60, 7200)
+SCHEDULER:New(nil, spawnServices, {"sdfsdfd"}, 15, 7200)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -98,10 +99,15 @@ function SUPPORTResetTankerAWACSTask()
     E2EWR:PushTask(awacsEPLRS)
     E2EWR:PushTask(awacsRouteTask, 4)
 
-    local tanker130Task = KC130Tanker:EnRouteTaskTanker()
+    local tanker135MPRSTask = KC135MPRS:EnRouteTaskTanker()
+    local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC135MPRS:GetUnit(1):GetCoordinate(), KC135MPRS:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
+    KC135MPRS:SetTask(tankerRouteTask, 2)
+    KC135MPRS:PushTask(tanker135MPRSTask, 2)
+
+    local tanker135BoomTask = KC130Tanker:EnRouteTaskTanker()
     local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC130Tanker:GetUnit(1):GetCoordinate(), KC130Tanker:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
     KC130Tanker:SetTask(tankerRouteTask, 2)
-    KC130Tanker:PushTask(tanker130Task, 2)
+    KC130Tanker:PushTask(tanker135BoomTask, 2)
 end
 
 function SUPPORTSpawnSFAC(zone)
