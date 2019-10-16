@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import Map from './map';
+import Map from './Map';
 import CSARSlots from './CSARSlots';
 
 const styleToolbar: CSSProperties = {
@@ -20,7 +20,7 @@ const styleContentArea: CSSProperties = {
     flexDirection: "row",
     flexWrap: "nowrap",
     justifyContent: 'space-between',
-    height: '75vh',
+    height: '85vh',
 }
 
 const styleSidebar: CSSProperties = {
@@ -64,7 +64,7 @@ export default class LiveMap extends React.Component {
         return (
             <div>
                 <div style={styleToolbar}>
-                    <button style={styleButton} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}>Slots List</button>
+                    <button style={styleButton} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}>Slots List On/Off</button>
                     <button style={styleButton} onClick={(event) => this.setState({showFlightPlanner: !this.state.showFlightPlanner})}>Flight Planning</button>
                 </div>
                 <div style={styleContentArea}>

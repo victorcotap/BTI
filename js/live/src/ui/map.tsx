@@ -8,7 +8,6 @@ import renderLayers from '../utils/groupsRenderer';
 import renderHeatmap from '../utils/heatmapRenderer';
 import GroupPopup from './GroupPopup';
 
-import './map.css';
 import config from '../config.json';
 
 const styleMapContainer: CSSProperties = {

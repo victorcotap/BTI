@@ -3,7 +3,10 @@ import {Popup} from "react-mapbox-gl";
 
 import Group from '../model/group';
 
-import './map.css';
+const stylePopup = {
+    color: 'black',
+    borderRadius: '10px'
+}
 
 interface GroupPopupProps {
     group: Group,
@@ -14,7 +17,7 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
     const altitude = group.height * 3.28084;
     return (
         <Popup key={group.type} coordinates={[group.longitude, group.latitude]} offset={15}>
-            <div className="PopupText">
+            <div style={stylePopup}>
                 <h1>{group.displayName}</h1>
                 <span>{group.LLDMS}</span><br />
                 <span>{group.MGRS}</span><br />

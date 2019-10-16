@@ -10,7 +10,7 @@ const styleHeader: CSSProperties = {
 }
 
 const styleLiveMap: CSSProperties = {
-  minHeight: '90vh',
+  minHeight: '80vh',
 }
 
 const App: React.FC = () => {
