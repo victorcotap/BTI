@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import Map from './Map';
+import Map from './Mapd';
 import CSARSlots from './CSARSlots';
 
 const styleToolbar: CSSProperties = {
