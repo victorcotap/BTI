@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ReactMapboxGl from "react-mapbox-gl";
 import MapboxGl from 'mapbox-gl';
 import DmsCoordinates from 'dms-conversion';
@@ -10,6 +10,26 @@ import GroupPopup from './GroupPopup';
 
 import './map.css';
 import config from '../config.json';
+
+const styleMapContainer: CSSProperties = {
+    width: '100%',
+    height: '100%',
+    position: "relative",
+    overflow: "hidden"
+};
+
+const styleCoordBox: CSSProperties = {
+    backgroundColor: "#000000",
+    opacity: 0.7,
+    padding: "10px",
+    borderRadius: "10px",
+    color: "#ffffff",
+    boxSizing: "border-box",
+    position: "absolute",
+    zIndex: 2,
+    left: 10,
+    bottom: 5,
+};
 
 const Mapbox = ReactMapboxGl({
     accessToken: "pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA"
@@ -85,11 +105,13 @@ export default class Map extends React.Component {
         if (selectedGroup) {
             popup = (<GroupPopup group={selectedGroup} closePopup={() => this.groupPopupClose()} />);
         }
-        let cursorCoordinates = (<span>Click on the map to get coordinates</span>);
+        let cursorCoordinates = (
+            <div style={styleCoordBox}><span>Click on the map to get coordinates</span></div>
+        );
         if(selectedPoint) {
             const dms = new DmsCoordinates(selectedPoint.lat, selectedPoint.lng);
             cursorCoordinates = (
-            <div>
+            <div style={styleCoordBox}>
                 <span>Latitude {selectedPoint.lat.toFixed(6)}</span><br />
                 <span>Longitude {selectedPoint.lng.toFixed(6)}</span><br />
                 <span>{dms.toString()}</span>
@@ -98,9 +120,9 @@ export default class Map extends React.Component {
         }
 
         const center: [number, number] = this.lastLocation ? this.lastLocation : [41.644793131899, 42.18450951825];
+
         return (
-            <div>
-                <h1>Here is the map</h1>
+            <div style={styleMapContainer}>
                 <Mapbox
                     style={"mapbox://styles/victorcotap/cjypbpdul4n6j1cmpkt13719b"}
                     center={selectedGroup ? [selectedGroup.longitude, selectedGroup.latitude] : center}
@@ -108,8 +130,8 @@ export default class Map extends React.Component {
                     onMouseMove={(map, event) => this.mapMouseMove(map, event)}
                     onClick={(map, event) => this.mapMouseClick(map, event)}
                     containerStyle={{
-                        height: "80vh",
-                        width: "100vw"
+                        width: "100%",
+                        height: "100%"
                     }}>
                     {groupLayers}
                     {/* noop */}
