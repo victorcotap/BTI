@@ -40,6 +40,8 @@ interface State {
     selectedPoint?: {lat: number, lng: number},
 }
 
+const defaultZoom: [number] = [8];
+
 export default class Map extends React.Component {
     state: State = {
         currentGroups: Array<Group>(),
@@ -126,6 +128,7 @@ export default class Map extends React.Component {
                     style={"mapbox://styles/victorcotap/cjypbpdul4n6j1cmpkt13719b"}
                     center={selectedGroup ? [selectedGroup.longitude, selectedGroup.latitude] : center}
                     // zoom={selectedGroup ? [7] : [null]}
+                    zoom={defaultZoom}
                     onMouseMove={(map, event) => this.mapMouseMove(map, event)}
                     onClick={(map, event) => this.mapMouseClick(map, event)}
                     containerStyle={{
