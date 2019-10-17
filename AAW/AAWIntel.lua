@@ -140,17 +140,18 @@ function saveCSARSlotDisabledEvent(csarCurrentlyDisabled, slotName, crashedPlaye
     env.info("CSAR: disabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(crashedPlayerName))
     currentCSARData["disabled"] = csarCurrentlyDisabled
     currentCSARData["records"][slotName] = {
-        disabled = true,
-        crashedPlayerName = crashedPlayerName,
+        ["disabled"] = true,
+        ["crashedPlayerName"] = crashedPlayerName,
     }
     saveCSARTracking()
 end
 function saveCSARSlotEnabledEvent(csarCurrentlyDisabled, slotName, rescuePlayerName)
     env.info("CSAR: enabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(rescuePlayerName))
     currentCSARData["disabled"] = csarCurrentlyDisabled
+    if (rescuePlayerName == nil) then rescuePlayerName = "God" end
     currentCSARData["records"][slotName] = {
-        disabled = true,
-        rescuePlayerName = rescuePlayerName,
+        ["disabled"] = false,
+        ["rescuePlayerName"] = rescuePlayerName,
     }
     saveCSARTracking()
 end
