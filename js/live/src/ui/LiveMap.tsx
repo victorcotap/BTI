@@ -20,7 +20,7 @@ const styleContentArea: CSSProperties = {
     flexDirection: "row",
     flexWrap: "nowrap",
     justifyContent: 'space-between',
-    height: '85vh',
+    height: '70vh',
 }
 
 const styleSidebar: CSSProperties = {
