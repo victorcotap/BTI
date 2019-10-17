@@ -40,7 +40,7 @@ interface State {
     selectedPoint?: {lat: number, lng: number},
 }
 
-const defaultZoom: [number] = [8];
+const defaultZoom: [number] = [7];
 
 export default class Map extends React.Component {
     state: State = {
@@ -120,7 +120,7 @@ export default class Map extends React.Component {
             )
         }
 
-        const center: [number, number] = this.lastLocation ? this.lastLocation : [41.644793131899, 42.18450951825];
+        const center: [number, number] = this.lastLocation ? this.lastLocation : [40.981280, 42.665656];
 
         return (
             <div style={styleMapContainer}>
