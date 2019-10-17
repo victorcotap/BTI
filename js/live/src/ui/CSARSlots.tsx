@@ -4,8 +4,20 @@ import CSARRecord, { CSARDisabled } from '../model/csarSlot';
 
 import config from '../config.json';
 
-const styleSlotsTable: CSSProperties = {
-    overflow: 'auto',
+const styleHeader: CSSProperties = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    paddingBottom: '10px',
+    fontWeight: "bold"
+}
+
+const styleCell: CSSProperties = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    padding: "0 0 2px 0",
+    borderBottom: "1px solid rgba(255,255,255,0.2)",
 }
 
 interface CSARSlotsResponse {
@@ -48,35 +60,40 @@ export default class CSARSlots extends React.Component {
         setInterval(() => this.refreshData(), 30000);
     }
 
-    private renderDisabledRecord(slot: string): string {
-        if (!this.state.disabled) { return "OK" }
-        const disabled = this.state.disabled[slot];
-        let disabledRecord = !disabled ? "OK" : "Disabled"
+    private renderDisabledRecord(slot: string): {disabled: boolean, message: string} {
+        if (!this.state.disabled) { return {disabled: false, message: "OK"} }
+
+        const disabledCSAR = this.state.disabled[slot];
+        const disabled = disabledCSAR !== undefined;
+        let disabledString = !disabled ? "OK" : "Disabled"
         
         const record = this.state.records ? this.state.records[slot] : undefined;
         if (this.state.records && this.state.records[slot]) {
             const record = this.state.records[slot]
-            disabledRecord = disabledRecord + " " + disabled ? `${record.crashedPlayerName}` : `${record.rescuePlayerName}`;
+            disabledString = disabled ? `${record.crashedPlayerName}` : `${record.rescuePlayerName}`;
         }
-        return disabledRecord;
+        return {disabled, message: disabledString};
     }
 
     render() {
         const cells = this.state.slots.sort().map((slot) => {
-            const disabled = this.renderDisabledRecord(slot)
+            const {disabled, message} = this.renderDisabledRecord(slot)
             return (
-                <div key={slot}>
-                    {slot} {disabled}
+                <div style={styleCell} key={slot}>
+                    <span>{slot}</span>
+                    <span style={disabled ? {color: '#ee2222'} : {color: '#228b22'}}>{message}</span>
                 </div>
             )
         })
 
         return (
-            <div style={styleSlotsTable}>
-                <b>Slot | Crashed / Rescued by</b>
+            <div>
+                <div style={styleHeader}>
+                    <span>Slot</span>
+                    <span>Crashed / Rescued by</span>
+                </div>
                 {cells}
             </div>
         )
     }
-
 }

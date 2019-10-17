@@ -25,11 +25,11 @@ const styleContentArea: CSSProperties = {
 
 const styleSidebar: CSSProperties = {
     boxSizing: "border-box",
-    maxWidth: "25%",
+    minWidth: "25%",
     flexGrow: 0,
     padding: "10px",
     backgroundColor: "#222222",
-    overflow: "hidden",
+    overflowY: "auto",
 }
 
 const styleMap: CSSProperties = {
