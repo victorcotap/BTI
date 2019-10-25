@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Group, { coalition } from '../model/group';
+import Group, { coalition, category } from '../model/group';
 import { Layer, Feature } from "react-mapbox-gl";
 
 export default function renderHeatmap(groups: Group[]) {
@@ -51,7 +51,11 @@ export default function renderHeatmap(groups: Group[]) {
         ],
     };
 
-    const features = groups.filter((group: Group) => group.coalition === coalition.Red && group.alive === true).map((group: Group) => {
+    const features = groups.filter((group: Group) => group.coalition === coalition.Red &&
+        group.category !== category.Airplane &&
+        group.category !== category.Helicopter &&
+        group.alive === true
+        ).map((group: Group) => {
         const key = `heat${group.type}${group.latitude}${group.longitude}`;
         return (
             <Feature key={key} properties={group} coordinates={[group.longitude, group.latitude]} />

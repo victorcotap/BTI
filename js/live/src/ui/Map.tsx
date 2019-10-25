@@ -34,6 +34,14 @@ const Mapbox = ReactMapboxGl({
     accessToken: "pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA"
 });
 
+interface Props {
+    showHeatmap: boolean,
+    showBlue: boolean,
+    showAirDefenses: boolean,
+    showArmor: boolean,
+    showGround: boolean,
+}
+
 interface State {
     currentGroups: Group[],
     selectedGroup?: Group,
@@ -42,7 +50,7 @@ interface State {
 
 const defaultZoom: [number] = [7];
 
-export default class Map extends React.Component {
+export default class Map extends React.Component<Props> {
     state: State = {
         currentGroups: Array<Group>(),
     }
@@ -93,6 +101,7 @@ export default class Map extends React.Component {
     }
 
     render() {
+        const {showAirDefenses, showArmor, showBlue, showGround, showHeatmap} = this.props;
         if (!this.state.currentGroups.length) {
             return (
                 <h2>Loading...</h2>
@@ -100,7 +109,10 @@ export default class Map extends React.Component {
         }
 
         const {selectedGroup, selectedPoint} = this.state;
-        const groupLayers = renderLayers(this.state.currentGroups, (group: Group) => this.groupClickHandler(group));
+        const groupLayers = renderLayers(
+            this.state.currentGroups,
+            (group: Group) => this.groupClickHandler(group),
+            {showAirDefenses, showArmor, showBlue, showGround});
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
         let popup = undefined;
         if (selectedGroup) {
@@ -137,7 +149,7 @@ export default class Map extends React.Component {
                     }}>
                     {groupLayers}
                     {/* noop */}
-                    {heatmapLayer}
+                    {showHeatmap ? heatmapLayer : undefined}
                     {popup}
                 </Mapbox>
                 {cursorCoordinates}
