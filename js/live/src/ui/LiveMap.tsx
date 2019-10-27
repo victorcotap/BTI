@@ -3,6 +3,11 @@ import React, { CSSProperties } from 'react';
 import Map from './Map';
 import CSARSlots from './CSARSlots';
 
+import RedGround from '../assets/Red-Ground.png';
+import RedSAM from '../assets/Red-SAM.png';
+import RedArmor from '../assets/Red-Armor.png';
+import BlueGround from '../assets/Blue-Ground.png';
+
 const styleToolbar: CSSProperties = {
     boxSizing: "border-box",
     minHeight: '5vh',
@@ -47,6 +52,11 @@ const styleButton: CSSProperties = {
     border: "none"
 }
 
+const styleImage: CSSProperties = {
+    width: 20,
+    height: 20,
+}
+
 interface State {
     showSlots: boolean,
     showFlightPlanner: boolean,
@@ -78,23 +88,27 @@ export default class LiveMap extends React.Component {
                     
                     <div>
                         <input type="checkbox" name="heatmap" defaultChecked={true} onChange={(event) => this.setState({showHeatmap: event.target.checked}) }/>
-                        <label>Heatmap</label>
+                        <label> Heatmap</label>
                     </div>
                     <div>
                         <input type="checkbox" name="blue" defaultChecked={true} onChange={(event) => this.setState({showBlue: event.target.checked}) }/>
-                        <label>BLUFOR</label>
+                        <img style={styleImage} src={BlueGround} />
+                        <label> BLUFOR</label>
                     </div>
                     <div>
                         <input type="checkbox" name="air-defenses" defaultChecked={true} onChange={(event) => this.setState({showAirDefenses: event.target.checked}) }/>
-                        <label>Air Defenses</label>
+                        <img style={styleImage} src={RedSAM} />
+                        <label> Air Defenses</label>
                     </div>
                     <div>
                         <input type="checkbox" name="armor" defaultChecked={true} onChange={(event) => this.setState({showArmor: event.target.checked}) }/>
-                        <label>Armor</label>
+                        <img style={styleImage} src={RedArmor} />
+                        <label> Armor</label>
                     </div>
                     <div>
                         <input type="checkbox" name="ground" defaultChecked={true} onChange={(event) => this.setState({showGround: event.target.checked}) }/>
-                        <label>Ground forces</label>
+                        <img style={styleImage} src={RedGround} />
+                        <label> Ground forces</label>
                     </div>
                     
                     

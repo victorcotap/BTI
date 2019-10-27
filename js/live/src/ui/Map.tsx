@@ -31,7 +31,8 @@ const styleCoordBox: CSSProperties = {
 };
 
 const Mapbox = ReactMapboxGl({
-    accessToken: "pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA"
+    accessToken: "pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA",
+    antialias: true,
 });
 
 interface Props {
@@ -43,6 +44,7 @@ interface Props {
 }
 
 interface State {
+    center: [number, number],
     currentGroups: Group[],
     selectedGroup?: Group,
     selectedPoint?: {lat: number, lng: number},
@@ -52,10 +54,10 @@ const defaultZoom: [number] = [7];
 
 export default class Map extends React.Component<Props> {
     state: State = {
+        center: [40.981280, 42.665656],
         currentGroups: Array<Group>(),
     }
     lastLocation?: [number, number] = undefined
-
 
     private async fetchData() {
         return fetch(config.coreTunnel + "/live", {
@@ -83,12 +85,10 @@ export default class Map extends React.Component<Props> {
         this.setState({selectedGroup: group});
     }
     private groupPopupClose() {
-        if (this.state.selectedGroup) {
-            this.lastLocation = [this.state.selectedGroup.longitude, this.state.selectedGroup.latitude]
-        }
         this.setState({selectedGroup: undefined});
     }
-    private mapMouseMove(map: MapboxGl.Map, event: any) {
+    private mapMoveEnd(map: MapboxGl.Map, event: any) {
+        const center = map.getCenter()
     }
 
     private mapMouseClick(map: MapboxGl.Map, event: any) {
@@ -132,24 +132,21 @@ export default class Map extends React.Component<Props> {
             )
         }
 
-        const center: [number, number] = this.lastLocation ? this.lastLocation : [40.981280, 42.665656];
-
         return (
             <div style={styleMapContainer}>
                 <Mapbox
                     style={"mapbox://styles/victorcotap/cjypbpdul4n6j1cmpkt13719b"}
-                    center={selectedGroup ? [selectedGroup.longitude, selectedGroup.latitude] : center}
-                    // zoom={selectedGroup ? [7] : [null]}
+                    center={this.state.center}
                     zoom={defaultZoom}
-                    onMouseMove={(map, event) => this.mapMouseMove(map, event)}
+                    onMoveEnd={(map, event) => this.mapMoveEnd(map, event)}
                     onClick={(map, event) => this.mapMouseClick(map, event)}
                     containerStyle={{
                         width: "100%",
                         height: "100%"
                     }}>
+                    {showHeatmap ? heatmapLayer : undefined}
                     {groupLayers}
                     {/* noop */}
-                    {showHeatmap ? heatmapLayer : undefined}
                     {popup}
                 </Mapbox>
                 {cursorCoordinates}
