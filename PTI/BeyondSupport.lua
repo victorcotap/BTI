@@ -367,7 +367,7 @@ function markRemoved(Event)
     if Event.text~=nil and Event.text:lower():find("-") then 
         -- local text = Event.text:lower()
         local text = Event.text
-        local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
+        local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z}
         local coord = COORDINATE:NewFromVec3(vec3)
         coord.y = coord:GetLandHeight()
 
@@ -395,7 +395,7 @@ function markChanged(Event)
     if Event.text~=nil and Event.text:lower():find("-") then
         -- local text = Event.text:lower()
         local text = Event.text
-        local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x}
+        local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z}
         local coord = COORDINATE:NewFromVec3(vec3)
         coord.y = coord:GetLandHeight()
 
