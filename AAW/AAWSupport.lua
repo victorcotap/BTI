@@ -164,6 +164,7 @@ function handleZeusRequest(text, baseCoord)
     local spawnAmount = 1
     local spawnAltitude = 3000
     local spawnTask = ""
+    local spawnCluster = ""
     for _,argument in pairs(arguments) do
         local argumentValues = _split(argument, " ")
         env.info("BTI: argumentValue " .. UTILS.OneLineSerialize(arguments))
@@ -178,6 +179,8 @@ function handleZeusRequest(text, baseCoord)
             spawnAltitude = UTILS.FeetToMeters(tonumber(value))
         elseif command:find("-task") or command:find("-t") then
             spawnTask = value
+        elseif command:find("-cluster") then
+            spawnCluster = value
         end
     end
 
@@ -237,6 +240,17 @@ function handleZeusRequest(text, baseCoord)
                 -- route so they get in formation and start their AI
                 if spawnTask == "jtac" then
                     ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
+                elseif spawnTask == "arty" then
+                    local arty = ARTY:New(GROUP:FindByName(spawnedGroup:GetName()))
+                    arty:SetMarkAssignmentsOn()
+                    arty:SetIlluminationShells(100, 1.5)
+                    arty:SetSmokeShells(100)
+                    arty:SetTacNukeShells(100)
+                    arty:SetTacNukeWarhead(11000)
+                    if spawnCluster ~= nil then
+                        arty:AddToCluster(spawnCluster)
+                    end
+                    arty:Start()
                 end
                 spawnedGroup:RouteToVec2(baseCoord:GetRandomVec2InRadius( 20, 5 ), 5)
             end

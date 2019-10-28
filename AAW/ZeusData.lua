@@ -19,6 +19,9 @@ ZeusTable = {
     ["BLUstryker"] = {
         ["type"] = "ground",
     },
+    ["BLUpaladin"] = {
+        ["type"] = "ground",
+    },
     ["BLUlav25"] = {
         ["type"] = "ground",
     },
@@ -29,6 +32,9 @@ ZeusTable = {
         ["type"] = "ground",
     },
     ["BLUspeedboat"] = {
+        ["type"] = "ground",
+    },
+    ["BLUnormandy"] = {
         ["type"] = "ground",
     },
     -- RED
@@ -174,6 +180,13 @@ ZeusTable = {
         ["type"] = "ground",
     },
     ["APCaav"] = {
+        ["type"] = "ground",
+    },
+    -- ART
+    ["ARTmsta"] = {
+        ["type"] = "ground",
+    },
+    ["ARTsmerch"] = {
         ["type"] = "ground",
     },
     -- VEH
