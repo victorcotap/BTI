@@ -1,11 +1,13 @@
 import React, { CSSProperties } from 'react';
 import ReactMapboxGl from "react-mapbox-gl";
-import MapboxGl from 'mapbox-gl';
+import MapboxGl, { LngLat } from 'mapbox-gl';
 import DmsCoordinates from 'dms-conversion';
 
-import Group from '../model/group';
+import Group, {isGroup} from '../model/group';
+import Waypoint from '../model/waypoint';
 import renderLayers from '../utils/groupsRenderer';
 import renderHeatmap from '../utils/heatmapRenderer';
+import renderRoute from '../utils/routeRenderer';
 import GroupPopup from './GroupPopup';
 
 import config from '../config.json';
@@ -41,13 +43,15 @@ interface Props {
     showAirDefenses: boolean,
     showArmor: boolean,
     showGround: boolean,
+    route?: Waypoint[],
+    onSelectMapPoint: (point: LngLat) => void
 }
 
 interface State {
     center: [number, number],
     currentGroups: Group[],
     selectedGroup?: Group,
-    selectedPoint?: {lat: number, lng: number},
+    selectedPoint?: LngLat,
 }
 
 const defaultZoom: [number] = [7];
@@ -92,32 +96,46 @@ export default class Map extends React.Component<Props> {
     }
 
     private mapMouseClick(map: MapboxGl.Map, event: any) {
-        this.setState({selectedPoint: event.lngLat});
+        let selectedPoint = event.lngLat
+
+        const groupFeature = map.queryRenderedFeatures(event.point)[0];
+        if (groupFeature && isGroup(groupFeature.properties)) {
+            const group: Group = groupFeature.properties as Group;
+            selectedPoint = {lng: group.longitude, lat: group.latitude};
+        } else {
+            this.props.onSelectMapPoint(selectedPoint);
+        }
+
+        this.setState({selectedPoint});
     }
- 
+
     componentDidMount() {
         this.refreshData();
         setInterval(() => this.refreshData(), 30000);
     }
 
     render() {
-        const {showAirDefenses, showArmor, showBlue, showGround, showHeatmap} = this.props;
+        const {showAirDefenses, showArmor, showBlue, showGround, showHeatmap, route} = this.props;
+        const {selectedGroup, selectedPoint} = this.state;
+
         if (!this.state.currentGroups.length) {
             return (
                 <h2>Loading...</h2>
             )
         }
 
-        const {selectedGroup, selectedPoint} = this.state;
         const groupLayers = renderLayers(
             this.state.currentGroups,
             (group: Group) => this.groupClickHandler(group),
             {showAirDefenses, showArmor, showBlue, showGround});
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
+        const routeLayer = renderRoute(route);
+
         let popup = undefined;
         if (selectedGroup) {
             popup = (<GroupPopup group={selectedGroup} closePopup={() => this.groupPopupClose()} />);
         }
+
         let cursorCoordinates = (
             <div style={styleCoordBox}><span>Click on the map to get coordinates</span></div>
         );
@@ -146,6 +164,7 @@ export default class Map extends React.Component<Props> {
                     }}>
                     {showHeatmap ? heatmapLayer : undefined}
                     {groupLayers}
+                    {routeLayer}
                     {/* noop */}
                     {popup}
                 </Mapbox>

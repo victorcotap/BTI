@@ -1,13 +1,13 @@
 export enum category { Airplane = "Airplane", Ground = "Ground Unit", Ship = "Ship", Helicopter = "Helicopter"}
 export enum coalition {Blue = 2, Red = 1}
-export enum attributes { 
+export enum attributes {
     AAA = "AAA",
     APC = "APC",
     Armor = "Armored vehicle",
     AircraftCarrier = "AircraftCarrier",
     Artillery = "Artillery",
     Cars = "Cars",
-    Fortifications = "Fortifications", 
+    Fortifications = "Fortifications",
     HeavyArmor = "HeavyArmoredUnits",
     Helicopters = "Helicopters",
     Infantry = "New infantry",
@@ -32,4 +32,8 @@ export default interface Group {
     height: number,
     displayName: string,
     attributes: { [key: string]: boolean }
+}
+
+export function isGroup(object: any): object is Group {
+    return typeof object.alive === 'boolean';
 }
