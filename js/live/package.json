@@ -10,6 +10,7 @@
     "@types/react-map-gl": "^5.0.2",
     "@types/react-router-dom": "^4.3.5",
     "dms-conversion": "^3.1.1",
+    "mapbox-elevation": "^1.0.0",
     "mapbox-gl": "^1.5.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",

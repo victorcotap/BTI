@@ -1,5 +1,7 @@
 import React, { CSSProperties } from 'react';
 
+import MapboxElevation from 'mapbox-elevation';
+
 import Map from './Map';
 import CSARSlots from './CSARSlots';
 
@@ -9,6 +11,8 @@ import RedArmor from '../assets/Red-Armor.png';
 import BlueGround from '../assets/Blue-Ground.png';
 import { LngLat } from 'mapbox-gl';
 import Waypoint from '../model/waypoint';
+
+const getElevation = MapboxElevation("pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA")
 
 const styleToolbar: CSSProperties = {
     boxSizing: "border-box",
@@ -88,8 +92,11 @@ export default class LiveMap extends React.Component {
 
     onSelectMapPoint = (point: LngLat, name?: string) => {
         const route = this.state.route
-        route.push({latitude: point.lat, longitude: point.lng, elevation: 0, name});
-        this.setState({route});
+        getElevation([point.lng, point.lat], (error: Error, elevation: number) => {
+            if (error) { console.warn(error); }
+            route.push({latitude: point.lat, longitude: point.lng, elevation, name});
+            this.setState({route});
+        })
     }
 
     render() {

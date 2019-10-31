@@ -6,7 +6,7 @@
 --      0 - No Limit - NO Aircraft disabling or pilot lives
 --      1 - Disable Aircraft when its down - Timeout to reenable aircraft
 --      2 - Disable Aircraft for Pilot when he's shot down -- timeout to reenable pilot for aircraft
---      3 - Pilot Life Limit - No Aircraft Disabling 
+--      3 - Pilot Life Limit - No Aircraft Disabling
 
 csar = {}
 
@@ -296,7 +296,7 @@ function csar.eventHandler:onEvent(_event)
                 return -- error!
             end
 
-			
+
 
             local _coalition = _unit:getCoalition()
 
@@ -555,7 +555,7 @@ function csar.reactivateAircraft()
         for _unitName, _details in pairs(csar.currentlyDisabled) do
 
             if timer.getTime() >= _details.timeout then
-
+                env.info("CSARPERSISTED: reactivate aircraft")
                 csar.enableAircraft(_unitName)
             end
         end
@@ -812,7 +812,7 @@ function csar.spawnGroup(_deadUnit)
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
 	--deletes spawned group if outside zone
-	
+
     -- Turn off AI
     trigger.action.setGroupAIOff(_spawnedGroup)
 

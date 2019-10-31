@@ -55,7 +55,7 @@ local function permanentPlayerMenu(something)
         local playerGroup = playerClient:GetGroup()
         if alive and playerGroup ~= nil then
             local IntelMenu = MENU_GROUP:New( playerGroup, "DO NOT USE(for real)[Buggy]" )
-            
+
             local tankerAWACSMenu = MENU_GROUP_COMMAND:New( playerGroup, "Fix Tanker & AWACS [WIP]", IntelMenu, requestTankerAWACSTasking)
             local carrierBeaconMenu = MENU_GROUP_COMMAND:New( playerGroup, "Reset Carrier TCN / ICLS", IntelMenu, requestCarrierBeacon)
             local wipeSpawnedAssets = MENU_GROUP_COMMAND:New( playerGroup, "[DO NOT USE] Wipe All", IntelMenu, requestWipeAllAssets)
@@ -170,7 +170,7 @@ csar.maxLives = 8 -- Maximum pilot lives
 
 csar.countCSARCrash = false -- If you set to true, pilot lives count for CSAR and CSAR aircraft will count.
 
-csar.reenableIfCSARCrashes = true -- If a CSAR heli crashes, the pilots are counted as rescued anyway. Set to false to Stop this
+csar.reenableIfCSARCrashes = false -- If a CSAR heli crashes, the pilots are counted as rescued anyway. Set to false to Stop this
 
 -- - I recommend you leave the option on below IF USING MODE 1 otherwise the
 -- aircraft will be disabled for the duration of the mission
