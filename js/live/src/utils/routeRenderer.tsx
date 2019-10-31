@@ -8,13 +8,15 @@ const lineLayout = {
 };
 
 const linePaint = {
-    'line-color': '#4790E5',
-    'line-width': 5
+    'line-color': '#FF00FF',
+    'line-width': 5,
+    'line-opacity': 0.45,
 };
 
 const circlePaint = {
     'circle-radius': 5,
-    'circle-color': '#000'
+    'circle-color': '#0000FF',
+    'circle-opacity': 0.5,
 };
 
 
@@ -36,7 +38,7 @@ export default function renderRoute(route?: Waypoint[]) {
         />)
     });
     const circleLayer = (
-        <Layer key="routeCircleLayer" type="circle" >
+        <Layer key="routeCircleLayer" type="circle" paint={circlePaint} >
             {circleFeatures}
         </Layer>
     )

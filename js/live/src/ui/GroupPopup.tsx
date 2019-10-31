@@ -10,10 +10,11 @@ const stylePopup = {
 
 interface GroupPopupProps {
     group: Group,
-    closePopup: () => void
+    closePopup: () => void,
+    addToFlightPlan: (group: Group) => void
 }
 
-const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group, closePopup}) => {
+const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group, closePopup, addToFlightPlan}) => {
     const altitude = group.height * 3.28084;
     return (
         <Popup key={group.type} coordinates={[group.longitude, group.latitude]} offset={15}>
@@ -25,6 +26,7 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
                 <span><b>Altitude: </b> {altitude.toFixed(0)} feet</span><br />
                 <span><b>HDG: </b>{group.heading}</span><br />
                 <button onClick={closePopup}>Close</button>
+                <button onClick={() => addToFlightPlan(group)}>Add To flight plan</button>
             </div>
         </Popup>
     )

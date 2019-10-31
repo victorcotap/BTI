@@ -3,11 +3,12 @@ import ReactMapboxGl from "react-mapbox-gl";
 import MapboxGl, { LngLat } from 'mapbox-gl';
 import DmsCoordinates from 'dms-conversion';
 
-import Group, {isGroup} from '../model/group';
+import Group, { isGroup } from '../model/group';
 import Waypoint from '../model/waypoint';
 import renderLayers from '../utils/groupsRenderer';
 import renderHeatmap from '../utils/heatmapRenderer';
 import renderRoute from '../utils/routeRenderer';
+import {waypointToDMM} from '../utils/coordinatesUtils';
 import GroupPopup from './GroupPopup';
 
 import config from '../config.json';
@@ -44,7 +45,7 @@ interface Props {
     showArmor: boolean,
     showGround: boolean,
     route?: Waypoint[],
-    onSelectMapPoint: (point: LngLat) => void
+    onSelectMapPoint: (point: LngLat, name?: string) => void
 }
 
 interface State {
@@ -60,8 +61,10 @@ export default class Map extends React.Component<Props> {
     state: State = {
         center: [40.981280, 42.665656],
         currentGroups: Array<Group>(),
-    }
-    lastLocation?: [number, number] = undefined
+    };
+    lastLocation?: [number, number] = undefined;
+    private underlyingMap: MapboxGl.Map | undefined;
+
 
     private async fetchData() {
         return fetch(config.coreTunnel + "/live", {
@@ -86,10 +89,13 @@ export default class Map extends React.Component<Props> {
         }
     }
     private groupClickHandler(group: Group) {
-        this.setState({selectedGroup: group});
+        this.setState({ selectedGroup: group });
     }
     private groupPopupClose() {
-        this.setState({selectedGroup: undefined});
+        this.setState({ selectedGroup: undefined });
+    }
+    private groupAddToFlightPlan(group: Group) {
+        this.props.onSelectMapPoint(new LngLat(group.longitude, group.latitude), group.displayName);
     }
     private mapMoveEnd(map: MapboxGl.Map, event: any) {
         const center = map.getCenter()
@@ -101,12 +107,12 @@ export default class Map extends React.Component<Props> {
         const groupFeature = map.queryRenderedFeatures(event.point)[0];
         if (groupFeature && isGroup(groupFeature.properties)) {
             const group: Group = groupFeature.properties as Group;
-            selectedPoint = {lng: group.longitude, lat: group.latitude};
+            selectedPoint = { lng: group.longitude, lat: group.latitude };
         } else {
             this.props.onSelectMapPoint(selectedPoint);
         }
 
-        this.setState({selectedPoint});
+        this.setState({ selectedPoint });
     }
 
     componentDidMount() {
@@ -115,8 +121,8 @@ export default class Map extends React.Component<Props> {
     }
 
     render() {
-        const {showAirDefenses, showArmor, showBlue, showGround, showHeatmap, route} = this.props;
-        const {selectedGroup, selectedPoint} = this.state;
+        const { showAirDefenses, showArmor, showBlue, showGround, showHeatmap, route } = this.props;
+        const { selectedGroup, selectedPoint } = this.state;
 
         if (!this.state.currentGroups.length) {
             return (
@@ -127,26 +133,32 @@ export default class Map extends React.Component<Props> {
         const groupLayers = renderLayers(
             this.state.currentGroups,
             (group: Group) => this.groupClickHandler(group),
-            {showAirDefenses, showArmor, showBlue, showGround});
+            { showAirDefenses, showArmor, showBlue, showGround });
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
         const routeLayer = renderRoute(route);
 
         let popup = undefined;
         if (selectedGroup) {
-            popup = (<GroupPopup group={selectedGroup} closePopup={() => this.groupPopupClose()} />);
+            popup = (
+                <GroupPopup
+                    group={selectedGroup}
+                    closePopup={() => this.groupPopupClose()}
+                    addToFlightPlan={(group) => this.groupAddToFlightPlan(group)}
+                />
+            );
         }
 
         let cursorCoordinates = (
             <div style={styleCoordBox}><span>Click on the map to get coordinates</span></div>
         );
-        if(selectedPoint) {
-            const dms = new DmsCoordinates(selectedPoint.lat, selectedPoint.lng);
+        if (selectedPoint) {
+            const dmmStrings = waypointToDMM({latitude: selectedPoint.lat, longitude: selectedPoint.lng, elevation: 0});
             cursorCoordinates = (
-            <div style={styleCoordBox}>
-                <span>Latitude {selectedPoint.lat.toFixed(6)}</span><br />
-                <span>Longitude {selectedPoint.lng.toFixed(6)}</span><br />
-                <span>{dms.toString()}</span>
-            </div>
+                <div style={styleCoordBox}>
+                    <span>Latitude {selectedPoint.lat.toFixed(6)}</span><br />
+                    <span>Longitude {selectedPoint.lng.toFixed(6)}</span><br />
+                    <span>{dmmStrings.latString} {dmmStrings.lonString}</span>
+                </div>
             )
         }
 
