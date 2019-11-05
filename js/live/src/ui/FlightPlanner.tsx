@@ -42,7 +42,7 @@ const styleColumn: CSSProperties = {
 const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children, route, onClearRoute, onSwapWaypoint, onDeleteWaypoint }) => {
     const waypointList = route.map((waypoint, index) => {
         const dmmStrings = coordinatesToDMM(new LngLat(waypoint.longitude, waypoint.latitude));
-        const styleWaypointType = waypoint.type == WaypointType.waypoint ? styleCellWaypoint : styleCellDMPI;
+        const styleWaypointType = waypoint.type === WaypointType.waypoint ? styleCellWaypoint : styleCellDMPI;
         return (
             <div style={{...styleCell, ...styleWaypointType, backgroundColor: waypoint.color}} key={index}>
                 <div style={styleColumn}>

@@ -10,6 +10,11 @@ const styleAbstract: CSSProperties = {
 const Abstract: React.FC = () => {
     return (
         <div style={styleAbstract}>
+            <br />
+            <header>
+                AAW is a WIP deep dive into Topper's deranged mind
+            </header>
+            <br/>
             <span>- 🌩  Zeus controlled A2A challenge meant to test the players capacity of organizing and running CAP correctly but nothing too crazy</span><br />
             <span>- 🗺 Players are given the position of the entire enemy A2G forces using the live map and have the opportunity to team up and plan their flight days in advance.</span><br />
             <span>- 💻  All progress is persisted to the unit level, server runs for 17h at a time. 1 life per airframe, don't die or risk severely impairing your team. Airframe life resets at mission restart (for now).</span><br />

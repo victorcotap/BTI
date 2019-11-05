@@ -26,7 +26,7 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
                 <span><b>Altitude: </b> {altitude.toFixed(0)} feet</span><br />
                 <span><b>HDG: </b>{group.heading}</span><br />
                 <button onClick={closePopup}>Close</button>
-                {group.coalition == coalition.Red ? <button onClick={() => addToFlightPlan(group)}>Add as Target</button> : undefined }
+                {group.coalition === coalition.Red ? <button onClick={() => addToFlightPlan(group)}>Add as Target</button> : undefined }
             </div>
         </Popup>
     )
