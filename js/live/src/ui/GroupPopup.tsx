@@ -1,7 +1,7 @@
 import React from 'react';
 import {Popup} from "react-mapbox-gl";
 
-import Group from '../model/group';
+import Group, { coalition } from '../model/group';
 
 const stylePopup = {
     color: 'black',
@@ -26,7 +26,7 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
                 <span><b>Altitude: </b> {altitude.toFixed(0)} feet</span><br />
                 <span><b>HDG: </b>{group.heading}</span><br />
                 <button onClick={closePopup}>Close</button>
-                <button onClick={() => addToFlightPlan(group)}>Add To flight plan</button>
+                {group.coalition == coalition.Red ? <button onClick={() => addToFlightPlan(group)}>Add as Target</button> : undefined }
             </div>
         </Popup>
     )

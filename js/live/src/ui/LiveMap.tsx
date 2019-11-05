@@ -11,7 +11,8 @@ import RedGround from '../assets/Red-Ground.png';
 import RedSAM from '../assets/Red-SAM.png';
 import RedArmor from '../assets/Red-Armor.png';
 import BlueGround from '../assets/Blue-Ground.png';
-import Waypoint from '../model/waypoint';
+import Waypoint, { WaypointType } from '../model/waypoint';
+import {genColor} from '../utils/colorUtils';
 
 const getElevation = MapboxElevation("pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA")
 
@@ -38,7 +39,7 @@ const styleContentArea: CSSProperties = {
 const styleSidebar: CSSProperties = {
     boxSizing: "border-box",
     minWidth: "25%",
-    maxWidth: "25%",
+    maxWidth: "33%",
     flexGrow: 0,
     padding: "10px",
     backgroundColor: "#222222",
@@ -104,12 +105,13 @@ export default class LiveMap extends React.Component {
         this.setState({route});
     }
 
-    onSelectMapPoint = (point: LngLat, name?: string) => {
+    onSelectMapPoint = (point: LngLat, type: WaypointType, name?: string, ) => {
         if (!this.state.showFlightPlanner && !name) { return }
         const route = this.state.route
         getElevation([point.lng, point.lat], (error: Error, elevation: number) => {
             if (error) { console.warn(error); }
-            route.push({latitude: point.lat, longitude: point.lng, elevation, name});
+            const color = type == WaypointType.waypoint ? '#' + genColor(point.lat + point.lng) : undefined;
+            route.push({latitude: point.lat, longitude: point.lng, elevation, name, color, type});
             this.setState({route});
         })
     }

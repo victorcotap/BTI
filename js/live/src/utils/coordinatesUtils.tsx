@@ -1,6 +1,7 @@
 import formatCoords from 'formatcoords';
 
 import Waypoint from '../model/waypoint';
+import { LngLat } from 'mapbox-gl';
 
 export function distanceBetween(first: Waypoint, second: Waypoint): number {
     if ((first.latitude === second.latitude) && (first.longitude === second.longitude)) {
@@ -47,10 +48,20 @@ export function bearingBetween(first: Waypoint, second: Waypoint): number {
     return (brng + 360) % 360;
 }
 
-export function waypointToDMM(waypoint: Waypoint): {latString: string, lonString: string} {
-    const coord = formatCoords({lng: waypoint.longitude, lat: waypoint.latitude});
+export function coordinatesToDMM(coordinates: LngLat): {latString: string, lonString: string} {
+    const coord = formatCoords({lng: coordinates.lng, lat: coordinates.lat});
     const dmmStrings = coord.format('X DD mm', {latLonSeparator: '|', decimalPlaces: 4}).split('|');
     const latString = dmmStrings[0];
     const lonString = dmmStrings[1];
     return {latString, lonString};
+}
+
+export function totalRouteNm(route: Waypoint[]): number {
+    let totalRoute = 0;
+    for (let index = 0; index < route.length - 1; index++) {
+        const waypoint = route[index];
+        const nextWaypoint = route[index + 1];
+        totalRoute += distanceBetween(waypoint, nextWaypoint);
+    }
+    return totalRoute;
 }

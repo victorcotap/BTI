@@ -1,6 +1,7 @@
 import React, { CSSProperties } from 'react';
-import Waypoint from '../model/waypoint';
-import {distanceBetween, bearingBetween, waypointToDMM} from '../utils/coordinatesUtils';
+import Waypoint, { WaypointType } from '../model/waypoint';
+import {distanceBetween, bearingBetween, coordinatesToDMM, totalRouteNm} from '../utils/coordinatesUtils';
+import { LngLat } from 'mapbox-gl';
 
 
 interface FlightPlannerProps {
@@ -24,6 +25,12 @@ const styleCell: CSSProperties = {
     padding: "0 0 2px 0",
     borderBottom: "1px solid rgba(255,255,255,0.2)",
 }
+const styleCellWaypoint: CSSProperties = {
+    color: "black",
+}
+const styleCellDMPI: CSSProperties = {
+    color: "white",
+}
 
 const styleColumn: CSSProperties = {
     display: 'flex',
@@ -34,9 +41,10 @@ const styleColumn: CSSProperties = {
 
 const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children, route, onClearRoute, onSwapWaypoint, onDeleteWaypoint }) => {
     const waypointList = route.map((waypoint, index) => {
-        const dmmStrings = waypointToDMM(waypoint);
+        const dmmStrings = coordinatesToDMM(new LngLat(waypoint.longitude, waypoint.latitude));
+        const styleWaypointType = waypoint.type == WaypointType.waypoint ? styleCellWaypoint : styleCellDMPI;
         return (
-            <div style={styleCell} key={index}>
+            <div style={{...styleCell, ...styleWaypointType, backgroundColor: waypoint.color}} key={index}>
                 <div style={styleColumn}>
                     {index > 0 ? <button onClick={() => onSwapWaypoint(index, index - 1)}>{'<'}</button> : undefined}
                     <button onClick={() => onDeleteWaypoint(index)}>x</button>
@@ -52,11 +60,13 @@ const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children,
             </div>
         );
     });
+    const totalRoute = totalRouteNm(route);
     return (
         <div>
             <p>Everything with this side panel open is WIP, use at your own risk<br />Start clicking on the map to add waypoints</p>
             {route.length > 0 ? <button style={styleButton} onClick={onClearRoute}>Clear Route</button> : undefined}
             {waypointList}
+            <p>Total distance: {totalRoute.toFixed(0)} nm</p>
             <p>Export to DCS: Continue to Ask ED to release their data cartridge for Multiplayer </p>
         </div>
     );

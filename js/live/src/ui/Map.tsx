@@ -4,11 +4,11 @@ import MapboxGl, { LngLat } from 'mapbox-gl';
 import DmsCoordinates from 'dms-conversion';
 
 import Group, { isGroup } from '../model/group';
-import Waypoint from '../model/waypoint';
+import Waypoint, { WaypointType } from '../model/waypoint';
 import renderLayers from '../utils/groupsRenderer';
 import renderHeatmap from '../utils/heatmapRenderer';
 import renderRoute from '../utils/routeRenderer';
-import {waypointToDMM} from '../utils/coordinatesUtils';
+import {coordinatesToDMM} from '../utils/coordinatesUtils';
 import GroupPopup from './GroupPopup';
 
 import config from '../config.json';
@@ -45,7 +45,7 @@ interface Props {
     showArmor: boolean,
     showGround: boolean,
     route?: Waypoint[],
-    onSelectMapPoint: (point: LngLat, name?: string) => void
+    onSelectMapPoint: (point: LngLat, type: WaypointType, name?: string) => void
 }
 
 interface State {
@@ -95,7 +95,7 @@ export default class Map extends React.Component<Props> {
         this.setState({ selectedGroup: undefined });
     }
     private groupAddToFlightPlan(group: Group) {
-        this.props.onSelectMapPoint(new LngLat(group.longitude, group.latitude), group.displayName);
+        this.props.onSelectMapPoint(new LngLat(group.longitude, group.latitude), WaypointType.DMPI, group.displayName);
     }
     private mapMoveEnd(map: MapboxGl.Map, event: any) {
         const center = map.getCenter()
@@ -109,7 +109,7 @@ export default class Map extends React.Component<Props> {
             const group: Group = groupFeature.properties as Group;
             selectedPoint = { lng: group.longitude, lat: group.latitude };
         } else {
-            this.props.onSelectMapPoint(selectedPoint);
+            this.props.onSelectMapPoint(selectedPoint, WaypointType.waypoint);
         }
 
         this.setState({ selectedPoint });
@@ -152,7 +152,7 @@ export default class Map extends React.Component<Props> {
             <div style={styleCoordBox}><span>Click on the map to get coordinates</span></div>
         );
         if (selectedPoint) {
-            const dmmStrings = waypointToDMM({latitude: selectedPoint.lat, longitude: selectedPoint.lng, elevation: 0});
+            const dmmStrings = coordinatesToDMM(selectedPoint);
             cursorCoordinates = (
                 <div style={styleCoordBox}>
                     <span>Latitude {selectedPoint.lat.toFixed(6)}</span><br />
