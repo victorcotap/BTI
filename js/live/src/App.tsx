@@ -10,6 +10,7 @@ import {
 import LiveMap from './ui/LiveMap';
 import Rules from './ui/Rules';
 import Abstract from './ui/Abstract';
+import Airboss from './ui/Airboss';
 
 import './App.css';
 
@@ -51,7 +52,7 @@ const App: React.FC = () => {
         <section style={styleLiveMap}>
           <Switch>
             <Route path="/airboss">
-              {undefined}
+              <Airboss />
             </Route>
             <Route path="/about">
               <Abstract />

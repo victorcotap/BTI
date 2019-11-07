@@ -7,6 +7,7 @@ export default interface Trap {
     timeGroove: number,
     caseType: number
     wind: number,
+    airframe: string,
     passMumber?: number,
 }
 
@@ -19,6 +20,7 @@ export function trapFromCSVEntry(csv: {[key: string]: any}): Trap {
         wire: csv.Wire,
         timeGroove: csv.Tgroove,
         caseType: csv.Case,
+        airframe: csv.Airframe,
         wind: csv.Wind,
     }
 };

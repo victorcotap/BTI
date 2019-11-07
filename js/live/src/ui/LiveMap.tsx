@@ -110,7 +110,7 @@ export default class LiveMap extends React.Component {
         const route = this.state.route
         getElevation([point.lng, point.lat], (error: Error, elevation: number) => {
             if (error) { console.warn(error); }
-            const color = type == WaypointType.waypoint ? '#' + genColor(point.lat + point.lng) : undefined;
+            const color = type === WaypointType.waypoint ? '#' + genColor(point.lat + point.lng) : undefined;
             route.push({latitude: point.lat, longitude: point.lng, elevation, name, color, type});
             this.setState({route});
         })
