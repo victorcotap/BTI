@@ -51,6 +51,7 @@ export default class AirbossStore {
             embed.addField('Wind', trap.wind, true);
 
             try {
+                //@ts-ignore
                 await channel.send('OHAI!', {embed});
             } catch (error) {
                 console.warn(error);

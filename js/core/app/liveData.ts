@@ -45,7 +45,7 @@ router.get('/airboss', async (request, response) => {
     const currentTime = new Date();
     if (currentTime.getTime() - airbossStore.cache.time.getTime() > 60000) {
         console.info('AIRBOSS data cache is stale, refreshing');
-        await airbossStore.readTrackingFile();
+        await airbossStore.readTrackingFile(false);
     }
 
     console.log('AIRBOSS data access');
