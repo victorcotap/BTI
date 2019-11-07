@@ -64,9 +64,8 @@ export default class AirbossStore {
             const buffer = await readFile(this.filePath, {encoding: 'utf-8'})
             const csv = parse(buffer, {skip_empty_lines: true, columns: true})
             const newTraps: Trap[] = csv.map((entry: Object) => trapFromCSVEntry(entry));
-            //DEBUG add first time protection again
-            // this.sendNewTrapToDiscord(newTraps[newTraps.length - 1]);
-            if (!firstTime && this.cache.currentTraps !== newTraps) {
+            if (!firstTime && this.cache.currentTraps.length !== newTraps.length) {
+                console.log('sending new trap');
                 this.sendNewTrapToDiscord(newTraps[newTraps.length - 1]);
             }
             this.cache.currentTraps = newTraps;
