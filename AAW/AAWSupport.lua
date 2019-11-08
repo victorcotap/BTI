@@ -245,7 +245,7 @@ function handleZeusRequest(text, baseCoord)
                     arty:SetMarkAssignmentsOn()
                     arty:SetIlluminationShells(100, 2)
                     arty:SetSmokeShells(100)
-                    arty:SetTacNukeShells(100)
+                    arty:SetTacNukeShells(100, 0.1)
                     if spawnCluster ~= nil then
                         arty:AddToCluster(spawnCluster)
                     end
