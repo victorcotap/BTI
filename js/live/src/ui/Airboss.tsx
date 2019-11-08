@@ -90,7 +90,7 @@ export default class Airboss extends React.Component<Props, State> {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.currentTraps.reverse().map((trap: Trap) => {
+                        {this.state.currentTraps.map((trap: Trap) => {
                             const gradeStyle = this.styleForGrade(trap.points)
                             return (
                                 <tr style={{ ...styleCell, ...gradeStyle}} key={trap.pilotName + trap.grade + trap.detail}>

@@ -64,11 +64,12 @@ export default class AirbossStore {
             const buffer = await readFile(this.filePath, {encoding: 'utf-8'})
             const csv = parse(buffer, {skip_empty_lines: true, columns: true})
             const newTraps: Trap[] = csv.map((entry: Object) => trapFromCSVEntry(entry));
-            if (!firstTime && this.cache.currentTraps.length !== newTraps.length) {
+            const orderedTraps = newTraps.sort((a, b) => b.date.getTime() - a.date.getTime())
+            if (!firstTime && this.cache.currentTraps.length !== orderedTraps.length) {
                 console.log('sending new trap');
-                this.sendNewTrapToDiscord(newTraps[newTraps.length - 1]);
+                this.sendNewTrapToDiscord(orderedTraps[0]);
             }
-            this.cache.currentTraps = newTraps;
+            this.cache.currentTraps = orderedTraps;
             this.cache.time = new Date();
         } catch (error) {
             console.warn(`Unable to read file ${this.filePath} error`, error);
