@@ -10,13 +10,13 @@ local ZeusSpawnedAssets = {}
 
 
 --Utils----------------------------------------------------------------------------
-function _split(str, sep)    
+function _split(str, sep)
     local result = {}
     local regex = ("([^%s]+)"):format(sep)
     for each in str:gmatch(regex) do
         table.insert(result, each)
     end
-    
+
     return result
 end
 
@@ -243,10 +243,9 @@ function handleZeusRequest(text, baseCoord)
                 elseif spawnTask == "arty" then
                     local arty = ARTY:New(GROUP:FindByName(spawnedGroup:GetName()))
                     arty:SetMarkAssignmentsOn()
-                    arty:SetIlluminationShells(100, 1.5)
+                    arty:SetIlluminationShells(100, 2)
                     arty:SetSmokeShells(100)
                     arty:SetTacNukeShells(100)
-                    arty:SetTacNukeWarhead(11000)
                     if spawnCluster ~= nil then
                         arty:AddToCluster(spawnCluster)
                     end
@@ -263,7 +262,7 @@ function handleZeusRequest(text, baseCoord)
     for i = 1, spawnAmount do
         spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius( 100, 300 ), spawnAltitude, spawnAltitude)
     end
-    
+
     -- Remove Zeus Data and mark for secondary
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
@@ -385,14 +384,14 @@ end
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 function markRemoved(Event)
-    if Event.text~=nil and Event.text:lower():find("-") then 
+    if Event.text~=nil and Event.text:lower():find("-") then
         -- local text = Event.text:lower()
         local text = Event.text
         local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z}
         local baseCoord = COORDINATE:NewFromVec3(vec3)
         baseCoord.y = baseCoord:GetLandHeight()
 
-        if text:find("-fac") then   
+        if text:find("-fac") then
             handleFACRequest(text, baseCoord)
         elseif text:find("-tanker") then
             handleTankerRequest(text, baseCoord)
