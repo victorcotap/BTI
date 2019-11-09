@@ -238,4 +238,7 @@ ZeusTable = {
     ["BOAivanov"] = {
         ["type"] = "ground",
     },
+    ["BOAkilo"] = {
+        ["type"] = "ground",
+    },
 }

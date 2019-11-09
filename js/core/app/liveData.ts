@@ -22,7 +22,7 @@ router.get('/', async (request, response) => {
         await trackingStore.readTrackingFile();
     }
 
-    console.log('Live data access');
+    console.info('Live data access', new Date());
     response.json({currentGroups: trackingStore.cache.currentGroups});
 });
 
@@ -33,7 +33,7 @@ router.get('/csar', async (request, response) => {
         await csarStore.readTrackingFile();
     }
 
-    console.log('CSAR data access');
+    console.info('CSAR data access', new Date());
     response.json({
         slots: csarStore.cache.slots,
         disabled: csarStore.cache.disabled,
@@ -42,7 +42,7 @@ router.get('/csar', async (request, response) => {
 });
 
 router.get('/airboss', async (request, response) => {
-    console.log('AIRBOSS data access');
+    console.info('AIRBOSS data access', new Date());
     response.json({currentTraps: airbossStore.cache.currentTraps});
 });
 export default router
