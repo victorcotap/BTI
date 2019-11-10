@@ -59,7 +59,7 @@ const defaultZoom: [number] = [7];
 
 export default class Map extends React.Component<Props> {
     state: State = {
-        center: [40.981280, 42.665656],
+        center: [55.415474, 26.078377],
         currentGroups: Array<Group>(),
     };
     lastLocation?: [number, number] = undefined;
