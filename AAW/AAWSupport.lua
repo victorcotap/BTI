@@ -186,6 +186,10 @@ function handleZeusRequest(text, baseCoord)
 
     -- fetch spawn from table
     local spawnData = ZeusTable[spawnString]
+    if (spawnData == nil) then
+        env.info("BTI: Couldn't find group in Zeus Data, bailing out")
+        return
+    end
     local spawnSecondaryData = ZeusWaypointData[spawnString]
     local spawnTaskingData = ZeusTaskData[spawnString]
     local spawnType = spawnData["type"]
