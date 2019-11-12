@@ -13,7 +13,6 @@ PlayerMap = {}
 local PlayerMenuMap = {}
 
 SetPlayer = SET_CLIENT:New():FilterCoalitions("blue"):FilterActive():FilterStart()
-local SetSlots = SET_CLIENT:New():FilterCoalitions("blue")
 
 -- COMMANDS ----------------------------------------------------------------------------------------------
 function requestTankerAWACSTasking()

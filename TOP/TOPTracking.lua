@@ -134,6 +134,8 @@ env.info("BTI: Tracking better than google tracks your location")
 -- Slot CSAR tracking ----------------------------------------------------------------------
 local CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
 local currentCSARData = { ["records"] = {} }
+local SetSlots = SET_CLIENT:New():FilterCoalitions("blue")
+
 
 local function loadCSARTracking()
     local savedCSARBuffer = loadFile(CSARTrackingPath)
