@@ -1,9 +1,14 @@
 local baseDirectory = "C:\\BTI\\AAW\\"
+local libDirectory = "C:\\BTI\\TOP\\"
 
 -- Libs ----------------------------------------------------------------------------------------------
 JSONLib = dofile("C:\\BTI\\Json.lua")
 dofile("C:\\BTI\\Moose.lua")
 dofile("C:\\BTI\\CSARPersisted.lua")
+-- TOPLib
+TOPGroupPersistence = true
+TOPCSARPersistence = true
+dofile(libDirectory .. "TOPTracking.lua")
 
 -- Lib Hooks -----------------------------------------------------------------------------------------
 
@@ -19,7 +24,7 @@ end
 
 -- Mission scripts ----------------------------------------------------------------------------------
 dofile(baseDirectory .. "AAWIntel.lua")
-dofile(baseDirectory .. "AAWTracking.lua")
+-- dofile(baseDirectory .. "AAWTracking.lua")
 dofile(baseDirectory .. "ZeusData.lua")
 dofile(baseDirectory .. "AAWSupport.lua")
 dofile(baseDirectory .. "AAWCarrier.lua")

@@ -13,7 +13,6 @@ PlayerMap = {}
 local PlayerMenuMap = {}
 
 SetPlayer = SET_CLIENT:New():FilterCoalitions("blue"):FilterActive():FilterStart()
-local SetSlots = SET_CLIENT:New():FilterCoalitions("blue")
 
 -- COMMANDS ----------------------------------------------------------------------------------------------
 function requestTankerAWACSTasking()
@@ -95,66 +94,66 @@ SCHEDULER:New(nil, permanentPlayerMenu, {"something"}, 11, 15)
 
 --------------------------------------------------------------------------------------------------------
 --- CSAR -----------------------------------------------------------------------------------------------
-local CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
-local currentCSARData = { ["records"] = {} }
+-- local CSARTrackingPath = "C:\\BTI\\Tracking\\CSARTracking.json"
+-- local currentCSARData = { ["records"] = {} }
 
-local function loadCSARTracking()
-    local savedCSARBuffer = loadFile(CSARTrackingPath)
-    if savedCSARBuffer ~= nil then
-        local savedCSAR = JSONLib.decode(savedCSARBuffer)
-        currentCSARData = savedCSAR
-        local savedDisabled = savedCSAR["disabled"]
-        if savedDisabled ~= nil then
-            csar.currentlyDisabled = savedDisabled
-            env.info("CSARPersisted: CSAR master file found, applied master " .. UTILS.OneLineSerialize(csar.currentlyDisabled))
-        end
-    else
-        env.info("CSARPersisted: No CSAR master file found, reset in progress")
-    end
-end
+-- local function loadCSARTracking()
+--     local savedCSARBuffer = loadFile(CSARTrackingPath)
+--     if savedCSARBuffer ~= nil then
+--         local savedCSAR = JSONLib.decode(savedCSARBuffer)
+--         currentCSARData = savedCSAR
+--         local savedDisabled = savedCSAR["disabled"]
+--         if savedDisabled ~= nil then
+--             csar.currentlyDisabled = savedDisabled
+--             env.info("CSARPersisted: CSAR master file found, applied master " .. UTILS.OneLineSerialize(csar.currentlyDisabled))
+--         end
+--     else
+--         env.info("CSARPersisted: No CSAR master file found, reset in progress")
+--     end
+-- end
 
-local function saveCSARTracking()
-    local master = currentCSARData
-    newCSARJSON = JSONLib.encode(master)
-    saveFile(CSARTrackingPath, newCSARJSON)
-    -- env.info("CSARPersisted: Saved CSARPersisted tracking file " .. UTILS.OneLineSerialize(master))
-end
+-- local function saveCSARTracking()
+--     local master = currentCSARData
+--     newCSARJSON = JSONLib.encode(master)
+--     saveFile(CSARTrackingPath, newCSARJSON)
+--     -- env.info("CSARPersisted: Saved CSARPersisted tracking file " .. UTILS.OneLineSerialize(master))
+-- end
 
-local function computeSlotList()
-    local slotTable = {}
-    SetSlots:FilterOnce()
-    SetSlots:ForEachClient(
-        function(SlotClient)
-            local slotName = SlotClient.ObjectName
-            table.insert( slotTable, slotName)
-        end
-    )
-    currentCSARData["slots"] = slotTable
-    saveCSARTracking()
-end
-loadCSARTracking()
-computeSlotList()
+-- local function computeSlotList()
+--     local slotTable = {}
+--     SetSlots:FilterOnce()
+--     SetSlots:ForEachClient(
+--         function(SlotClient)
+--             local slotName = SlotClient.ObjectName
+--             table.insert( slotTable, slotName)
+--         end
+--     )
+--     currentCSARData["slots"] = slotTable
+--     saveCSARTracking()
+-- end
+-- loadCSARTracking()
+-- computeSlotList()
 
--- Exposed function to Dynamic Loader
-function saveCSARSlotDisabledEvent(csarCurrentlyDisabled, slotName, crashedPlayerName)
-    env.info("CSAR: disabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(crashedPlayerName))
-    currentCSARData["disabled"] = csarCurrentlyDisabled
-    currentCSARData["records"][slotName] = {
-        ["disabled"] = true,
-        ["crashedPlayerName"] = crashedPlayerName,
-    }
-    saveCSARTracking()
-end
-function saveCSARSlotEnabledEvent(csarCurrentlyDisabled, slotName, rescuePlayerName)
-    env.info("CSAR: enabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(rescuePlayerName))
-    currentCSARData["disabled"] = csarCurrentlyDisabled
-    if (rescuePlayerName == nil) then rescuePlayerName = "God" end
-    currentCSARData["records"][slotName] = {
-        ["disabled"] = false,
-        ["rescuePlayerName"] = rescuePlayerName,
-    }
-    saveCSARTracking()
-end
+-- -- Exposed function to Dynamic Loader
+-- function saveCSARSlotDisabledEvent(csarCurrentlyDisabled, slotName, crashedPlayerName)
+--     env.info("CSAR: disabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(crashedPlayerName))
+--     currentCSARData["disabled"] = csarCurrentlyDisabled
+--     currentCSARData["records"][slotName] = {
+--         ["disabled"] = true,
+--         ["crashedPlayerName"] = crashedPlayerName,
+--     }
+--     saveCSARTracking()
+-- end
+-- function saveCSARSlotEnabledEvent(csarCurrentlyDisabled, slotName, rescuePlayerName)
+--     env.info("CSAR: enabled " .. UTILS.OneLineSerialize(slotName) .. " by " .. UTILS.OneLineSerialize(rescuePlayerName))
+--     currentCSARData["disabled"] = csarCurrentlyDisabled
+--     if (rescuePlayerName == nil) then rescuePlayerName = "God" end
+--     currentCSARData["records"][slotName] = {
+--         ["disabled"] = false,
+--         ["rescuePlayerName"] = rescuePlayerName,
+--     }
+--     saveCSARTracking()
+-- end
 
 
 
