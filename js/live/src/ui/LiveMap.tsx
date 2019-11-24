@@ -24,7 +24,7 @@ const styleToolbar: CSSProperties = {
     alignItems: 'flex-end',
     paddingLeft: "10px",
     paddingRight: "10px",
-    paddingBottom: '5px',
+    marginBottom: "15px"
 }
 
 const styleContentArea: CSSProperties = {
@@ -55,10 +55,20 @@ const styleMap: CSSProperties = {
 const styleButton: CSSProperties = {
     boxSizing: "border-box",
     margin: "0 10px 0 0",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#aaaaaa",
     color: "#333333",
     height: "2rem",
-    border: "none"
+    border: "none",
+    borderRadius: "10px",
+    boxShadow: "1px 1px 1px 1px #888888",
+}
+
+const styleFilter: CSSProperties = {
+    backgroundColor: "#444444",
+    borderRadius: "15px",
+    minHeight: "25px",
+    padding: "3px 5px 3px 5px",
+    borderColor: "99CC99",
 }
 
 const styleImage: CSSProperties = {
@@ -122,31 +132,30 @@ export default class LiveMap extends React.Component {
             <div>
                 <div style={styleToolbar}>
                     <button style={styleButton} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}>Slots List On/Off</button>
-                    <div>
+                    <div style={styleFilter}>
                         <input type="checkbox" name="heatmap" defaultChecked={true} onChange={(event) => this.setState({showHeatmap: event.target.checked}) }/>
                         <label> Heatmap</label>
                     </div>
-                    <div>
+                    <div style={styleFilter}>
                         <input type="checkbox" name="blue" defaultChecked={true} onChange={(event) => this.setState({showBlue: event.target.checked}) }/>
                         <img style={styleImage} src={BlueGround} alt={''} />
                         <label> BLUFOR</label>
                     </div>
-                    <div>
+                    <div style={styleFilter}>
                         <input type="checkbox" name="air-defenses" defaultChecked={true} onChange={(event) => this.setState({showAirDefenses: event.target.checked}) }/>
                         <img style={styleImage} src={RedSAM} alt={''}/>
                         <label> Air Defenses</label>
                     </div>
-                    <div>
+                    <div style={styleFilter}>
                         <input type="checkbox" name="armor" defaultChecked={true} onChange={(event) => this.setState({showArmor: event.target.checked}) }/>
                         <img style={styleImage} src={RedArmor} alt={''} />
                         <label> Armor</label>
                     </div>
-                    <div>
+                    <div style={styleFilter}>
                         <input type="checkbox" name="ground" defaultChecked={true} onChange={(event) => this.setState({showGround: event.target.checked}) }/>
                         <img style={styleImage} src={RedGround} alt={''}/>
                         <label> Ground forces</label>
                     </div>
-
 
                     <button style={styleButton} onClick={(event) => this.setState({showFlightPlanner: !this.state.showFlightPlanner})}>Flight Planning</button>
 

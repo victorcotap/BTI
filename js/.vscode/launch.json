@@ -16,6 +16,21 @@
         "sourceMapPathOverrides": {
           "webpack:///src/*": "${webRoot}/*"
         }
+      },
+      {
+        "name": "Launch preview Chrome",
+        "type": "browser-preview",
+        "request": "launch",
+        "url": "http://localhost:3000",
+        "webRoot": "${workspaceFolder}/live/src",
+        "sourceMapPathOverrides": {
+          "webpack:///src/*": "${webRoot}/*"
+        }
+      },
+      {
+        "name": "Attach preview Chrome",
+        "type": "browser-preview",
+        "request": "attach"
       }
     ]
   }

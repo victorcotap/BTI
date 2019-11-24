@@ -11,13 +11,23 @@ interface FlightPlannerProps {
     onDeleteWaypoint: (waypointIndex: number) => void,
 };
 
+
 const styleButton: CSSProperties = {
     margin: "0 10px 0 0",
     backgroundColor: "#ffffff",
     color: "#333333",
     height: "2rem",
-    border: "none"
+    border: "none",
+    borderRadius: "0.5rem"
 }
+const styleButtonPill: CSSProperties = {
+
+}
+const styleWaypointList: CSSProperties = {
+    marginTop: '10px',
+    marginBottom: '5px',
+}
+
 const styleCell: CSSProperties = {
     display: "flex",
     flexDirection: "row",
@@ -63,10 +73,10 @@ const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children,
     const totalRoute = totalRouteNm(route);
     return (
         <div>
-            <p>Everything with this side panel open is WIP, use at your own risk<br />Start clicking on the map to add waypoints</p>
+            <p>Start clicking on the map to add waypoints</p>
             {route.length > 0 ? <button style={styleButton} onClick={onClearRoute}>Clear Route</button> : undefined}
-            {waypointList}
-            <p>Total distance: {totalRoute.toFixed(0)} nm</p>
+            <div style={styleWaypointList}>{waypointList}</div>
+            {route.length > 0 ? <p>Total distance: {totalRoute.toFixed(0)} nm</p> : undefined}
             <p>Export to DCS: Continue to Ask ED to release their data cartridge for Multiplayer </p>
         </div>
     );

@@ -7,10 +7,15 @@ import config from '../config.json';
 const styleAirboss: CSSProperties = {
     display: 'flex',
     justifyContent: 'center',
+    backgroundColor: "#DDDDDD",
+    borderRadius: "30px",
+    marginTop: "30px",
+    marginLeft: '15px',
+    marginRight: '15px',
+    padding: "20px 20px 20px 20px",
 }
 
 const styleTable: CSSProperties = {
-    marginTop: '50px',
     borderCollapse: 'collapse',
     minWidth: '95%',
 }
@@ -77,7 +82,7 @@ export default class Airboss extends React.Component<Props, State> {
             <div style={styleAirboss}>
                 <table style={styleTable}>
                     <thead>
-                        <tr>
+                        <tr style={{color: '#000000'}}>
                             <th>Pilot Name</th>
                             <th>Airframe</th>
                             <th>Points</th>

@@ -32,7 +32,7 @@ const styleLiveMap: CSSProperties = {
 }
 
 const styleLink: CSSProperties = {
-  color: "green",
+  color: "#00CC00",
   fontWeight: "bold",
 }
 
@@ -44,10 +44,10 @@ const App: React.FC = () => {
           <h1 style={{ fontSize: "1.2rem", margin: "0" }}>APEX Advance Warfare</h1>
         </header>
         <section style={styleTopSection}>
-          <Link style={styleLink} to="/">Map</Link>
-          <Link style={styleLink} to="/airboss">Airboss</Link>
-          <Link style={styleLink} to="/rules">Rules</Link>
-          <Link style={styleLink} to="/about">About</Link>
+          <Link style={styleLink} to="/">MAP</Link>
+          <Link style={styleLink} to="/airboss">AIRBOSS</Link>
+          <Link style={styleLink} to="/rules">RULES</Link>
+          <Link style={styleLink} to="/about">ABOUT</Link>
         </section>
         <section style={styleLiveMap}>
           <Switch>
