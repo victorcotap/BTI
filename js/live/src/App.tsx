@@ -45,7 +45,7 @@ const App: React.FC = () => {
         </header>
         <section style={styleTopSection}>
           <Link style={styleLink} to="/">MAP</Link>
-          <Link style={styleLink} to="/airboss">AIRBOSS</Link>
+          <Link style={styleLink} to="/airboss">GREENIE BOARD</Link>
           <Link style={styleLink} to="/rules">RULES</Link>
           <Link style={styleLink} to="/about">ABOUT</Link>
         </section>

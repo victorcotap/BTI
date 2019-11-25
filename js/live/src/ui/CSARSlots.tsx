@@ -66,7 +66,7 @@ export default class CSARSlots extends React.Component {
         const disabledCSAR = this.state.disabled[slot];
         const disabled = disabledCSAR !== undefined;
         let disabledString = !disabled ? "OK" : "Disabled"
-        
+
         if (this.state.records && this.state.records[slot]) {
             const record = this.state.records[slot]
             disabledString = disabled ? `${record.crashedPlayerName}` : `${record.rescuePlayerName}`;

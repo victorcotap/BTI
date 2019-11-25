@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties }from 'react';
 import {Popup} from "react-mapbox-gl";
 
 import Group, { coalition } from '../model/group';
@@ -6,6 +6,14 @@ import Group, { coalition } from '../model/group';
 const stylePopup = {
     color: 'black',
     borderRadius: '10px'
+}
+const styleButton: CSSProperties = {
+    padding: '5px 5px 5px 5px',
+    backgroundColor: "#aaaaaa",
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: "5px",
+    boxShadow: "1px 1px 1px 1px #555555",
 }
 
 interface GroupPopupProps {
@@ -25,7 +33,7 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
                 <span>{group.LLDDM}</span><br />
                 <span><b>Altitude: </b> {altitude.toFixed(0)} feet</span><br />
                 <span><b>HDG: </b>{group.heading}</span><br />
-                <button onClick={closePopup}>Close</button>
+                <button style={styleButton} onClick={closePopup}>Close</button>
                 {group.coalition === coalition.Red ? <button onClick={() => addToFlightPlan(group)}>Add as Target</button> : undefined }
             </div>
         </Popup>

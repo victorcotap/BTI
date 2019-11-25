@@ -21,7 +21,8 @@ const styleButton: CSSProperties = {
     borderRadius: "0.5rem"
 }
 const styleButtonPill: CSSProperties = {
-
+    borderRadius: "100px",
+    border: "none",
 }
 const styleWaypointList: CSSProperties = {
     marginTop: '10px',
@@ -45,8 +46,8 @@ const styleCellDMPI: CSSProperties = {
 const styleColumn: CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-around',
 }
-
 
 
 const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children, route, onClearRoute, onSwapWaypoint, onDeleteWaypoint }) => {
@@ -56,9 +57,9 @@ const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children,
         return (
             <div style={{...styleCell, ...styleWaypointType, backgroundColor: waypoint.color}} key={index}>
                 <div style={styleColumn}>
-                    {index > 0 ? <button onClick={() => onSwapWaypoint(index, index - 1)}>{'<'}</button> : undefined}
-                    <button onClick={() => onDeleteWaypoint(index)}>x</button>
-                    {index < route.length - 1 ? <button onClick={() => onSwapWaypoint(index, index + 1)}>></button> : undefined}
+                    {index > 0 ? <button style={styleButtonPill} onClick={() => onSwapWaypoint(index, index - 1)}>▲</button> : undefined}
+                    <button style={styleButtonPill} onClick={() => onDeleteWaypoint(index)}>x</button>
+                    {index < route.length - 1 ? <button style={styleButtonPill} onClick={() => onSwapWaypoint(index, index + 1)}>▼</button> : undefined}
                 </div>
                 <div style={styleColumn}>
                     <span>{dmmStrings.latString}</span>
