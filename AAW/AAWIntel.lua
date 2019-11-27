@@ -213,10 +213,11 @@ env.info(string.format("BTI: CIA back to the safe house"))
 ----------------------------------------------------------------------------------------------------------
 -- A2A ---------------------------------------------------------------------------------------------------
 local A2APatrols = {
-    "Mirage-Tbilisi",
-    "F5Sochi",
-    "F4Mozdok",
-    "C101Gudauta"
+    "MirageAlDhafra",
+    "J11AlAin",
+    "F4AlMinhad",
+    "Mig29AlMinhad",
+    "Mi28Sharjah"
 }
 
 local function randomizeA2A(something)
@@ -227,13 +228,15 @@ local function randomizeA2A(something)
         env.info(string.format( "BTI: A2A switch %d", switch ))
 
         if switch == 1 then
-            MirageTbilisi = true
+            MirageAlDhafra = true
         elseif switch == 2 then
-            F5Sochi = true
+            J11AlAin = true
         elseif switch == 3 then
-            F4Mozdok = true
+            F4AlMinhad = true
         elseif switch == 4 then
-            C101Gudauta = true
+            Mig29AlMinhad = true
+        elseif switch == 5 then
+            Mi28Sharjah = true
         end
     end
 end
