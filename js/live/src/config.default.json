@@ -1,3 +1,6 @@
 {
     "coreTunnel": "something.ngrok",
+    "map": "PG",
+    "showRules": true,
+    "showAbout": true
 }

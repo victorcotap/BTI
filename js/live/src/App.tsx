@@ -13,6 +13,8 @@ import Abstract from './ui/Abstract';
 import Airboss from './ui/Airboss';
 
 import './App.css';
+import config from './config.json';
+
 
 const styleHeader: CSSProperties = {
   boxSizing: "border-box",
@@ -46,8 +48,8 @@ const App: React.FC = () => {
         <section style={styleTopSection}>
           <Link style={styleLink} to="/">MAP</Link>
           <Link style={styleLink} to="/airboss">GREENIE BOARD</Link>
-          <Link style={styleLink} to="/rules">RULES</Link>
-          <Link style={styleLink} to="/about">ABOUT</Link>
+          {config.showRules ? <Link style={styleLink} to="/rules">RULES</Link> : undefined}
+          {config.showAbout ? <Link style={styleLink} to="/about">ABOUT</Link> : undefined}
         </section>
         <section style={styleLiveMap}>
           <Switch>

@@ -59,6 +59,9 @@ const styleButton: CSSProperties = {
     borderRadius: "5px",
     boxShadow: "4px 4px 2px 2px #555555",
 }
+const selectedStyleButton: CSSProperties = {
+    boxShadow: "4px 4px 2px 2px orange",
+}
 
 interface State {
     showSlots: boolean,
@@ -102,11 +105,14 @@ export default class LiveMap extends React.Component {
 
     render() {
         const { showFlightPlanner, showSlots} = this.state;
+        const slotsButtonStyle = showSlots ? {...styleButton, ...selectedStyleButton} : styleButton;
+        const fpButtonStyle = showFlightPlanner ? {...styleButton, ...selectedStyleButton} : styleButton;
+
         return (
             <div>
                 <div style={styleToolbar}>
-                    <button style={styleButton} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}> Toggle Slots List</button>
-                    <button style={styleButton} onClick={(event) => this.setState({showFlightPlanner: !this.state.showFlightPlanner})}>Flight Planning Mode</button>
+                    <button style={slotsButtonStyle} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}> Toggle Slots List</button>
+                    <button style={fpButtonStyle} onClick={(event) => this.setState({showFlightPlanner: !this.state.showFlightPlanner})}>Flight Planning Mode</button>
                 </div>
                 <div style={styleContentArea}>
                     {showSlots ? (

@@ -18,7 +18,7 @@ const styleButton: CSSProperties = {
     color: "#333333",
     height: "2rem",
     border: "none",
-    borderRadius: "0.5rem"
+    borderRadius: "0.5rem",
 }
 const styleButtonPill: CSSProperties = {
     borderRadius: "100px",
@@ -33,7 +33,7 @@ const styleCell: CSSProperties = {
     display: "flex",
     flexDirection: "row",
     justifyContent: 'space-between',
-    padding: "0 0 2px 0",
+    padding: "2px 0 2px 5px",
     borderBottom: "1px solid rgba(255,255,255,0.2)",
 }
 const styleCellWaypoint: CSSProperties = {
@@ -74,7 +74,7 @@ const FlightPlanner: React.StatelessComponent<FlightPlannerProps> = ({ children,
     const totalRoute = totalRouteNm(route);
     return (
         <div>
-            <p>Start clicking on the map to add waypoints</p>
+            {!route.length ? <p>Start clicking on the map to add waypoints</p> : undefined}
             {route.length > 0 ? <button style={styleButton} onClick={onClearRoute}>Clear Route</button> : undefined}
             <div style={styleWaypointList}>{waypointList}</div>
             {route.length > 0 ? <p>Total distance: {totalRoute.toFixed(0)} nm</p> : undefined}

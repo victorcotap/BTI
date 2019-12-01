@@ -22,8 +22,8 @@ const styleCell: CSSProperties = {
 
 interface CSARSlotsResponse {
     slots: string[],
-    disabled?: {[key: string]: CSARDisabled},
-    records?: {[key: string]: CSARRecord},
+    disabled?: { [key: string]: CSARDisabled },
+    records?: { [key: string]: CSARRecord },
 }
 
 export default class CSARSlots extends React.Component {
@@ -60,8 +60,8 @@ export default class CSARSlots extends React.Component {
         setInterval(() => this.refreshData(), 30000);
     }
 
-    private renderDisabledRecord(slot: string): {disabled: boolean, message: string} {
-        if (!this.state.disabled) { return {disabled: false, message: "OK"} }
+    private renderDisabledRecord(slot: string): { disabled: boolean, message: string } {
+        if (!this.state.disabled) { return { disabled: false, message: "OK" } }
 
         const disabledCSAR = this.state.disabled[slot];
         const disabled = disabledCSAR !== undefined;
@@ -71,16 +71,25 @@ export default class CSARSlots extends React.Component {
             const record = this.state.records[slot]
             disabledString = disabled ? `${record.crashedPlayerName}` : `${record.rescuePlayerName}`;
         }
-        return {disabled, message: disabledString};
+        return { disabled, message: disabledString };
     }
 
     render() {
+        if (!this.state.slots.length) {
+            return (
+                <div>
+                    <h2>Loading...</h2>
+                    <p>If this remains, the server probably doesn't support slot permadeath or slot list export</p>
+                </div>
+            );
+        }
+
         const cells = this.state.slots.sort().map((slot) => {
-            const {disabled, message} = this.renderDisabledRecord(slot)
+            const { disabled, message } = this.renderDisabledRecord(slot)
             return (
                 <div style={styleCell} key={slot}>
                     <span>{slot}</span>
-                    <span style={disabled ? {color: '#ee2222'} : {color: '#228b22'}}>{message}</span>
+                    <span style={disabled ? { color: '#ee2222' } : { color: '#228b22' }}>{message}</span>
                 </div>
             )
         })

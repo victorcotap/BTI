@@ -40,6 +40,11 @@ const Mapbox = ReactMapboxGl({
     antialias: true,
 });
 
+const mapCenters: { [key: string]: [number, number] } = {
+    'PG': [55.415474, 26.078377],
+    'CCS': [41.139825, 42.659296],
+}
+
 interface Props {
     route?: Waypoint[],
     onSelectMapPoint: (point: LngLat, type: WaypointType, name?: string) => void
@@ -61,7 +66,7 @@ const defaultZoom: [number] = [7];
 
 export default class Map extends React.Component<Props> {
     state: State = {
-        center: [55.415474, 26.078377],
+        center: mapCenters[config.map],
         currentGroups: Array<Group>(),
         showHeatmap: true,
         showBlue: true,
@@ -149,7 +154,7 @@ export default class Map extends React.Component<Props> {
             { showAirDefenses, showArmor, showBlue, showGround });
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
         const routeLayer = renderRoute(route);
-        const chartSources = renderSources();
+        // const chartSources = renderSources();
         const chartLayers = renderChartLayers();
 
         let popup = undefined;

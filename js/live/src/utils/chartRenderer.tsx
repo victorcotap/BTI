@@ -9,7 +9,7 @@ export function renderSources() {
             key="Sochi-App-Img"
             id="Sochi-App-Img"
             type="image"
-            url="http://data.throughtheinferno.com/image/Sochi-App-06.png"
+            url="/images/Sochi-App-06.png"
             coordinates={[
                 [39.717797, 43.606915],
                 [40.168803, 43.618235],
@@ -18,7 +18,6 @@ export function renderSources() {
             ]}
         />
     )
-    console.log({sochiSource});
     sources.push(sochiSource)
     return sources
 }
@@ -26,7 +25,7 @@ export function renderSources() {
 export function testSource(map: Mapboxgl.Map) {
     map.addSource('Sochi-App-Img', {
         type: 'image',
-        url: 'http://data.throughtheinferno.com/image/Sochi-App-06.png',
+        url: '/images/Sochi-App-06.png',
         coordinates: [
             [39.717797, 43.606915],
             [40.168803, 43.618235],
@@ -34,6 +33,10 @@ export function testSource(map: Mapboxgl.Map) {
             [39.691684, 43.281618],
         ]
     });
+}
+
+export function testLayers(map: Mapboxgl.Map) {
+    // map.addLayer()
 }
 
 export default function renderChartLayers() {
