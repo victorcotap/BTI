@@ -43,7 +43,7 @@ const App: React.FC = () => {
     <BrowserRouter>
       <div className="App">
         <header style={styleHeader}>
-          <h1 style={{ fontSize: "1.2rem", margin: "0" }}>APEX Advance Warfare</h1>
+          <h1 style={{ fontSize: "1.2rem", margin: "0" }}>{config.serverName}</h1>
         </header>
         <section style={styleTopSection}>
           <Link style={styleLink} to="/">MAP</Link>
