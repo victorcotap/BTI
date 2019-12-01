@@ -1,55 +1,31 @@
 import React from 'react';
-import { Layer, Source } from "react-mapbox-gl";
+import { Layer } from "react-mapbox-gl";
 import Mapboxgl from 'mapbox-gl';
 
-export function renderSources() {
-    let sources = [];
-    const sochiSource = (
-        <Source
-            key="Sochi-App-Img"
-            id="Sochi-App-Img"
-            type="image"
-            url="/images/Sochi-App-06.png"
-            coordinates={[
-                [39.717797, 43.606915],
-                [40.168803, 43.618235],
-                [40.141029, 43.289052],
-                [39.691684, 43.281618],
-            ]}
-        />
-    )
-    sources.push(sochiSource)
-    return sources
-}
-
-export function testSource(map: Mapboxgl.Map) {
+export function injectDefaultSources(map: Mapboxgl.Map) {
     map.addSource('Sochi-App-Img', {
         type: 'image',
         url: '/images/Sochi-App-06.png',
         coordinates: [
-            [39.717797, 43.606915],
-            [40.168803, 43.618235],
-            [40.141029, 43.289052],
-            [39.691684, 43.281618],
+            [39.7020395, 43.6745508],
+            [40.1952793, 43.6438719],
+            [40.147097, 43.1336884],
+            [39.6525725, 43.1663879],
         ]
     });
 }
 
-export function testLayers(map: Mapboxgl.Map) {
-    // map.addLayer()
-}
-
 export default function renderChartLayers() {
-    let chartLayers = []
+    let approachchartLayers = []
     const sochiLayer = (
         <Layer
             key="Sochi-App"
             id="Sochi-App"
             sourceId="Sochi-App-Img"
             type="raster"
-            paint={{ "raster-opacity": 0.8 }}
+            paint={{ "raster-opacity": 0.7 }}
         />
     )
-    chartLayers.push(sochiLayer)
-    return chartLayers
+    approachchartLayers.push(sochiLayer)
+    return approachchartLayers
 }

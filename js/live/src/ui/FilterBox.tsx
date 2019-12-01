@@ -95,6 +95,10 @@ export default class FilterBox extends React.Component<Props> {
                             <img style={styleImage} src={RedGround} alt={''} />
                             <label> Ground forces</label>
                         </div>
+                        <div style={styleFilter}>
+                            <input type="checkbox" name="approachChart" defaultChecked={false} onChange={(event) => this.props.onFilterSelection('showApproachChart', event.target.checked)} />
+                            <label> Approach Chart</label>
+                        </div>
                     </div>
                 ) : undefined}
             </div>

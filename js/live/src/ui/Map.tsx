@@ -6,7 +6,7 @@ import DmsCoordinates from 'dms-conversion';
 import Group, { isGroup } from '../model/group';
 import Waypoint, { WaypointType } from '../model/waypoint';
 import renderLayers from '../utils/groupsRenderer';
-import renderChartLayers, { renderSources, testSource } from '../utils/chartRenderer';
+import renderChartLayers, { injectDefaultSources } from '../utils/chartRenderer';
 import renderHeatmap from '../utils/heatmapRenderer';
 import renderRoute from '../utils/routeRenderer';
 import { coordinatesToDMM } from '../utils/coordinatesUtils';
@@ -60,6 +60,7 @@ interface State {
     showAirDefenses: boolean,
     showArmor: boolean,
     showGround: boolean,
+    showApproachChart: boolean,
 }
 
 const defaultZoom: [number] = [7];
@@ -73,6 +74,7 @@ export default class Map extends React.Component<Props> {
         showAirDefenses: true,
         showArmor: true,
         showGround: true,
+        showApproachChart: false,
     };
     lastLocation?: [number, number] = undefined;
     private underlyingMap: MapboxGl.Map | undefined;
@@ -116,7 +118,7 @@ export default class Map extends React.Component<Props> {
     }
 
     private mapLoaded(map: MapboxGl.Map) {
-        testSource(map);
+        injectDefaultSources(map);
     }
 
     private mapMouseClick(map: MapboxGl.Map, event: any) {
@@ -140,7 +142,7 @@ export default class Map extends React.Component<Props> {
 
     render() {
         const { route } = this.props;
-        const { selectedGroup, selectedPoint, showAirDefenses, showArmor, showBlue, showGround, showHeatmap, } = this.state;
+        const { selectedGroup, selectedPoint, showAirDefenses, showArmor, showBlue, showGround, showHeatmap, showApproachChart, } = this.state;
 
         if (!this.state.currentGroups.length) {
             return (
@@ -158,7 +160,7 @@ export default class Map extends React.Component<Props> {
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
         const routeLayer = renderRoute(route);
         // const chartSources = renderSources();
-        // const chartLayers = renderChartLayers();
+        const chartLayers = renderChartLayers();
 
         let popup = undefined;
         if (selectedGroup) {
@@ -197,8 +199,7 @@ export default class Map extends React.Component<Props> {
                         width: "100%",
                         height: "100%"
                     }}>
-                    {/* {chartSources} */}
-                    {/* {chartLayers} */}
+                    {showApproachChart ? chartLayers : undefined}
                     {showHeatmap ? heatmapLayer : undefined}
                     {groupLayers}
                     {routeLayer}
