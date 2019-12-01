@@ -144,7 +144,10 @@ export default class Map extends React.Component<Props> {
 
         if (!this.state.currentGroups.length) {
             return (
-                <h2>Loading...</h2>
+                <div>
+                    <h2>Loading...</h2>
+                    <p>If this message persist, the server does not support exporting groups for live map purposes</p>
+                </div>
             )
         }
 
@@ -155,7 +158,7 @@ export default class Map extends React.Component<Props> {
         const heatmapLayer = renderHeatmap(this.state.currentGroups);
         const routeLayer = renderRoute(route);
         // const chartSources = renderSources();
-        const chartLayers = renderChartLayers();
+        // const chartLayers = renderChartLayers();
 
         let popup = undefined;
         if (selectedGroup) {
@@ -195,7 +198,7 @@ export default class Map extends React.Component<Props> {
                         height: "100%"
                     }}>
                     {/* {chartSources} */}
-                    {chartLayers}
+                    {/* {chartLayers} */}
                     {showHeatmap ? heatmapLayer : undefined}
                     {groupLayers}
                     {routeLayer}

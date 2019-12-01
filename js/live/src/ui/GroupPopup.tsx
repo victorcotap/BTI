@@ -33,8 +33,8 @@ const GroupPopup: React.StatelessComponent<GroupPopupProps> = ({children, group,
                 <span>{group.LLDDM}</span><br />
                 <span><b>Altitude: </b> {altitude.toFixed(0)} feet</span><br />
                 <span><b>HDG: </b>{group.heading}</span><br />
-                <button style={styleButton} onClick={closePopup}>Close</button>
-                {group.coalition === coalition.Red ? <button onClick={() => addToFlightPlan(group)}>Add as Target</button> : undefined }
+                <button style={{...styleButton, marginRight: "10px"}} onClick={closePopup}>Close</button>
+                {group.coalition === coalition.Red ? <button style={styleButton} onClick={() => addToFlightPlan(group)}>Add as Target</button> : undefined }
             </div>
         </Popup>
     )
