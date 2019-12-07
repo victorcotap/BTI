@@ -62,7 +62,7 @@ export default class AirbossStore {
     async readTrackingFile(firstTime: boolean) {
         try {
             const buffer = await readFile(this.filePath, {encoding: 'utf-8'})
-            const csv = parse(buffer, {skip_empty_lines: true, columns: true})
+            const csv = parse(buffer, {quote: '', skip_empty_lines: true, columns: true})
             const newTraps: Trap[] = csv.map((entry: Object) => trapFromCSVEntry(entry));
             const orderedTraps = newTraps.sort((a, b) => b.date.getTime() - a.date.getTime())
             if (!firstTime && this.cache.currentTraps.length !== orderedTraps.length) {
