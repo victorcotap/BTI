@@ -37,9 +37,6 @@ export default class AirbossStore {
 
     private async  sendNewTrapToDiscord(trap: Trap) {
         if (channel) {
-			if (trap.points == "-1.0") {
-				trap.points = "NC"
-			}
             const embed = new Discord.RichEmbed();
             embed.setTitle('New entry on the Greenie Board');
             embed.setDescription("Here is what the LSO has to say");

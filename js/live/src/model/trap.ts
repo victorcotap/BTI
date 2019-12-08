@@ -1,6 +1,6 @@
 export default interface Trap {
     pilotName: string,
-    points: string,
+    points: number,
     totalPoints?: number,
     grade: string,
     detail: string,
