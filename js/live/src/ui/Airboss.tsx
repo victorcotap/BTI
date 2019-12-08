@@ -63,18 +63,16 @@ export default class Airboss extends React.Component<Props, State> {
         setInterval(() => this.refreshData(), 30000);
     }
 
-    private styleForGrade(grade: string): CSSProperties {
-        if (grade === "5.0") {
+    private styleForGrade(grade: number): CSSProperties {
+        if (grade >= 5.0) {
             return { backgroundColor: 'green' }
-        } else if (grade === "3.0" || grade === "4.0") {
+        } else if (grade >= 3.0) {
             return { backgroundColor: '#006400' }
-        } else if (grade === "2.0" || grade === "2.5") {
+        } else if (grade >= 2.0) {
             return { backgroundColor: 'gray' }
-        } else if (grade === "1.0") {
+        } else if (grade >= 1.0) {
             return { backgroundColor: 'orange' }
-        } else if (grade === "NC") {
-			return { backgroundColor: 'gray' }
-		}
+        }
         return { backgroundColor: 'red' }
 
     }
@@ -98,9 +96,6 @@ export default class Airboss extends React.Component<Props, State> {
                     </thead>
                     <tbody>
                         {this.state.currentTraps.map((trap: Trap) => {
-							if (trap.points === "-1.0") {
-								trap.points = "NC"
-							}
                             const gradeStyle = this.styleForGrade(trap.points)
                             return (
                                 <tr style={{ ...styleCell, ...gradeStyle}} key={trap.pilotName + trap.grade + trap.detail}>
