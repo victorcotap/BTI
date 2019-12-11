@@ -74,6 +74,8 @@ export default class Airboss extends React.Component<Props, State> {
             return { backgroundColor: 'gray' }
         } else if (grade >= 1.0) {
             return { backgroundColor: 'orange' }
+        } else if (grade < 0.0) {
+            return { backgroundColor: 'gray' }
         }
         return { backgroundColor: 'red' }
 
