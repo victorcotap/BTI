@@ -65,6 +65,8 @@ export default class Airboss extends React.Component<Props, State> {
 
     private styleForGrade(grade: number): CSSProperties {
         if (grade >= 5.0) {
+            return {backgroundColor: '#fa5ea7'}
+        } else if (grade >= 4.0) {
             return { backgroundColor: 'green' }
         } else if (grade >= 3.0) {
             return { backgroundColor: '#006400' }

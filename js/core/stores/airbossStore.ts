@@ -38,21 +38,21 @@ export default class AirbossStore {
     private async  sendNewTrapToDiscord(trap: Trap) {
         if (channel) {
             const embed = new Discord.RichEmbed();
-            embed.setTitle('New entry on the Greenie Board');
-            embed.setDescription("Here is what the LSO has to say");
+            // embed.setTitle('New entry on the Greenie Board');
+            // embed.setDescription("Here is what the LSO has to say");
             embed.setFooter('Provided by MiniBoss');
             embed.addField("Pilot Name", trap.pilotName, true);
             embed.addField("Airframe", trap.airframe, true);
-            embed.addField("Points", trap.points, true);
+            // embed.addField("Points", trap.points, true);
             embed.addField('Grade', trap.grade, true);
             embed.addField('Details', trap.detail, true);
             embed.addField('Wire', trap.wire, true);
             embed.addField('Time in groove', trap.timeGroove, true);
-            embed.addField('Wind', trap.wind, true);
+            // embed.addField('Wind', trap.wind, true);
 
             try {
                 //@ts-ignore
-                await channel.send('OHAI!', {embed});
+                await channel.send('New entry on the Greenie Board!', {embed});
             } catch (error) {
                 console.warn(error);
             }
