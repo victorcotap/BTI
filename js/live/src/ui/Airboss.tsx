@@ -35,7 +35,7 @@ export default class Airboss extends React.Component<Props, State> {
     }
 
     private async fetchData() {
-        return fetch(config.coreTunnel + "/live/airboss", {
+        return fetch('http://' + config.coreTunnel + "/live/airboss", {
             method: 'GET',
             mode: 'cors',
             headers: {
