@@ -4,6 +4,10 @@ import Trap from '../model/trap';
 
 import config from '../config.json';
 
+const MILISECONDSINDAY = 86400000;
+const NUMBEROFTRAPS = 10;
+const NUMBEROFDAYS = 30;
+
 const styleAirboss: CSSProperties = {
     display: 'flex',
     justifyContent: 'center',
@@ -21,21 +25,25 @@ const styleTable: CSSProperties = {
 }
 
 const styleCell: CSSProperties = {
-    height: '30px',
+
 }
 
 interface Props { }
 interface State {
     currentTraps: Trap[],
+    groupedTraps: { [key: string]: [Trap] }
+    daysLimit: number
 }
 
 export default class Airboss extends React.Component<Props, State> {
     state: State = {
         currentTraps: Array<Trap>(),
+        groupedTraps: {},
+        daysLimit: NUMBEROFDAYS,
     }
 
     private async fetchData() {
-        return fetch('http://' + config.coreTunnel + "/live/airboss", {
+        return fetch(config.coreTunnel + "/live/airboss", {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -50,9 +58,17 @@ export default class Airboss extends React.Component<Props, State> {
             const { currentTraps } = newJSON;
             const traps: Trap[] = currentTraps;
             if (traps) {
-                this.setState({ currentTraps: traps })
+                let groupedTraps: { [key: string]: [Trap] } = {};
+                const last30Traps = traps.filter((trap) => Date.now() - new Date(trap.date).getTime() < MILISECONDSINDAY * this.state.daysLimit)
+                last30Traps.forEach((trap) => {
+                    if (!groupedTraps[trap.pilotName]) {
+                        groupedTraps[trap.pilotName] = [trap];
+                    } else {
+                        groupedTraps[trap.pilotName].push(trap);
+                    }
+                });
+                this.setState({ currentTraps: traps, groupedTraps })
             }
-            console.log(traps);
         } catch (error) {
             console.log(error);
         }
@@ -65,7 +81,7 @@ export default class Airboss extends React.Component<Props, State> {
 
     private styleForGrade(grade: number): CSSProperties {
         if (grade >= 5.0) {
-            return {backgroundColor: '#fa5ea7'}
+            return { backgroundColor: '#fa5ea7' }
         } else if (grade >= 4.0) {
             return { backgroundColor: 'green' }
         } else if (grade >= 3.0) {
@@ -82,43 +98,51 @@ export default class Airboss extends React.Component<Props, State> {
     }
 
     render() {
+        const pilotRows = [];
+        for (let [pilotName, traps] of Object.entries(this.state.groupedTraps)) {
+            let pilotAverage = 0;
+            let lastTraps = traps.slice(0, NUMBEROFTRAPS - 1);
+            lastTraps = lastTraps.reverse();
+            lastTraps.forEach((trap) => pilotAverage = pilotAverage + trap.points)
+            pilotAverage = pilotAverage / lastTraps.length;
+            let trapColumns = [];
+            for (let index = 0; index < NUMBEROFTRAPS; index++) {
+                const trap = lastTraps[index];
+                if (trap) {
+                    trapColumns.push((<td key={pilotName + index.toString()} style={{...styleCell, ...this.styleForGrade(trap.points)}}>{trap.grade}</td>))
+                } else {
+                    trapColumns.push(<td key={pilotName + index.toString()}></td>)
+                }
+            }
+
+            pilotRows.push(
+                <tr style={{height: '45px'}} key={pilotName}>
+                    <td style={{color: 'black'}}>{pilotName}</td>
+                    <td style={{color: 'black'}}>{pilotAverage.toFixed(1)}</td>
+                    {trapColumns}
+                </tr>
+            )
+        }
+
+        const trapColumnsHeader = [];
+        for (let index = 0; index < 15; index++) {
+            trapColumnsHeader.push((<th key={index}></th>))
+        }
         return (
             <div style={styleAirboss}>
                 <table style={styleTable}>
                     <thead>
-                        <tr style={{color: '#000000'}}>
+                        <tr style={{ color: '#000000' }}>
                             <th>Pilot Name</th>
-                            <th>Airframe</th>
-                            <th>Points</th>
-                            <th>Grade</th>
-                            <th>Details</th>
-                            <th>Wire</th>
-                            <th>Time in groove</th>
-                            <th>CASE</th>
-                            <th>Wind over deck</th>
+                            <th>Average</th>
+                            {trapColumnsHeader}
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.currentTraps.map((trap: Trap) => {
-                            const gradeStyle = this.styleForGrade(trap.points)
-                            return (
-                                <tr style={{ ...styleCell, ...gradeStyle}} key={trap.pilotName + trap.grade + trap.detail}>
-                                    <td>{trap.pilotName}</td>
-                                    <td>{trap.airframe}</td>
-                                    <td>{trap.points}</td>
-                                    <td>{trap.grade}</td>
-                                    <td>{trap.detail}</td>
-                                    <td>{trap.wire}</td>
-                                    <td>{trap.timeGroove}</td>
-                                    <td>{trap.caseType}</td>
-                                    <td>{trap.wind}</td>
-                                </tr>
-                            )
-                        })}
+                        {pilotRows}
                     </tbody>
                 </table>
-
             </div>
-        )
+        );
     }
 }

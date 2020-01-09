@@ -9,20 +9,22 @@ export default interface Trap {
     caseType: number
     wind: number,
     airframe: string,
+    date: Date,
     passMumber?: number,
 }
 
 export function trapFromCSVEntry(csv: {[key: string]: any}): Trap {
     return {
         pilotName: csv.Name,
-        points: csv['Points Pass'],
-        totalPoints: csv['Points Final'],
+        points: Number(csv['Points Pass']),
+        totalPoints: Number(csv['Points Final']),
         grade: csv.Grade,
         detail: csv.Details,
-        wire: csv.Wire,
-        timeGroove: csv.Tgroove,
-        caseType: csv.Case,
+        wire: Number(csv.Wire),
+        timeGroove: Number(csv.Tgroove),
+        caseType: Number(csv.Case),
         airframe: csv.Airframe,
+        date: new Date(csv['OS Date']),
         wind: csv.Wind,
     }
 };
