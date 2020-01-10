@@ -3,6 +3,8 @@
 # dependencies
 core/node_modules
 live/node_modules
+*/node_modules
+/node_modules
 /.pnp
 .pnp.js
 
