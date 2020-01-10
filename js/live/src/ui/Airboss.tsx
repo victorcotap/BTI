@@ -20,12 +20,13 @@ const styleAirboss: CSSProperties = {
 }
 
 const styleTable: CSSProperties = {
-    borderCollapse: 'collapse',
+    // borderCollapse: 'collapse',
     minWidth: '95%',
 }
 
 const styleCell: CSSProperties = {
-
+    borderColor: 'black',
+    border: 1,
 }
 
 interface Props { }
