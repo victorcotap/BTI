@@ -102,10 +102,16 @@ export default class Airboss extends React.Component<Props, State> {
         const pilotRows = [];
         for (let [pilotName, traps] of Object.entries(this.state.groupedTraps)) {
             let pilotAverage = 0;
+            let validTrapCount = 0;
             let lastTraps = traps.slice(0, NUMBEROFTRAPS - 1);
             lastTraps = lastTraps.reverse();
-            lastTraps.forEach((trap) => pilotAverage = pilotAverage + trap.points)
-            pilotAverage = pilotAverage / lastTraps.length;
+            lastTraps.forEach((trap) => {
+                if (trap.points >= 0){
+                    pilotAverage = pilotAverage + trap.points;
+                    validTrapCount++;
+                }
+            })
+            pilotAverage = pilotAverage / validTrapCount;
             let trapColumns = [];
             for (let index = 0; index < NUMBEROFTRAPS; index++) {
                 const trap = lastTraps[index];
