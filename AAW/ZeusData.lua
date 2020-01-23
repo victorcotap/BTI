@@ -37,6 +37,9 @@ ZeusTable = {
     ["BLUnormandy"] = {
         ["type"] = "ground",
     },
+    ["BLUticonderoga"] = {
+        ["type"] = "ground",
+    },
     -- RED
     --Air Fighters
     ["f4"] = {
@@ -239,6 +242,10 @@ ZeusTable = {
         ["type"] = "ground",
     },
     ["BOAkilo"] = {
+
+        ["type"] = "ground",
+    },
+    ["BOAspeedboat"] = {
         ["type"] = "ground",
     },
 }

@@ -212,36 +212,36 @@ env.info(string.format("BTI: CIA back to the safe house"))
 
 ----------------------------------------------------------------------------------------------------------
 -- A2A ---------------------------------------------------------------------------------------------------
-local A2APatrols = {
-    "MirageAlDhafra",
-    "J11AlAin",
-    "F4AlMinhad",
-    "Mig29AlMinhad",
-    "Mi28Sharjah"
-}
+-- local A2APatrols = {
+--     "MirageAlDhafra",
+--     "J11AlAin",
+--     "F4AlMinhad",
+--     "Mig29AlMinhad",
+--     "Mi28Sharjah"
+-- }
 
-local function randomizeA2A(something)
-    local probability = math.random( 1, 2 )
-    env.info(string.format( "BTI: A2A probability %d", probability ))
-    if probability == 2 then
-        local switch = math.random( 1, #A2APatrols)
-        env.info(string.format( "BTI: A2A switch %d", switch ))
+-- local function randomizeA2A(something)
+--     local probability = math.random( 1, 2 )
+--     env.info(string.format( "BTI: A2A probability %d", probability ))
+--     if probability == 2 then
+--         local switch = math.random( 1, #A2APatrols)
+--         env.info(string.format( "BTI: A2A switch %d", switch ))
 
-        if switch == 1 then
-            MirageAlDhafra = true
-        elseif switch == 2 then
-            J11AlAin = true
-        elseif switch == 3 then
-            F4AlMinhad = true
-        elseif switch == 4 then
-            Mig29AlMinhad = true
-        elseif switch == 5 then
-            Mi28Sharjah = true
-        end
-    end
-end
+--         if switch == 1 then
+--             MirageAlDhafra = true
+--         elseif switch == 2 then
+--             J11AlAin = true
+--         elseif switch == 3 then
+--             F4AlMinhad = true
+--         elseif switch == 4 then
+--             Mig29AlMinhad = true
+--         elseif switch == 5 then
+--             Mi28Sharjah = true
+--         end
+--     end
+-- end
 
-SCHEDULER:New(nil, randomizeA2A, {"something"}, 1200, 3600)
+-- SCHEDULER:New(nil, randomizeA2A, {"something"}, 1200, 3600)
 
 
 
