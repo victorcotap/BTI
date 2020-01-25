@@ -12,25 +12,25 @@ csar = {}
 
 -- SETTINGS FOR MISSION DESIGNER vvvvvvvvvvvvvvvvvv
 csar.csarUnits = {
-    "P Ka-50 Tarawa",
-    "P Ka-50 Tarawa #001",
-    "P UH-1H Tarawa",
-    "P UH-1H Tarawa",
+    "Ka-50 Tarawa",
+    "Ka-50 Tarawa #001",
+    "UH-1H Tarawa",
+    "UH-1H Tarawa",
 
-    "P UH1 Dallas",
-    "P UH1 Dallas #001",
-    "P Ka50 Dallas",
-    "P Ka50 Dallas #001",
-    "P Mi-8 Dallas",
-    "P Mi-8 Dallas #001",
+    "UH1 Dallas",
+    "UH1 Dallas #001",
+    "Ka50 Dallas",
+    "Ka50 Dallas #001",
+    "Mi-8 Dallas",
+    "Mi-8 Dallas #001",
+    "SA342Mistral Dallas #001",
 
-
-    "P UH1 Paris DEFENDED",
-    "P UH1 Paris #001 DEFENDED",
-    "P Ka50 Paris DEFENDED",
-    "P Ka50 Paris #001 DEFENDED",
-    "P Mi-8 Paris DEFENDED",
-    "P Mi-8 Paris DEFENDED #001",
+    "UH1 Paris DEFENDED",
+    "UH1 Paris #001 DEFENDED",
+    "Ka50 Paris DEFENDED",
+    "Ka50 Paris #001 DEFENDED",
+    "Mi-8 Paris DEFENDED",
+    "Mi-8 Paris DEFENDED #001",
 } -- List of all the MEDEVAC _UNIT NAMES_ (the line where it says "Pilot" in the ME)!
 
 csar.bluemash = {

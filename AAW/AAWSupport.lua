@@ -131,7 +131,7 @@ local destroyZoneCount = 0
 function handleExfillRequest(text, baseCoord)
 
     local destroyZoneName = string.format("destroy %d", destroyZoneCount)
-    local zoneRadiusToDestroy = ZONE_RADIUS:New(destroyZoneName, baseCoord:GetVec2(), 800)
+    local zoneRadiusToDestroy = ZONE_RADIUS:New(destroyZoneName, baseCoord:GetVec2(), 80)
     destroyZoneCount = destroyZoneCount + 1
     local function destroyUnit(zoneUnit)
         env.info(string.format("BTI: Found unit in zone %s", destroyZoneName))
@@ -401,7 +401,7 @@ function markRemoved(Event)
             handleTankerRequest(text, baseCoord)
         elseif text:find("-support") then
             handleSupportRequest(text, baseCoord)
-        elseif text:find("-destroy") then
+        elseif text:find("-destroyy") then
             handleExfillRequest(text, baseCoord)
         elseif text:find("-command") then
             handleCommandRequest(text, baseCoord)
