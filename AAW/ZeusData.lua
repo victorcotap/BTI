@@ -40,6 +40,9 @@ ZeusTable = {
     ["BLUticonderoga"] = {
         ["type"] = "ground",
     },
+    ["BLUavenger"] = {
+        ["type"] = "ground",
+    },
     -- RED
     --Air Fighters
     ["f4"] = {
