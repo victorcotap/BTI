@@ -1,5 +1,9 @@
 env.info("BTI: Tracking here!")
 
+if JSONLib == nil then
+    JSONLib = dofile("C:\\BTI\\Json.lua")
+end
+
 local trackingMaster = {}
 local trackingMasterPath = "C:\\BTI\\Tracking\\TrackingFile.json"
 
@@ -120,7 +124,7 @@ function startTrackingEngine()
     SCHEDULER:New(nil, trackAliveGroups, {"something"}, 5, 30)
 
     SCHEDULER:New(nil, computePersistenceGroups, {"something"}, 10, 60)
-   
+
     SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 30, 60)
 
 end
