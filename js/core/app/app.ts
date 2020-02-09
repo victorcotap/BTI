@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
+import config from '../config.json';
+
 import liveDataRouter from './liveData';
 
 const app = express()
@@ -12,6 +14,6 @@ app.get('/', function(req, res) {
 
 app.use('/live', liveDataRouter);
 
-app.listen(10407, function() {
+app.listen(config.port, function() {
     console.log("Core is online on 10407");
 });

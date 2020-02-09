@@ -43,6 +43,7 @@ const Mapbox = ReactMapboxGl({
 const mapCenters: { [key: string]: [number, number] } = {
     'PG': [55.415474, 26.078377],
     'CCS': [41.139825, 42.659296],
+    'NTTR': [-115.0306085, 36.235341],
 }
 
 interface Props {
