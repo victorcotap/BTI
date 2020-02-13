@@ -115,37 +115,37 @@ airbossTarawa:Start()
 
 --------------------------------------------------------------------------------------------------
 -- Menu commands
-local defaultOffset = 0
-function OpenCarrierRecovery(minutesRemainingOpen, case)
-    if lockRecoveryRequest == true then
-        CommandCenter:MessageTypeToCoalition("Sorry, carrier is already performing a recovery.\n Wait until the recovery is over before requesting another one", MESSAGE.Type.Information)
-        return
-    end
+-- local defaultOffset = 0
+-- function OpenCarrierRecovery(minutesRemainingOpen, case)
+--     if lockRecoveryRequest == true then
+--         CommandCenter:MessageTypeToCoalition("Sorry, carrier is already performing a recovery.\n Wait until the recovery is over before requesting another one", MESSAGE.Type.Information)
+--         return
+--     end
 
-    local turningMinutes = 1
-    currentMissionRoute = CyclicCarrier:GetTaskRoute()
-    local timeRecoveryOpen = timer.getAbsTime()+ turningMinutes*60
-    local timeRecoveryClose = timeRecoveryOpen + minutesRemainingOpen*60
-    
-    local currentCoordinate = CyclicCarrier:GetCoordinate()
-    local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
-    local speed = 0
-    if currentWindStrengh < UTILS.KnotsToMps(5) then
-        speed = UTILS.KnotsToMps(26)
-    elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
-        speed = UTILS.KnotsToMps(26) - currentWindStrengh
-    elseif currentWindStrengh > UTILS.KnotsToMps(23) then
-        speed = UTILS.KnotsToMps(10)
-    end
-    env.info(string.format( "BTI: Calculating carrier recovery speed for %f mps (%f kts) -> speed %f kt", currentWindStrengh, UTILS.MpsToKnots(currentWindStrengh), UTILS.MpsToKnots(speed) ))
+--     local turningMinutes = 1
+--     currentMissionRoute = CyclicCarrier:GetTaskRoute()
+--     local timeRecoveryOpen = timer.getAbsTime()+ turningMinutes*60
+--     local timeRecoveryClose = timeRecoveryOpen + minutesRemainingOpen*60
 
-    airbossStennis:AddRecoveryWindow(UTILS.SecondsToClock(timeRecoveryOpen), UTILS.SecondsToClock(timeRecoveryClose), case, defaultOffset, true, speed)
-    CommandCenter:MessageTypeToCoalition(string.format("Carrier will open CASE %d recovery window in 1 minutes.\n It will remain open for %d minutes", case, minutesRemainingOpen), MESSAGE.Type.Information)
+--     local currentCoordinate = CyclicCarrier:GetCoordinate()
+--     local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
+--     local speed = 0
+--     if currentWindStrengh < UTILS.KnotsToMps(5) then
+--         speed = UTILS.KnotsToMps(26)
+--     elseif currentWindStrengh > UTILS.KnotsToMps(5) and currentWindStrengh < UTILS.KnotsToMps(23)  then
+--         speed = UTILS.KnotsToMps(26) - currentWindStrengh
+--     elseif currentWindStrengh > UTILS.KnotsToMps(23) then
+--         speed = UTILS.KnotsToMps(10)
+--     end
+--     env.info(string.format( "BTI: Calculating carrier recovery speed for %f mps (%f kts) -> speed %f kt", currentWindStrengh, UTILS.MpsToKnots(currentWindStrengh), UTILS.MpsToKnots(speed) ))
 
-end
+--     airbossStennis:AddRecoveryWindow(UTILS.SecondsToClock(timeRecoveryOpen), UTILS.SecondsToClock(timeRecoveryClose), case, defaultOffset, true, speed)
+--     CommandCenter:MessageTypeToCoalition(string.format("Carrier will open CASE %d recovery window in 1 minutes.\n It will remain open for %d minutes", case, minutesRemainingOpen), MESSAGE.Type.Information)
 
-function ActivateCarrierBeacons()
-    local carrierBeacon = BEACON:New(CyclicCarrier)
-    carrierBeacon:ActivateTACAN(15, "X", "STN", true)
-    carrierBeacon:ActivateICLS(5, "LSO")
-end
+-- end
+
+-- function ActivateCarrierBeacons()
+--     local carrierBeacon = BEACON:New(CyclicCarrier)
+--     carrierBeacon:ActivateTACAN(15, "X", "STN", true)
+--     carrierBeacon:ActivateICLS(5, "LSO")
+-- end

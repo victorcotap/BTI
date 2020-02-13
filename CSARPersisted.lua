@@ -17,20 +17,23 @@ csar.csarUnits = {
     "UH-1H Tarawa",
     "UH-1H Tarawa",
 
-    "UH1 Dallas",
+    "UH1 Dallas #002",
     "UH1 Dallas #001",
-    "Ka50 Dallas",
+    "Ka50 Dallas #002",
     "Ka50 Dallas #001",
-    "Mi-8 Dallas",
+    "Mi-8 Dallas #002",
     "Mi-8 Dallas #001",
-    "SA342Mistral Dallas #001",
+    "SA342L Dallas #001",
+    "SA342L Dallas #002",
 
-    "UH1 Paris DEFENDED",
-    "UH1 Paris #001 DEFENDED",
-    "Ka50 Paris DEFENDED",
-    "Ka50 Paris #001 DEFENDED",
-    "Mi-8 Paris DEFENDED",
+    "UH1 Paris DEFENDED #001",
+    "UH1 Paris DEFENDED #002",
+    "Ka50 Paris DEFENDED #001",
+    "Ka50 Paris DEFENDED #002",
     "Mi-8 Paris DEFENDED #001",
+    "Mi-8 Paris DEFENDED #002",
+    "SA342L Paris DEFENDED #001",
+    "SA342L Paris DEFENDED #002",
 } -- List of all the MEDEVAC _UNIT NAMES_ (the line where it says "Pilot" in the ME)!
 
 csar.bluemash = {
