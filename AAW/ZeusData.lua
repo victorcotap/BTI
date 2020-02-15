@@ -231,6 +231,9 @@ ZeusTable = {
     ["INFseals"] = {
         ["type"] = "ground",
     },
+    ["INFman"] = {
+        ["type"] = "ground",
+    },
     --BOA
     ["BOAneus"] = {
         ["type"] = "ground",

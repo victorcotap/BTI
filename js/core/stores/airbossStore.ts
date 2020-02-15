@@ -43,7 +43,7 @@ export default class AirbossStore {
             embed.setFooter('Provided by MiniBoss');
             embed.addField("Pilot Name", trap.pilotName, true);
             embed.addField("Airframe", trap.airframe, true);
-            // embed.addField("Points", trap.points, true);
+            embed.addField("Points", trap.points, true);
             embed.addField('Grade', trap.grade, true);
             embed.addField('Details', trap.detail, true);
             embed.addField('Wire', trap.wire, true);
