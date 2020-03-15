@@ -68,7 +68,7 @@ function trackAliveGroups()
             trackGroup(group, trackingMaster)
         end
     )
-    -- env.info("BTI: tracking alive finished")
+    env.info("BTI: tracking alive finished")
 end
 
 function computePersistenceGroups()
@@ -88,7 +88,7 @@ function computePersistenceGroups()
             end
         end
     end
-    -- env.info("BTI: tracking persistence finished")
+    env.info("BTI: tracking persistence finished")
 end
 
 
