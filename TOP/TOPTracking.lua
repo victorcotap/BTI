@@ -37,8 +37,13 @@ local function trackGroup(group, master)
     end
     if groupName then
         -- env.info("BTI: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupCoalition, groupName, groupCategory, groupType, groupAlive}))
+        local groupData = master[groupName]
+        local groupIsReallyAlive = groupAlive
+        if groupData ~= nil and groupData["alive"] == false then
+            groupIsReallyAlive = false
+        end
         master[groupName] = {
-            ["alive"] = groupAlive,
+            ["alive"] = groupIsReallyAlive,
             ["coalition"] = groupCoalition,
             ["category"] = groupCategory,
             ["type"] = groupType,
