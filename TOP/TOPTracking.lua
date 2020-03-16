@@ -123,6 +123,7 @@ function startTrackingEngine()
     if savedMasterBuffer ~= nil and TOPGroupPersistence then
         local savedMaster = JSONLib.decode(savedMasterBuffer)
         applyMaster(savedMaster)
+        trackingMaster = savedMaster
     else
         env.info("BTI: No Tracking master file found, reset in progress")
     end
