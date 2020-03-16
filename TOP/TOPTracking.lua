@@ -118,7 +118,7 @@ function saveMasterTracking(master, masterPath)
 end
 
 -- Tracking Engine --------------------------------------------------------
-function startTrackingEngine()
+function startTrackingEngine(something)
     local savedMasterBuffer = loadFile(trackingMasterPath)
     if savedMasterBuffer ~= nil and TOPGroupPersistence then
         local savedMaster = JSONLib.decode(savedMasterBuffer)
@@ -135,7 +135,8 @@ function startTrackingEngine()
 
 end
 
-startTrackingEngine()
+SCHEDULER:New(nil, startTrackingEngine, {trackingMaster, trackingMasterPath}, 10)
+-- startTrackingEngine()
 
 env.info("BTI: Tracking better than google tracks your location")
 
