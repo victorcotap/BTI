@@ -102,6 +102,8 @@ local function applyMaster(master)
                 env.info("BTI: Destroying dead group" .. groupName)
                 dcsGroup:Destroy()
             end
+        elseif group["alive"] == nil or group["alive"] == false then
+            env.info("BTI: Couldn't find dead group " .. groupName .. "to apply master to")
         end
     end
     -- TODO foreach group of master, check if alive and destroy if not
