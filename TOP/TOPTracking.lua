@@ -127,9 +127,9 @@ function startTrackingEngine(something)
     else
         env.info("BTI: No Tracking master file found, reset in progress")
     end
-    SCHEDULER:New(nil, trackAliveGroups, {"something"}, 5, 60)
+    SCHEDULER:New(nil, trackAliveGroups, {"something"}, 10, 60)
 
-    SCHEDULER:New(nil, computePersistenceGroups, {"something"}, 10, 60)
+    SCHEDULER:New(nil, computePersistenceGroups, {"something"}, 15, 60)
 
     SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 30, 60)
 
