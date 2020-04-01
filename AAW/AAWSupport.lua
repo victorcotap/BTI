@@ -1,5 +1,5 @@
 HQ = GROUP:FindByName("BLUE CC")
-CommandCenter = COMMANDCENTER:New( HQ, "HQ" )
+CommandCenter = COMMANDCENTER:New(HQ, "HQ")
 
 SupportHandler = EVENTHANDLER:New()
 
@@ -7,7 +7,6 @@ local SpawnsTableConcurrent = {}
 local ZeusWaypointData = {}
 local ZeusTaskData = {}
 local ZeusSpawnedAssets = {}
-
 
 --Utils----------------------------------------------------------------------------
 function _split(str, sep)
@@ -20,10 +19,13 @@ function _split(str, sep)
     return result
 end
 
-local function ternary ( cond , T , F )
-    if cond then return T else return F end
+local function ternary(cond, T, F)
+    if cond then
+        return T
+    else
+        return F
+    end
 end
-
 
 -- Spawns -----------------------------------------------------------------------
 -- jtacName = 'BLUE Request jtac'
@@ -58,18 +60,20 @@ end
 -- SCHEDULER:New(nil, supportServicesRespawnHelp, {"dfsf"}, 5300, 6000)
 -- SCHEDULER:New(nil, spawnRecon, {"dfsdf"}, 12, 6000)
 
-
 -- KC130Tanker = nil
 KC135MPRS = nil
 -- S3Tanker = nil
 E2EWR = nil
 function spawnServices(something)
-    env.info('BTI Carrier spawn function activated')
-    CommandCenter:MessageTypeToCoalition( string.format("AWACS and Tanker are now respawning. Next respawn in 2 hours"), MESSAGE.Type.Information )
-    E2EWR = SPAWN:New('BLUE C EWR E3'):Spawn()
+    env.info("BTI Carrier spawn function activated")
+    CommandCenter:MessageTypeToCoalition(
+        string.format("AWACS and Tanker are now respawning. Next respawn in 2 hours"),
+        MESSAGE.Type.Information
+    )
+    E2EWR = SPAWN:New("BLUE C EWR E3"):Spawn()
     -- KC130Tanker = SPAWN:New('BLUE REFUK KC130'):Spawn()
-    KC135MPRS = SPAWN:New('BLUE C REFUK 135'):Spawn()
-    KC135Boom = SPAWN:New('BLUE C REFUS 135'):Spawn()
+    KC135MPRS = SPAWN:New("BLUE C REFUK 135"):Spawn()
+    KC135Boom = SPAWN:New("BLUE C REFUS 135"):Spawn()
     -- S3Tanker = SPAWN:New('BLUE C REFUK KC130 Navy'):Spawn()
 end
 
@@ -94,18 +98,33 @@ end
 function SUPPORTResetTankerAWACSTask()
     local awacsTask = E2EWR:EnRouteTaskAWACS()
     local awacsEPLRS = E2EWR:TaskEPLRS(true)
-    local awacsRouteTask = E2EWR:TaskOrbitCircleAtVec2(E2EWR:GetUnit(1):GetCoordinate(), E2EWR:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
+    local awacsRouteTask =
+        E2EWR:TaskOrbitCircleAtVec2(
+        E2EWR:GetUnit(1):GetCoordinate(),
+        E2EWR:GetUnit(1):GetAltitude(),
+        UTILS.KnotsToMps(307)
+    )
     E2EWR:SetTask(awacsTask, 2)
     E2EWR:PushTask(awacsEPLRS)
     E2EWR:PushTask(awacsRouteTask, 4)
 
     local tanker135MPRSTask = KC135MPRS:EnRouteTaskTanker()
-    local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC135MPRS:GetUnit(1):GetCoordinate(), KC135MPRS:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
+    local tankerRouteTask =
+        tanker:TaskOrbitCircleAtVec2(
+        KC135MPRS:GetUnit(1):GetCoordinate(),
+        KC135MPRS:GetUnit(1):GetAltitude(),
+        UTILS.KnotsToMps(307)
+    )
     KC135MPRS:SetTask(tankerRouteTask, 2)
     KC135MPRS:PushTask(tanker135MPRSTask, 2)
 
     local tanker135BoomTask = KC130Tanker:EnRouteTaskTanker()
-    local tankerRouteTask = tanker:TaskOrbitCircleAtVec2(KC130Tanker:GetUnit(1):GetCoordinate(), KC130Tanker:GetUnit(1):GetAltitude(), UTILS.KnotsToMps(307))
+    local tankerRouteTask =
+        tanker:TaskOrbitCircleAtVec2(
+        KC130Tanker:GetUnit(1):GetCoordinate(),
+        KC130Tanker:GetUnit(1):GetAltitude(),
+        UTILS.KnotsToMps(307)
+    )
     KC130Tanker:SetTask(tankerRouteTask, 2)
     KC130Tanker:PushTask(tanker135BoomTask, 2)
 end
@@ -114,22 +133,29 @@ function SUPPORTSpawnSFAC(zone)
     sfacSpawn:OnSpawnGroup(
         function(jtacSpawnGroup)
             jtacSpawnGroup:ClearTasks()
-            local routeTask = jtacSpawnGroup:TaskOrbitCircleAtVec2( zone:GetCoordinate():GetVec2(), UTILS.FeetToMeters(10000),  UTILS.KnotsToMps(110) )
+            local routeTask =
+                jtacSpawnGroup:TaskOrbitCircleAtVec2(
+                zone:GetCoordinate():GetVec2(),
+                UTILS.FeetToMeters(10000),
+                UTILS.KnotsToMps(110)
+            )
             jtacSpawnGroup:SetTask(routeTask, 2)
-            env.info(string.format( "BTI: Trying to create autolase jtac for %s",jtacSpawnGroup:GetName()))
+            env.info(string.format("BTI: Trying to create autolase jtac for %s", jtacSpawnGroup:GetName()))
             ctld.JTACAutoLase(jtacSpawnGroup:GetName(), 1685, false, "all")
         end
     )
 
-    local randomSpawnCoord = zone:GetCoordinate():GetRandomVec2InRadius( 2000, 4500 )
+    local randomSpawnCoord = zone:GetCoordinate():GetRandomVec2InRadius(2000, 4500)
     local supportGroup = sfacSpawn:SpawnFromVec2(randomSpawnCoord)
-    CommandCenter:MessageTypeToCoalition( string.format("%s Airborn JTAC now deployed after Side Missions have been completed", supportGroup:GetName()), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition(
+        string.format("%s Airborn JTAC now deployed after Side Missions have been completed", supportGroup:GetName()),
+        MESSAGE.Type.Information
+    )
 end
 
 --------------------------------------------------------------------------------
 local destroyZoneCount = 0
 function handleExfillRequest(text, baseCoord)
-
     local destroyZoneName = string.format("destroy %d", destroyZoneCount)
     local zoneRadiusToDestroy = ZONE_RADIUS:New(destroyZoneName, baseCoord:GetVec2(), 80)
     destroyZoneCount = destroyZoneCount + 1
@@ -140,11 +166,10 @@ function handleExfillRequest(text, baseCoord)
         return true
     end
     zoneRadiusToDestroy:SearchZone(destroyUnit, Object.Category.UNIT)
-    CommandCenter:MessageTypeToCoalition( string.format("Exfill complete!"), MESSAGE.Type.Information )
+    CommandCenter:MessageTypeToCoalition(string.format("Exfill complete!"), MESSAGE.Type.Information)
 end
 
 function handleSupportRequest(text, coord)
-
 end
 
 ---------------------------------------------------------------------------------
@@ -155,7 +180,6 @@ end
 -- -z t89
 
 function handleZeusRequest(text, baseCoord)
-
     local arguments = _split(text, ";")
     env.info("BTI: arguments " .. UTILS.OneLineSerialize(arguments))
 
@@ -165,7 +189,7 @@ function handleZeusRequest(text, baseCoord)
     local spawnAltitude = 3000
     local spawnTask = ""
     local spawnCluster = ""
-    for _,argument in pairs(arguments) do
+    for _, argument in pairs(arguments) do
         local argumentValues = _split(argument, " ")
         env.info("BTI: argumentValue " .. UTILS.OneLineSerialize(arguments))
         local command = argumentValues[1]
@@ -173,7 +197,7 @@ function handleZeusRequest(text, baseCoord)
 
         if command:find("-z") then
             spawnString = value
-        elseif command:find("-amount") or command:find("-n")  then
+        elseif command:find("-amount") or command:find("-n") then
             spawnAmount = tonumber(value)
         elseif command:find("-altitude") or command:find("-a") then
             spawnAltitude = UTILS.FeetToMeters(tonumber(value))
@@ -208,8 +232,10 @@ function handleZeusRequest(text, baseCoord)
             if spawnType == "air" then
                 if spawnTaskingData ~= nil then
                     env.info("BTI: SpawnTaskingData " .. UTILS.OneLineSerialize(spawnTaskingData))
-                    local engageTargets = ternary(spawnTaskingData["engage"] == "a", { "Air" }, { "Planes", "Battle airplanes", })
-                    local enrouteEngageZoneTask = spawnedGroup:EnRouteTaskEngageTargetsInZone(
+                    local engageTargets =
+                        ternary(spawnTaskingData["engage"] == "a", {"Air"}, {"Planes", "Battle airplanes"})
+                    local enrouteEngageZoneTask =
+                        spawnedGroup:EnRouteTaskEngageTargetsInZone(
                         spawnTaskingData["coord"]:GetVec2(),
                         spawnTaskingData["radius"],
                         engageTargets,
@@ -218,7 +244,7 @@ function handleZeusRequest(text, baseCoord)
                     trigger.action.removeMark(spawnTaskingData["mark"])
                     spawnedGroup:SetTask(enrouteEngageZoneTask, 2)
                 elseif spawnTask == "cap" then
-                    local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets( 70000, { "Air" }, 1 )
+                    local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets(70000, {"Air"}, 1)
                     spawnedGroup:SetTask(enrouteTask, 2)
                 elseif spawnTask == "jtac" then
                     ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
@@ -226,7 +252,6 @@ function handleZeusRequest(text, baseCoord)
                     local tankerTask = spawnedGroup:EnRouteTaskTanker()
                     spawnedGroup:SetTask(tankerTask)
                 end
-
 
                 local finalCoord = baseCoord
                 local finalAltitude = spawnAltitude
@@ -237,9 +262,8 @@ function handleZeusRequest(text, baseCoord)
                     finalSpeed = spawnSecondaryData["speed"]
                     trigger.action.removeMark(spawnSecondaryData["mark"])
                 end
-                local orbitTask = spawnedGroup:TaskOrbitCircleAtVec2( finalCoord:GetVec2(), finalAltitude, finalSpeed)
+                local orbitTask = spawnedGroup:TaskOrbitCircleAtVec2(finalCoord:GetVec2(), finalAltitude, finalSpeed)
                 spawnedGroup:PushTask(orbitTask, 4)
-
             elseif spawnType == "ground" then
                 -- route so they get in formation and start their AI
                 if spawnTask == "jtac" then
@@ -255,28 +279,27 @@ function handleZeusRequest(text, baseCoord)
                     end
                     arty:Start()
                 end
-                spawnedGroup:RouteToVec2(baseCoord:GetRandomVec2InRadius( 20, 5 ), 5)
+                spawnedGroup:RouteToVec2(baseCoord:GetRandomVec2InRadius(20, 5), 5)
             end
-            table.insert( ZeusSpawnedAssets, spawnedGroup )
+            table.insert(ZeusSpawnedAssets, spawnedGroup)
         end
     )
 
     -- Spawn asset
     env.info("BTI: spawn coord" .. UTILS.OneLineSerialize(baseCoord:GetRandomVec2InRadius(100, 300)))
     for i = 1, spawnAmount do
-        spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius( 100, 300 ), spawnAltitude, spawnAltitude)
+        spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius(100, 300), spawnAltitude, spawnAltitude)
     end
 
     -- Remove Zeus Data and mark for secondary
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
     if text:find("-x") then
-        CommandCenter:MessageToAll( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount))
-        -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
-        -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset something times %d spawned", spawnAmount), MESSAGE.Type.Information )
+        CommandCenter:MessageToAll(string.format("Requested asset %s times %d spawned", spawnString, spawnAmount))
+    -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset %s times %d spawned", spawnString, spawnAmount), MESSAGE.Type.Information )
+    -- CommandCenter:MessageTypeToCoalition( string.format("Requested asset something times %d spawned", spawnAmount), MESSAGE.Type.Information )
     end
 end
-
 
 function handleSecondaryRequest(arguments, baseCoord, markID)
     local spawnID = ""
@@ -287,7 +310,7 @@ function handleSecondaryRequest(arguments, baseCoord, markID)
     local type = ""
     env.info("BTI: stop0 " .. UTILS.OneLineSerialize(arguments))
 
-    for _,argument in pairs(arguments) do
+    for _, argument in pairs(arguments) do
         local argumentValues = _split(argument, " ")
         local command = argumentValues[1]
         local value = argumentValues[2]
@@ -337,7 +360,7 @@ end
 
 function handleCommandRequest(text, baseCoord)
     if text:find("awacs") then
-        E2EWR = SPAWN:New('BLUE C EWR E2'):Spawn()
+        E2EWR = SPAWN:New("BLUE C EWR E2"):Spawn()
     elseif text:find("smoke") then
         if text:find("green") then
             baseCoord:SmokeGreen()
@@ -352,13 +375,21 @@ function handleCommandRequest(text, baseCoord)
         end
     elseif text:find("flare") then
         if text:find("green") then
-            for i=10,1,-1 do baseCoord:FlareGreen() end
+            for i = 10, 1, -1 do
+                baseCoord:FlareGreen()
+            end
         elseif text:find("yellow") then
-            for i=10,1,-1 do baseCoord:FlareYellow() end
+            for i = 10, 1, -1 do
+                baseCoord:FlareYellow()
+            end
         elseif text:find("red") then
-            for i=10,1,-1 do baseCoord:FlareRed() end
+            for i = 10, 1, -1 do
+                baseCoord:FlareRed()
+            end
         else
-            for i=10,1,-1 do baseCoord:FlareWhite() end
+            for i = 10, 1, -1 do
+                baseCoord:FlareWhite()
+            end
         end
     end
 end
@@ -381,17 +412,24 @@ local function handleWeatherRequest(text, baseCoord)
     local currentPressure = baseCoord:GetPressure(0)
     local currentTemperature = baseCoord:GetTemperature()
     local currentWindDirection, currentWindStrengh = baseCoord:GetWind()
-    local weatherString = string.format("Requested weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
+    local weatherString =
+        string.format(
+        "Requested weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d",
+        currentWindDirection,
+        UTILS.MpsToKnots(currentWindStrengh),
+        currentPressure * 0.0295299830714,
+        currentTemperature
+    )
     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
 end
 
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 function markRemoved(Event)
-    if Event.text~=nil and Event.text:lower():find("-") then
+    if Event.text ~= nil and Event.text:lower():find("-") then
         -- local text = Event.text:lower()
         local text = Event.text
-        local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z}
+        local vec3 = {y = Event.pos.y, x = Event.pos.x, z = Event.pos.z}
         local baseCoord = COORDINATE:NewFromVec3(vec3)
         baseCoord.y = baseCoord:GetLandHeight()
 
@@ -416,11 +454,11 @@ function markRemoved(Event)
 end
 
 function markChanged(Event)
-    if Event.text~=nil and Event.text:lower():find("-") then
+    if Event.text ~= nil and Event.text:lower():find("-") then
         -- local text = Event.text:lower()
         local text = Event.text
         -- local vec3 = {y=Event.pos.y, x=Event.pos.z, z=Event.pos.x} --old
-        local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z} --new
+        local vec3 = {y = Event.pos.y, x = Event.pos.x, z = Event.pos.z} --new
 
         local baseCoord = COORDINATE:NewFromVec3(vec3)
         baseCoord.y = baseCoord:GetLandHeight()
@@ -432,16 +470,43 @@ end
 
 function SupportHandler:onEvent(Event)
     if Event.id == world.event.S_EVENT_MARK_ADDED then
-        env.info(string.format("BTI: Support got event ADDED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        env.info(
+            string.format(
+                "BTI: Support got event ADDED id %s idx %s coalition %s group %s text %s",
+                Event.id,
+                Event.idx,
+                Event.coalition,
+                Event.groupID,
+                Event.text
+            )
+        )
     elseif Event.id == world.event.S_EVENT_MARK_CHANGE then
-        env.info(string.format("BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        env.info(
+            string.format(
+                "BTI: Support got event CHANGE id %s idx %s coalition %s group %s text %s",
+                Event.id,
+                Event.idx,
+                Event.coalition,
+                Event.groupID,
+                Event.text
+            )
+        )
         markChanged(Event)
     elseif Event.id == world.event.S_EVENT_MARK_REMOVED then
-        env.info(string.format("BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s", Event.id, Event.idx, Event.coalition, Event.groupID, Event.text))
+        env.info(
+            string.format(
+                "BTI: Support got event REMOVED id %s idx %s coalition %s group %s text %s",
+                Event.id,
+                Event.idx,
+                Event.coalition,
+                Event.groupID,
+                Event.text
+            )
+        )
         markRemoved(Event)
     end
 end
 
 world.addEventHandler(SupportHandler)
 
-env.info('BTI: Beyond Support is online')
+env.info("BTI: Beyond Support is online")
