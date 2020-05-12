@@ -67,7 +67,7 @@ local function applyMaster(master)
   end
 end
 
-function saveMasterPeristence(master, masterPath)
+function saveMasterPersistence(master, masterPath)
   if master == nil then
       env.info("TOP: No master provided for saving")
       return
@@ -88,7 +88,7 @@ function startPersistenceEngine(something)
   end
   SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 60)
 
-  SCHEDULER:New(nil, saveMasterPeristence, {persistenceMaster, persistenceMasterPath}, 30, 60)
+  SCHEDULER:New(nil, saveMasterPersistence, {persistenceMaster, persistenceMasterPath}, 30, 60)
 end
 
 SCHEDULER:New(nil, startPersistenceEngine, {trackingMaster, trackingMasterPath}, 10)
