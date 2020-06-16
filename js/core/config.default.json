@@ -3,6 +3,8 @@
     "pathToGreenieBoardCSV": "",
     "DCSSuperCareerApiKey": "",
     "DCSSupercareerFilepath": "",
+    "DiscordEnabled": false,
     "DiscordToken": "",
-    "DiscordChannelID": ""
+    "DiscordChannelID": "",
+    "SlotsEnabled": false,
 }

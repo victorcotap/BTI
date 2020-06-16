@@ -13,7 +13,6 @@ const CSARFilePath = "/BTI/Tracking/CSARTracking.json";
 
 const trackingStore = new TrackingStore(trackingFilePath);
 const csarStore = new CSARStore(CSARFilePath);
-const airbossStore = new AirbossStore(config.pathToGreenieBoardCSV)
 
 router.get('/', async (request, response) => {
     const currentTime = new Date();
@@ -41,8 +40,12 @@ router.get('/csar', async (request, response) => {
     });
 });
 
-router.get('/airboss', async (request, response) => {
-    console.info('AIRBOSS data access', new Date());
-    response.json({currentTraps: airbossStore.cache.currentTraps});
-});
+if (config.DiscordEnabled) {
+    const airbossStore = new AirbossStore(config.pathToGreenieBoardCSV)
+    router.get('/airboss', async (request, response) => {
+        console.info('AIRBOSS data access', new Date());
+        response.json({currentTraps: airbossStore.cache.currentTraps});
+    });
+}
+
 export default router

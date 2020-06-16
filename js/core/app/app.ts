@@ -19,5 +19,7 @@ app.listen(config.port, function() {
     console.log("Core is online on 10407");
 });
 
-const slotStore = new SlotStore(config.DCSSupercareerFilepath);
-console.info('Slot store is online');
+if (config.SlotsEnabled) {
+    const slotStore = new SlotStore(config.DCSSupercareerFilepath);
+    console.info('Slot store is online');
+}
