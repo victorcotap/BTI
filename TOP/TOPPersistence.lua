@@ -20,6 +20,11 @@ local function trackGroup(group, master)
         local groupIsReallyAlive = groupAlive
         if groupData ~= nil and groupData["alive"] == false then
             groupIsReallyAlive = false
+            persistenceMaster[groupName] = {
+                ["alive"] = groupIsReallyAlive,
+                ["coalition"] = groupCoalition,
+            }
+            return
         end
 
         local dcsGroup = GROUP:FindByName(groupName)
