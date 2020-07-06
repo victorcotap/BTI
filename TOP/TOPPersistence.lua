@@ -27,11 +27,11 @@ local function trackGroup(group, master)
         if dcsGroup ~= nil then
             local groupUnits = dcsGroup:GetUnits()
             if groupUnits == nil or #groupUnits == 0 then
-                env.info("TOP: Persistence can't find units marking group as dead")
+                env.info("TOP: Persistence can't find units marking group " .. groupName .. " as dead")
                 groupIsReallyAlive = false
             end
         else
-            env.info("TOP: Persistence can't find group, marking group as dead")
+            env.info("TOP: Persistence can't find group, marking group " .. groupName .. "  as dead")
             groupIsReallyAlive = false
         end
 
