@@ -30,7 +30,7 @@ local function trackGroup(group, master)
 
     if dcsGroup then
         if dcsGroup and dcsGroup:isExist() and dcsGroup:getSize() > 0 then
-            env.info("TOP: Group " .. groupName .. " is considered alive")
+            env.info("TOP: Group " .. groupName .. " is considered alive size " .. tostring(dcsGroup:getSize()) )
             groupAlive = true
         else
             env.info("TOP: Persistence can't find units marking group " .. groupName .. " as dead")
@@ -70,7 +70,6 @@ end
 function trackPersistenceGroups()
     SetPersistenceGroups:ForEachGroup(
         function(group)
-            env.info("TOP: passing through group " .. group.GroupName)
             trackGroup(group, persistenceMaster)
         end
     )
