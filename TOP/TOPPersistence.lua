@@ -31,6 +31,7 @@ local function trackGroup(group, master)
         return
     end
 
+    env.info("TOP: Trying to access group " .. groupName)
     local dcsGroup = Group:getByName(groupName)
     local groupAlive = group:IsAlive()
     env.info("TOP: MOOSE IsAlive() " .. groupName .. " " .. tostring(groupAlive))
@@ -118,7 +119,7 @@ function startPersistenceEngine(something)
     else
         env.info("TOP: No Tracking master file found, reset in progress")
     end
-    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 60)
+    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 30)
 
     SCHEDULER:New(nil, saveMasterPersistence, {persistenceMaster, persistenceMasterPath}, 30, 60)
 end
