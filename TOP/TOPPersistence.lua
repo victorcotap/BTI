@@ -78,6 +78,7 @@ end
 function trackPersistenceGroups()
     SetPersistenceGroups:ForEachGroup(
         function(group)
+            env.info("TOP: passing through group " .. group.GroupName)
             trackGroup(group, persistenceMaster)
         end
     )
