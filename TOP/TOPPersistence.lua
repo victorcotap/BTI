@@ -32,7 +32,7 @@ local function trackGroup(group, master)
     end
 
     env.info("TOP: Trying to access group " .. groupName)
-    local dcsGroup = Group:getByName(groupName)
+    local dcsGroup = Group.getByName(groupName)
     local groupAlive = group:IsAlive()
     env.info("TOP: MOOSE IsAlive() " .. groupName .. " " .. tostring(groupAlive))
 
