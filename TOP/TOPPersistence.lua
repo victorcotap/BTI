@@ -15,7 +15,7 @@ local function trackGroup(group, master)
     local groupData = persistenceMaster[groupName]
 
     -- Protect against a group coming back to life (thanks ED)
-    if groupData ~= nil and groupData["alive"] == false then
+    if groupName == nil or groupData ~= nil and groupData["alive"] == false then
         env.info("TOP: Group is already marked as dead, skipping dead detection")
         return
     end
