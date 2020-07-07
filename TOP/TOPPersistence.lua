@@ -7,7 +7,7 @@ end
 local persistenceMaster = {}
 local persistenceMasterPath = "C:\\BTI\\Tracking\\PersistenceFile.json"
 
-SetPersistenceGroups = SET_GROUP:New():FilterActive():FilterCoalitions("red"):FilterStart()
+SetPersistenceGroups = SET_GROUP:New():FilterCoalitions("red"):FilterStart()
 
 local function trackGroup(group, master)
     local groupName = group.GroupName
