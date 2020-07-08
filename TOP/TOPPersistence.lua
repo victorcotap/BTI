@@ -88,19 +88,20 @@ function PersistenceHandler:onEvent(event)
             local dcsGroup = event.initiator:getGroup()
             if not dcsGroup then env.info("TOP: For some reason unit exists but not the group, thanks again ED") end
             local groupName = dcsGroup:getName()
-            env.info('TOP: Got group name ' .. groupName .. " from event initiator")
+            -- env.info('TOP: Got group name ' .. groupName .. " from event initiator")
             local groupData = persistenceMaster[groupName]
 
             if groupData and groupData["alive"] == true then
                 local unitCount = 0
                 for i, unit in pairs(dcsGroup:getUnits()) do unitCount = unitCount + 1 end
 
-                env.info("TOP: Determined " .. tostring(unitCount) .. " as total unit in group " .. groupName)
+                -- env.info("TOP: Determined " .. tostring(unitCount) .. " as total unit in group " .. groupName)
                 if (unitCount == 1) then
                     persistenceMaster[groupName] = {
                         ["alive"] = false,
                         ["coalition"] = groupCoalition
                     }
+                    env.info("TOP: Last unit in group " .. groupName .. " was killed, marking dead")
                 end
             end
         elseif event.initiator.getName then

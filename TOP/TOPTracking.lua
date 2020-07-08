@@ -127,6 +127,7 @@ local function saveCSARTracking()
 end
 
 local function computeSlotList()
+    if not TOPCSARPersistence then return end
     local slotTable = {}
     SetSlots:FilterOnce()
     SetSlots:ForEachClient(
