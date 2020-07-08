@@ -26,11 +26,11 @@ local function trackGroup(group, master)
 
     local dcsGroup = Group.getByName(groupName)
     local groupAlive = group:IsAlive()
-    env.info("TOP: MOOSE IsAlive() " .. groupName .. " " .. tostring(groupAlive))
+    -- env.info("TOP: MOOSE IsAlive() " .. groupName .. " " .. tostring(groupAlive))
 
     if dcsGroup then
         if dcsGroup and dcsGroup:isExist() and dcsGroup:getSize() > 0 then
-            env.info("TOP: Group " .. groupName .. " is considered alive size " .. tostring(dcsGroup:getSize()) )
+            -- env.info("TOP: Group " .. groupName .. " is considered alive size " .. tostring(dcsGroup:getSize()) )
             groupAlive = true
         else
             env.info("TOP: Persistence can't find units marking group " .. groupName .. " as dead")
@@ -76,6 +76,38 @@ function trackPersistenceGroups()
     env.info("TOP: tracking alive finished")
 end
 
+function handleDeadEvent(event)
+    if event.id == world.event.S_EVENT_DEAD then
+        if event.initiator == nil then
+            env.info("TOP: event.initiator was nil, skipping. Thanks ED!")
+            return
+        end
+        if event.initiator.getGroup then
+            local dcsGroup = event.initiator.getGroup()
+            if not dcsGroup then env.info("TOP: For some reason unit exists but not the group, thanks again ED") end
+            local groupName = dcsGroup.getName()
+            env.info('TOP: Got group name ' .. groupName .. " from event initiator")
+            local groupData = persistenceMaster[groupName]
+
+            if groupData and groupData["alive"] == true then
+                local unitCount = 0
+                for i, unit in pairs(dcsGroup:getUnits()) do unitCount = unitCount + 1 end
+
+                env.info("TOP: Determined " .. tostring(unitCount) .. " as total unit in group " .. groupName)
+                if (unitCount == 0) then
+                    persistenceMaster[groupName] = {
+                        ["alive"] = false,
+                        ["coalition"] = groupCoalition
+                    }
+                end
+            end
+        elseif event.initiator.getName then
+            local shittyName = event.initiator.getName(event.initiator)
+            env.info('TOP: got into the weird case for initiator named ' .. shittyName)
+        end
+    end
+end
+
 local function applyMaster(master)
     env.info("TOP: Persistence is applying master")
     for groupName, group in pairs(master) do
@@ -111,6 +143,8 @@ function startPersistenceEngine(something)
     else
         env.info("TOP: No Tracking master file found, reset in progress")
     end
+    -- Start the dead event handler once we killed everything
+    mist.addEventHandler(handleDeadEvent)
     SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 30)
 
     SCHEDULER:New(nil, saveMasterPersistence, {persistenceMaster, persistenceMasterPath}, 30, 60)
