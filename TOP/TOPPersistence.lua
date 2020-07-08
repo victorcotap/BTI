@@ -4,6 +4,8 @@ if JSONLib == nil then
     JSONLib = dofile("C:\\BTI\\Json.lua")
 end
 
+local PersistenceHandler = EVENTHANDLER:New()
+
 local persistenceMaster = {}
 local persistenceMasterPath = "C:\\BTI\\Tracking\\PersistenceFile.json"
 
@@ -76,7 +78,7 @@ function trackPersistenceGroups()
     env.info("TOP: tracking alive finished")
 end
 
-function handleDeadEvent(event)
+function PersistenceHandler:onEvent(event)
     if event.id == world.event.S_EVENT_DEAD then
         if event.initiator == nil then
             env.info("TOP: event.initiator was nil, skipping. Thanks ED!")
@@ -144,7 +146,7 @@ function startPersistenceEngine(something)
         env.info("TOP: No Tracking master file found, reset in progress")
     end
     -- Start the dead event handler once we killed everything
-    mist.addEventHandler(handleDeadEvent)
+    world.addEventHandler(PersistenceHandler)
     SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 30)
 
     SCHEDULER:New(nil, saveMasterPersistence, {persistenceMaster, persistenceMasterPath}, 30, 60)
