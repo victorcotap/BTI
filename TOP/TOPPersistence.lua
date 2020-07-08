@@ -18,11 +18,7 @@ local function trackGroup(group, master)
 
     -- Protect against a group coming back to life (thanks ED)
     if groupName == nil or groupData ~= nil and groupData["alive"] == false then
-        env.info("TOP: Group is already marked as dead, skipping dead detection " .. groupName)
-        persistenceMaster[groupName] = {
-            ["alive"] = false,
-            ["coalition"] = groupCoalition
-        }
+        -- env.info("TOP: Group is already marked as dead, skipping dead detection " .. groupName)
         return
     end
 
@@ -47,26 +43,6 @@ local function trackGroup(group, master)
         ["alive"] = groupAlive,
         ["coalition"] = groupCoalition
     }
-
-    -- if groupName then
-    --     -- env.info("TOP: tracking group data " .. groupName .. " -> " .. UTILS.OneLineSerialize({groupCoalition, groupName, groupCategory, groupType, groupAlive}))
-
-    --     if dcsGroup ~= nil then
-    --         local groupUnits = dcsGroup:getUnits()
-    --         if groupUnits == nil or #groupUnits < 1 then
-    --             env.info("TOP: Persistence can't find units marking group " .. groupName .. " as dead")
-    --             groupIsReallyAlive = false
-    --         end
-    --     else
-    --         env.info("TOP: Persistence can't find group, marking group " .. groupName .. "  as dead")
-    --         groupIsReallyAlive = false
-    --     end
-
-    --     persistenceMaster[groupName] = {
-    --         ["alive"] = groupIsReallyAlive,
-    --         ["coalition"] = groupCoalition
-    --     }
-    -- end
 end
 
 function trackPersistenceGroups()
@@ -75,7 +51,7 @@ function trackPersistenceGroups()
             trackGroup(group, persistenceMaster)
         end
     )
-    env.info("TOP: tracking alive finished")
+    -- env.info("TOP: tracking alive finished")
 end
 
 function PersistenceHandler:onEvent(event)
@@ -148,7 +124,7 @@ function startPersistenceEngine(something)
     end
     -- Start the dead event handler once we killed everything
     world.addEventHandler(PersistenceHandler)
-    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 30)
+    SCHEDULER:New(nil, trackPersistenceGroups, {"something"}, 10, 60)
 
     SCHEDULER:New(nil, saveMasterPersistence, {persistenceMaster, persistenceMasterPath}, 30, 60)
 end
