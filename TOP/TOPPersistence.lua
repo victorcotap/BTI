@@ -96,7 +96,7 @@ function PersistenceHandler:onEvent(event)
                 for i, unit in pairs(dcsGroup:getUnits()) do unitCount = unitCount + 1 end
 
                 env.info("TOP: Determined " .. tostring(unitCount) .. " as total unit in group " .. groupName)
-                if (unitCount == 0) then
+                if (unitCount == 1) then
                     persistenceMaster[groupName] = {
                         ["alive"] = false,
                         ["coalition"] = groupCoalition
