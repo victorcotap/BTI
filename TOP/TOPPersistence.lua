@@ -85,9 +85,9 @@ function PersistenceHandler:onEvent(event)
             return
         end
         if event.initiator.getGroup then
-            local dcsGroup = event.initiator.getGroup()
+            local dcsGroup = event.initiator:getGroup()
             if not dcsGroup then env.info("TOP: For some reason unit exists but not the group, thanks again ED") end
-            local groupName = dcsGroup.getName()
+            local groupName = dcsGroup:getName()
             env.info('TOP: Got group name ' .. groupName .. " from event initiator")
             local groupData = persistenceMaster[groupName]
 
@@ -104,7 +104,7 @@ function PersistenceHandler:onEvent(event)
                 end
             end
         elseif event.initiator.getName then
-            local shittyName = event.initiator.getName(event.initiator)
+            local shittyName = event.initiator:getName(event.initiator)
             env.info('TOP: got into the weird case for initiator named ' .. shittyName)
         end
     end
