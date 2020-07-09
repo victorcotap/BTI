@@ -77,7 +77,7 @@ function PersistenceHandler:onEvent(event)
                         ["alive"] = false,
                         ["coalition"] = groupCoalition
                     }
-                    env.info("TOP: Last unit in group " .. groupName .. " was killed, marking dead")
+                    env.info("TOP: Last unit in group " .. groupName .. " was killed, marking dead for Persistence")
                 end
             end
         elseif event.initiator.getName then
