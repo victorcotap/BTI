@@ -18,7 +18,7 @@ local function trackGroup(group, master)
     local groupName = group.GroupName
     local groupData = trackingMaster[groupName]
 
-    -- if groupName == nil or groupData and groupData["alive"] == false then return end
+    if groupName == nil or groupData ~= nil and groupData["alive"] == false then return end
 
 
     local groupCoalition = group:GetCoalition()
