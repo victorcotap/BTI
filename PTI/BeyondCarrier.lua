@@ -42,7 +42,7 @@ env.info("BTI: Carrier fleet is now on cyclic operations")
 ---------------------------------------------------------------------------
 -- AIRBOSS
 
-local airbossStennis = AIRBOSS:New("BLUE CVN", "CVN-74 Stennis")
+local airbossStennis = AIRBOSS:New("cvn73", "CVN-73")
 
 airbossStennis:SetTACAN(15, "X", "STN")
 airbossStennis:SetICLS(5, "LSO")
@@ -69,7 +69,7 @@ airbossStennis:SetAutoSave(nil, "Greenie Board.csv")
 -- local window1 = airbossStennis:AddRecoveryWindow("09:01", "23:55", 1, 0, false)
 
 local carrierTanker = nil  --Ops.RecoveryTanker#RECOVERYTANKER
-carrierTanker = RECOVERYTANKER:New("BLUE CVN", "BLUE C REFUK S3 Navy")
+carrierTanker = RECOVERYTANKER:New("cvn73", "BLUE C REFUK S3 Navy")
 carrierTanker:SetTakeoffHot()
 carrierTanker:SetTACAN(14, "SMC")
 carrierTanker:SetRadio(263, "AM")
@@ -77,14 +77,14 @@ carrierTanker:SetRespawnOn()
 carrierTanker:Start()
 airbossStennis:SetRecoveryTanker(carrierTanker)
 
-RescueheloStennis=RESCUEHELO:New(UNIT:FindByName("BLUE CVN"), "BLUE Rescue Helo")
+RescueheloStennis=RESCUEHELO:New(UNIT:FindByName("cvn73"), "BLUE Rescue Helo")
 RescueheloStennis:SetTakeoffHot()
 RescueheloStennis:Start()
 
 airbossStennis:Start()
 --------------------------------------------------------------------------------------
 
-local airbossTarawa = AIRBOSS:New("LHA-1 Tarawa", "LHA-1 Tarawa")
+local airbossTarawa = AIRBOSS:New("tarawa", "LHA-1 Tarawa")
 
 airbossTarawa:SetTACAN(3, "X", "TRW")
 airbossTarawa:SetICLS(3, "LSO")
@@ -124,7 +124,7 @@ function OpenCarrierRecovery(minutesRemainingOpen, case)
     currentMissionRoute = CyclicCarrier:GetTaskRoute()
     local timeRecoveryOpen = timer.getAbsTime()+ turningMinutes*60
     local timeRecoveryClose = timeRecoveryOpen + minutesRemainingOpen*60
-    
+
     local currentCoordinate = CyclicCarrier:GetCoordinate()
     local currentWindDirection, currentWindStrengh = currentCoordinate:GetWind()
     local speed = 0

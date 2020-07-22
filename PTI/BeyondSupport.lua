@@ -10,13 +10,13 @@ local ZeusSpawnedAssets = {}
 
 
 --Utils----------------------------------------------------------------------------
-function _split(str, sep)    
+function _split(str, sep)
     local result = {}
     local regex = ("([^%s]+)"):format(sep)
     for each in str:gmatch(regex) do
         table.insert(result, each)
     end
-    
+
     return result
 end
 
@@ -242,7 +242,7 @@ function handleZeusRequest(text, coord)
     for i = 1, spawnAmount do
         spawn:SpawnFromVec2(coord:GetRandomVec2InRadius( 100, 300 ), spawnAltitude, spawnAltitude)
     end
-    
+
     -- Remove Zeus Data and mark for secondary
     ZeusWaypointData[spawnString] = nil
     ZeusTaskData[spawnString] = nil
@@ -352,26 +352,58 @@ function handleDebugRequest(text, coord)
         end
     end
 end
-
+-- "Requested weather: QNH %.2f, Temperature %d, Winds:\n %d@%.1fkts at Ground\n%d@%.1fkts at 3000ft\n%d@%.1fkts at 6000ft\n%d@%.1fkts at 9000ft\n%d@%.1fkts at 30,000ft"
 local function handleWeatherRequest(text, coord)
     local currentPressure = coord:GetPressure(0)
     local currentTemperature = coord:GetTemperature()
-    local currentWindDirection, currentWindStrengh = coord:GetWind()
-    local weatherString = string.format("Requested weather: Wind from %d@%.1fkts, QNH %.2f, Temperature %d", currentWindDirection, UTILS.MpsToKnots(currentWindStrengh), currentPressure * 0.0295299830714, currentTemperature)
+    local groundWindDirection, groundWindStrengh = coord:GetWind()
+    local threeWindDirection, threeWindStrengh = coord:GetWind(UTILS.FeetToMeters(3000))
+    local sixWindDirection, sixWindStrengh = coord:GetWind(UTILS.FeetToMeters(6000))
+    local nineWindDirection, nineWindStrengh = coord:GetWind(UTILS.FeetToMeters(9000))
+    local cruiseWindDirection, cruiseWindStrengh = coord:GetWind(UTILS.FeetToMeters(30000))
+    local weatherString = string.format("Requested weather: QNH %.2f, Temperature %d, Winds:\n%d@%.1fkts at Ground\n%d@%.1fkts at 3000ft\n%d@%.1fkts at 6000ft\n%d@%.1fkts at 9000ft\n%d@%.1fkts at 30,000", currentPressure * 0.0295299830714, currentTemperature,
+     groundWindDirection, UTILS.MpsToKnots(groundWindStrengh),
+     threeWindDirection, UTILS.MpsToKnots(threeWindStrengh),
+     sixWindDirection, UTILS.MpsToKnots(sixWindStrengh),
+     nineWindDirection, UTILS.MpsToKnots(nineWindStrengh),
+     cruiseWindDirection, UTILS.MpsToKnots(cruiseWindStrengh))
     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
+end
+
+local function handleCVNRequest(text, coord)
+    local arguments = _split(text, ";")
+    local steerCoordinate = coord
+    local cvnGroupName = "cvn73"
+    local speed = UTILS.KnotsToMps(26)
+
+    for _,argument in pairs(arguments) do
+        local argumentValues = _split(argument, " ")
+        local command = argumentValues[1]
+        local value = argumentValues[2]
+
+        -- -cvn steer
+        if command:find("-cvn") and value ~= nil then
+            cvnGroupName = value
+        elseif command:find("-s") then
+            speed = UTILS.KnotsToMps(tonumber( value ))
+        end
+    end
+
+    local cvnGroup = GROUP:FindByName(cvnGroupName)
+    cvnGroup:TaskRouteToVec2(steerCoordinate:GetVec2(), speed)
 end
 
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 function markRemoved(Event)
-    if Event.text~=nil and Event.text:lower():find("-") then 
+    if Event.text~=nil and Event.text:lower():find("-") then
         -- local text = Event.text:lower()
         local text = Event.text
         local vec3 = {y=Event.pos.y, x=Event.pos.x, z=Event.pos.z}
         local coord = COORDINATE:NewFromVec3(vec3)
         coord.y = coord:GetLandHeight()
 
-        if text:find("-fac") then   
+        if text:find("-fac") then
             handleFACRequest(text, coord)
         elseif text:find("-tanker") then
             handleTankerRequest(text, coord)
@@ -387,6 +419,8 @@ function markRemoved(Event)
             handleWeatherRequest(text, coord)
         elseif text:find("-z") then
             handleZeusRequest(text, coord)
+        elseif text:find("-cvn") then
+            handleCVNRequest(text, coord)
         end
     end
 end

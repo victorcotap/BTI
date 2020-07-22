@@ -20,7 +20,6 @@ local function trackGroup(group, master)
 
     if groupName == nil or groupData ~= nil and groupData["alive"] == false then return end
 
-
     local groupCoalition = group:GetCoalition()
     local groupCategory = group:GetCategoryName()
     local groupType = group:GetTypeName()
