@@ -118,8 +118,9 @@ end
 function startTrackingEngine(something)
     local savedMasterBuffer = loadFile(trackingMasterPath)
     if savedMasterBuffer ~= nil then
-        local savedMaster = JSONLib.decode(savedMasterBuffer)
-        trackingMaster = savedMaster
+        -- local savedMaster = JSONLib.decode(savedMasterBuffer)
+        -- trackingMaster = savedMaster
+        env.info("TOP: Tracking master is present but ignoring it")
     else
         env.info("TOP: No Tracking master file found, reset in progress")
     end
