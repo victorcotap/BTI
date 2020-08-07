@@ -54,12 +54,10 @@ TOPSlotsCallbacks.onPlayerTrySendChat = function(playerID, message, all) --new d
     if message == "-ucid" then
         local ucid = net.get_player_info(playerID, "ucid")
         local name = net.get_player_info(playerID, "name")
-        env.info("TOP: Player" .. name .. " trying to access ucid " .. ucid)
+        net.log("TOP: Player" .. name .. " trying to access ucid " .. ucid)
         net.send_chat_to("Your UCID is " .. ucid .. " . This message is only sent to you " .. name, playerID)
         return ''
     end
-
-    return message
 end
 -----------------------------------------------------------------------------------------------------------------------
 
