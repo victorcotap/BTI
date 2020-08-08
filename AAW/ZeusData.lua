@@ -254,4 +254,53 @@ ZeusTable = {
     ["BOAspeedboat"] = {
         ["type"] = "ground",
     },
+    --STATICS
+    ["pump"] = {
+        ["type"] = "static",
+    },
+    ["comTower"] = {
+        ["type"] = "static",
+    },
+    ["comTV"] = {
+        ["type"] = "static",
+    },
+    ["fuelTank"] = {
+        ["type"] = "static",
+    },
+    ["container"] = {
+        ["type"] = "static",
+    },
+    ["containers"] = {
+        ["type"] = "static",
+    },
+    ["powerbox"] = {
+        ["type"] = "static",
+    },
+    ["command"] = {
+        ["type"] = "static",
+    },
+    ["FARPfuel"] = {
+        ["type"] = "static",
+    },
+    ["FARPammo"] = {
+        ["type"] = "static",
+    },
+    ["FARPcommand"] = {
+        ["type"] = "static",
+    },
+    ["FARPtent"] = {
+        ["type"] = "static",
+    },
+    ["farmA"] = {
+        ["type"] = "static",
+    },
+    ["farmB"] = {
+        ["type"] = "static",
+    },
+    ["factoryTech"] = {
+        ["type"] = "static",
+    },
+    ["factoryWorkshop"] = {
+        ["type"] = "static",
+    },
 }

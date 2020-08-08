@@ -221,74 +221,87 @@ function handleZeusRequest(text, baseCoord)
     -- prepare asset spawn
     local spawn = SpawnsTableConcurrent[spawnString]
     if spawn == nil then
-        local newSpawn = SPAWN:New(spawnString)
-        SpawnsTableConcurrent[spawnString] = newSpawn
-        spawn = newSpawn
+        if spawnType == "static" then
+            local staticSpawn = SPAWNSTATIC:NewFromStatic(spawnString)
+            SpawnsTableConcurrent[spawnString] = staticSpawn
+            spawn = staticSpawn
+        else
+            local newSpawn = SPAWN:New(spawnString)
+            SpawnsTableConcurrent[spawnString] = newSpawn
+            spawn = newSpawn
+        end
     end
 
     -- task spawned asset
-    spawn:OnSpawnGroup(
-        function(spawnedGroup)
-            if spawnType == "air" then
-                if spawnTaskingData ~= nil then
-                    env.info("BTI: SpawnTaskingData " .. UTILS.OneLineSerialize(spawnTaskingData))
-                    local engageTargets =
-                        ternary(spawnTaskingData["engage"] == "a", {"Air"}, {"Planes", "Battle airplanes"})
-                    local enrouteEngageZoneTask =
-                        spawnedGroup:EnRouteTaskEngageTargetsInZone(
-                        spawnTaskingData["coord"]:GetVec2(),
-                        spawnTaskingData["radius"],
-                        engageTargets,
-                        1
-                    )
-                    trigger.action.removeMark(spawnTaskingData["mark"])
-                    spawnedGroup:SetTask(enrouteEngageZoneTask, 2)
-                elseif spawnTask == "cap" then
-                    local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets(70000, {"Air"}, 1)
-                    spawnedGroup:SetTask(enrouteTask, 2)
-                elseif spawnTask == "jtac" then
-                    ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
-                elseif spawnTask == "tanker" then
-                    local tankerTask = spawnedGroup:EnRouteTaskTanker()
-                    spawnedGroup:SetTask(tankerTask)
-                end
-
-                local finalCoord = baseCoord
-                local finalAltitude = spawnAltitude
-                local finalSpeed = UTILS.KnotsToMps(350)
-                if spawnSecondaryData ~= nil then
-                    finalCoord = spawnSecondaryData["coord"]
-                    finalAltitude = spawnSecondaryData["altitude"]
-                    finalSpeed = spawnSecondaryData["speed"]
-                    trigger.action.removeMark(spawnSecondaryData["mark"])
-                end
-                local orbitTask = spawnedGroup:TaskOrbitCircleAtVec2(finalCoord:GetVec2(), finalAltitude, finalSpeed)
-                spawnedGroup:PushTask(orbitTask, 4)
-            elseif spawnType == "ground" then
-                -- route so they get in formation and start their AI
-                if spawnTask == "jtac" then
-                    ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
-                elseif spawnTask == "arty" then
-                    local arty = ARTY:New(GROUP:FindByName(spawnedGroup:GetName()))
-                    arty:SetMarkAssignmentsOn()
-                    arty:SetIlluminationShells(100, 2)
-                    arty:SetSmokeShells(100)
-                    arty:SetTacNukeShells(100, 0.1)
-                    if spawnCluster ~= nil then
-                        arty:AddToCluster(spawnCluster)
+    if spawnType ~= "static" then
+        spawn:OnSpawnGroup(
+            function(spawnedGroup)
+                if spawnType == "air" then
+                    if spawnTaskingData ~= nil then
+                        env.info("BTI: SpawnTaskingData " .. UTILS.OneLineSerialize(spawnTaskingData))
+                        local engageTargets =
+                            ternary(spawnTaskingData["engage"] == "a", {"Air"}, {"Planes", "Battle airplanes"})
+                        local enrouteEngageZoneTask =
+                            spawnedGroup:EnRouteTaskEngageTargetsInZone(
+                            spawnTaskingData["coord"]:GetVec2(),
+                            spawnTaskingData["radius"],
+                            engageTargets,
+                            1
+                        )
+                        trigger.action.removeMark(spawnTaskingData["mark"])
+                        spawnedGroup:SetTask(enrouteEngageZoneTask, 2)
+                    elseif spawnTask == "cap" then
+                        local enrouteTask = spawnedGroup:EnRouteTaskEngageTargets(70000, {"Air"}, 1)
+                        spawnedGroup:SetTask(enrouteTask, 2)
+                    elseif spawnTask == "jtac" then
+                        ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
+                    elseif spawnTask == "tanker" then
+                        local tankerTask = spawnedGroup:EnRouteTaskTanker()
+                        spawnedGroup:SetTask(tankerTask)
                     end
-                    arty:Start()
+
+                    local finalCoord = baseCoord
+                    local finalAltitude = spawnAltitude
+                    local finalSpeed = UTILS.KnotsToMps(350)
+                    if spawnSecondaryData ~= nil then
+                        finalCoord = spawnSecondaryData["coord"]
+                        finalAltitude = spawnSecondaryData["altitude"]
+                        finalSpeed = spawnSecondaryData["speed"]
+                        trigger.action.removeMark(spawnSecondaryData["mark"])
+                    end
+                    local orbitTask =
+                        spawnedGroup:TaskOrbitCircleAtVec2(finalCoord:GetVec2(), finalAltitude, finalSpeed)
+                    spawnedGroup:PushTask(orbitTask, 4)
+                elseif spawnType == "ground" then
+                    -- route so they get in formation and start their AI
+                    if spawnTask == "jtac" then
+                        ctld.JTACAutoLase(spawnedGroup:GetName(), 1686, true, "all", 2)
+                    elseif spawnTask == "arty" then
+                        local arty = ARTY:New(GROUP:FindByName(spawnedGroup:GetName()))
+                        arty:SetMarkAssignmentsOn()
+                        arty:SetIlluminationShells(100, 2)
+                        arty:SetSmokeShells(100)
+                        arty:SetTacNukeShells(100, 0.1)
+                        if spawnCluster ~= nil then
+                            arty:AddToCluster(spawnCluster)
+                        end
+                        arty:Start()
+                    end
+                    spawnedGroup:RouteToVec2(baseCoord:GetRandomVec2InRadius(20, 5), 5)
                 end
-                spawnedGroup:RouteToVec2(baseCoord:GetRandomVec2InRadius(20, 5), 5)
+                table.insert(ZeusSpawnedAssets, spawnedGroup)
             end
-            table.insert(ZeusSpawnedAssets, spawnedGroup)
-        end
-    )
+        )
+    end
 
     -- Spawn asset
     env.info("BTI: spawn coord" .. UTILS.OneLineSerialize(baseCoord:GetRandomVec2InRadius(100, 300)))
     for i = 1, spawnAmount do
-        spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius(100, 300), spawnAltitude, spawnAltitude)
+        if spawnType == "static" then
+            spawn:SpawnFromPointVec2(POINT_VEC2:NewFromVec2(baseCoord:GetVec2()))
+        else
+            spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius(100, 300), spawnAltitude, spawnAltitude)
+        end
     end
 
     -- Remove Zeus Data and mark for secondary
@@ -416,12 +429,22 @@ local function handleWeatherRequest(text, coord)
     local sixWindDirection, sixWindStrengh = coord:GetWind(UTILS.FeetToMeters(6000))
     local nineWindDirection, nineWindStrengh = coord:GetWind(UTILS.FeetToMeters(9000))
     local cruiseWindDirection, cruiseWindStrengh = coord:GetWind(UTILS.FeetToMeters(30000))
-    local weatherString = string.format("Requested weather: QNH %.2f, Temperature %d, Winds:\n%d@%.1fkts at Ground\n%d@%.1fkts at 3000ft\n%d@%.1fkts at 6000ft\n%d@%.1fkts at 9000ft\n%d@%.1fkts at 30,000", currentPressure * 0.0295299830714, currentTemperature,
-     groundWindDirection, UTILS.MpsToKnots(groundWindStrengh),
-     threeWindDirection, UTILS.MpsToKnots(threeWindStrengh),
-     sixWindDirection, UTILS.MpsToKnots(sixWindStrengh),
-     nineWindDirection, UTILS.MpsToKnots(nineWindStrengh),
-     cruiseWindDirection, UTILS.MpsToKnots(cruiseWindStrengh))
+    local weatherString =
+        string.format(
+        "Requested weather: QNH %.2f, Temperature %d, Winds:\n%d@%.1fkts at Ground\n%d@%.1fkts at 3000ft\n%d@%.1fkts at 6000ft\n%d@%.1fkts at 9000ft\n%d@%.1fkts at 30,000",
+        currentPressure * 0.0295299830714,
+        currentTemperature,
+        groundWindDirection,
+        UTILS.MpsToKnots(groundWindStrengh),
+        threeWindDirection,
+        UTILS.MpsToKnots(threeWindStrengh),
+        sixWindDirection,
+        UTILS.MpsToKnots(sixWindStrengh),
+        nineWindDirection,
+        UTILS.MpsToKnots(nineWindStrengh),
+        cruiseWindDirection,
+        UTILS.MpsToKnots(cruiseWindStrengh)
+    )
     CommandCenter:MessageTypeToCoalition(weatherString, MESSAGE.Type.Information)
 end
 
@@ -431,7 +454,7 @@ local function handleCVNRequest(text, coord)
     local cvnGroupName = "cvn73"
     local speed = UTILS.KnotsToMps(26)
 
-    for _,argument in pairs(arguments) do
+    for _, argument in pairs(arguments) do
         local argumentValues = _split(argument, " ")
         local command = argumentValues[1]
         local value = argumentValues[2]
@@ -440,7 +463,7 @@ local function handleCVNRequest(text, coord)
         if command:find("-cvn") and value ~= nil then
             cvnGroupName = value
         elseif command:find("-s") then
-            speed = UTILS.KnotsToMps(tonumber( value ))
+            speed = UTILS.KnotsToMps(tonumber(value))
         end
     end
 
