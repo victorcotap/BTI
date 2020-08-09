@@ -295,10 +295,9 @@ function handleZeusRequest(text, baseCoord)
     end
 
     -- Spawn asset
-    env.info("BTI: spawn coord" .. UTILS.OneLineSerialize(baseCoord:GetRandomVec2InRadius(100, 300)))
     for i = 1, spawnAmount do
         if spawnType == "static" then
-            spawn:SpawnFromPointVec2(POINT_VEC2:NewFromVec2(baseCoord:GetVec2()))
+            spawn:SpawnFromPointVec2(POINT_VEC2:NewFromVec2(baseCoord:GetRandomVec2InRadius(50, 150)))
         else
             spawn:SpawnFromVec2(baseCoord:GetRandomVec2InRadius(100, 300), spawnAltitude, spawnAltitude)
         end
