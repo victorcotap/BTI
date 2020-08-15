@@ -42,5 +42,5 @@ luac.out
 # Tracking files
 TrackingFile.json
 CSARTracking.json
-
+SlotsFile.json
 node_modules

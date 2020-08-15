@@ -8,11 +8,14 @@ local TrackingHandler = EVENTHANDLER:New()
 
 local trackingMaster = {}
 local trackingMasterPath = "C:\\BTI\\Tracking\\TrackingFile.json"
+local slotsMaster = { ["slots"] = {} }
+local slotsMasterPath = "C:\\BTI\\Tracking\\SlotsFile.json"
 
 ---------------------------------------------------------------------------------------
 -- Tracking functions -----------------------------------------------------------------------------
 
 SetTrackingGroups = SET_GROUP:New():FilterActive():FilterStart()
+local SetSlotsPlayers = SET_CLIENT:New():FilterCoalitions("blue"):FilterStart()
 
 local function trackGroup(group, master)
     local groupName = group.GroupName
@@ -73,6 +76,36 @@ function trackAliveGroups()
     env.info("TOP: tracking alive finished")
 end
 
+function trackSlotsAndPlayers()
+    local newSlots = {}
+    SetSlotsPlayers:ForEachClient(
+        function(SlotClient)
+            local slotName = SlotClient.ObjectName
+            local slotTable = {}
+
+            local dcsGroup = SlotClient:GetDCSGroup()
+            if dcsGroup then -- player is alive
+                local groupClientName = SlotClient.ClientGroupName
+                local typeName = SlotClient:GetTypeName()
+                local playerName = SlotClient:GetPlayerName()
+
+                slotTable = {
+                    ["slotName"] = slotName,
+                    ["groupName"] = groupClientName,
+                    ["typeName"] = typeName,
+                    ["playerName"] = playerName,
+                }
+            else
+                slotTable = {
+                    ["slotName"] = slotName
+                }
+            end
+            table.insert( newSlots, slotTable )
+        end
+    )
+    slotsMaster["slots"] = newSlots
+end
+
 function TrackingHandler:onEvent(event)
     if event.id == world.event.S_EVENT_DEAD then
         if event.initiator == nil then
@@ -104,14 +137,16 @@ function TrackingHandler:onEvent(event)
     end
 end
 
-function saveMasterTracking(master, masterPath)
-    if master == nil then
-        env.info("TOP: No master provided for saving")
+function saveMasterTracking(master, masterPath, slots, slotsPath)
+    if master == nil or slots == nil then
+        env.info("TOP: No master or slots provided for saving")
         return
     end
     local newMasterJSON = JSONLib.encode(master)
+    local newSlotsJSON = JSONLib.encode(slots)
     -- env.info("TOP: encoding new master JSON" .. newMasterJSON)
     saveFile(masterPath, newMasterJSON)
+    saveFile(slotsPath, newSlotsJSON)
 end
 
 -- Tracking Engine --------------------------------------------------------
@@ -126,8 +161,9 @@ function startTrackingEngine(something)
     end
     world.addEventHandler(TrackingHandler)
     SCHEDULER:New(nil, trackAliveGroups, {"something"}, 10, 60)
+    SCHEDULER:New(nil, trackSlotsAndPlayers, {"something"}, 15, 60)
 
-    SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath}, 30, 60)
+    SCHEDULER:New(nil, saveMasterTracking, {trackingMaster, trackingMasterPath, slotsMaster, slotsMasterPath}, 30, 60)
 end
 
 SCHEDULER:New(nil, startTrackingEngine, {trackingMaster, trackingMasterPath}, 15)
@@ -170,7 +206,7 @@ local function computeSlotList()
     SetSlots:FilterOnce()
     SetSlots:ForEachClient(
         function(SlotClient)
-            env.info("CSARPersisted: computing slot  " .. UTILS.OneLineSerialize(SlotClient))
+            -- env.info("CSARPersisted: computing slot  " .. UTILS.OneLineSerialize(SlotClient))
             local slotName = SlotClient.ObjectName
             table.insert( slotTable, slotName)
         end
