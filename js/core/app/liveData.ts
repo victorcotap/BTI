@@ -5,11 +5,13 @@ import CSARStore from '../stores/csarStore';
 import AirbossStore from '../stores/airbossStore';
 
 import config from '../config.json';
+import SlotStore from '../stores/slotStore';
 
 const router = express.Router();
 const cacheTime = 60;
 const trackingFilePath = "/BTI/Tracking/TrackingFile.json";
 const CSARFilePath = "/BTI/Tracking/CSARTracking.json";
+const SlotsFilePath = "/BTI/Tracking/SlotsFile.json";
 
 const trackingStore = new TrackingStore(trackingFilePath);
 const csarStore = new CSARStore(CSARFilePath);
@@ -39,6 +41,22 @@ router.get('/csar', async (request, response) => {
         records: csarStore.cache.records,
     });
 });
+
+if (config.SlotsEnabled) {
+    const slotStore = new SlotStore(config.DCSSupercareerFilepath, SlotsFilePath);
+    router.get('/slots', async (request, response) => {
+        const currentTime = new Date();
+        if (currentTime.getTime() - slotStore.cache.time.getTime() > 30000) {
+            console.info('Slot data cache is stale, refreshing');
+            await slotStore.readSlotFile();
+        }
+
+        console.info('Slot data access', new Date());
+        response.json({
+            slots: slotStore.cache.slots
+        });});
+
+}
 
 if (config.DiscordEnabled) {
     const airbossStore = new AirbossStore(config.pathToGreenieBoardCSV)

@@ -5,7 +5,7 @@
         "type": "node",
         "request": "launch",
         "name": "Launch Core",
-        "program": "${workspaceFolder}/core/build/app.js"
+        "program": "${workspaceFolder}/core/build/app/app.js"
       },
       {
         "name": "Launch live Chrome",

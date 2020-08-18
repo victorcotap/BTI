@@ -1,8 +1,10 @@
 {
     "port": 10407,
     "pathToGreenieBoardCSV": "",
+    "DCSSuperCareerHost" : "",
     "DCSSuperCareerApiKey": "",
     "DCSSupercareerFilepath": "",
+    "pathToSlotFile": "",
     "DiscordEnabled": false,
     "DiscordToken": "",
     "DiscordChannelID": "",
