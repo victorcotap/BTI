@@ -3,6 +3,7 @@
     "pathToGreenieBoardCSV": "",
     "DCSSuperCareerHost" : "",
     "DCSSuperCareerApiKey": "",
+    "DCSSuperCareerServerName": "",
     "DCSSupercareerFilepath": "",
     "pathToSlotFile": "",
     "DiscordEnabled": false,

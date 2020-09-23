@@ -26,7 +26,7 @@ type BookingQueryType = {
         name: string,
         playerUCID: string,
     },
-    fromDate: number,
+    fromDate: string,
     toDate: string,
 }
 
@@ -67,8 +67,8 @@ export default class SlotStore {
     constructor(filepath: string, slotFilePath: string) {
         this.filepath = filepath;
         this.slotFilePath = slotFilePath;
-        // setInterval(() => this.fetchServerSlotsBooking(), 3000);
-        setInterval(() => this.reportServerSlots(), 3000);
+        setInterval(() => this.fetchServerSlotsBooking(), 3000);
+        setInterval(() => this.reportServerSlots(), 60000);
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
     }
 
@@ -86,9 +86,8 @@ export default class SlotStore {
 
     fetchServerSlotsBooking = async () => {
         try {
-            const data = await this.client.request<BookingQueryResponse>(query, { serverID: 'testServer' })
+            const data = await this.client.request<BookingQueryResponse>(query, { serverID: config.DCSSuperCareerServerName })
             this.cache.bookings = data.bookings
-            console.log(data)
             this.generateBookingJSON()
         } catch (error) {
             console.error(error)
@@ -108,8 +107,8 @@ export default class SlotStore {
 
     generateBookingJSON = async () => {
         const transformedBooking = this.cache.bookings.map((booking) => {
-            const fromDateTimestamp = Math.round(new Date(booking.fromDate).getTime() / 1000)
-            const toDateTimestamp = Math.round(new Date(booking.fromDate).getTime() / 1000)
+            const fromDateTimestamp = Math.round(new Date(parseInt(booking.fromDate)).getTime() / 1000)
+            const toDateTimestamp = Math.round(new Date(parseInt(booking.toDate)).getTime() / 1000)
             return {
                 ...booking,
                 fromDate: fromDateTimestamp,
@@ -119,6 +118,7 @@ export default class SlotStore {
 
         try {
             writeFile(this.filepath, JSON.stringify(transformedBooking))
+            console.info('Wrote transformed booking at ', this.filepath, transformedBooking)
         } catch (error) {
             console.error(error)
         }
