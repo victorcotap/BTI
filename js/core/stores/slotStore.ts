@@ -11,11 +11,13 @@ const ENDPOINT = 'http://' + config.DCSSuperCareerHost
 export interface Cache {
     time: Date,
     bookings: Array<BookingQueryType>,
+    slotRules: Array<SlotRuleType>,
     slots: Array<Slot>
 }
 
 type BookingQueryResponse = {
-    bookings: BookingQueryType[]
+    bookings: BookingQueryType[],
+    server: {  slotRules: SlotRuleType[] },
 }
 type BookingQueryType = {
     id: string,
@@ -28,6 +30,10 @@ type BookingQueryType = {
     },
     fromDate: string,
     toDate: string,
+}
+type SlotRuleType = {
+    match: string,
+    block: boolean,
 }
 
 type Slot = {
@@ -45,6 +51,12 @@ query bookingQuery($serverID: ID!) {
         fromDate
         toDate
     }
+    server(serverID: $serverID) {
+        slotRules {
+            match
+            block
+        }
+    }
 }
 `
 
@@ -60,6 +72,7 @@ export default class SlotStore {
     cache: Cache = {
         time: new Date(),
         bookings: Array<BookingQueryType>(),
+        slotRules: Array<SlotRuleType>(),
         slots: Array<Slot>(),
     }
     client: GraphQLClient
@@ -87,7 +100,9 @@ export default class SlotStore {
     fetchServerSlotsBooking = async () => {
         try {
             const data = await this.client.request<BookingQueryResponse>(query, { serverID: config.DCSSuperCareerServerName })
+            console.log(data)
             this.cache.bookings = data.bookings
+            this.cache.slotRules = data.server.slotRules
             this.generateBookingJSON()
         } catch (error) {
             console.error(error)
@@ -115,10 +130,13 @@ export default class SlotStore {
                 toDate: toDateTimestamp
             }
         })
-
+        const final = {
+            bookings: transformedBooking,
+            slotRules: this.cache.slotRules,
+        }
         try {
-            writeFile(this.filepath, JSON.stringify(transformedBooking))
-            console.info('Wrote transformed booking at ', this.filepath, transformedBooking)
+            writeFile(this.filepath, JSON.stringify(final))
+            console.info('Wrote transformed booking at ', this.filepath, final)
         } catch (error) {
             console.error(error)
         }
