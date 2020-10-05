@@ -114,7 +114,6 @@ export default class SlotStore {
         const strippedSlots = this.cache.slots.map(s => s.slotName)
         try {
             const result = await this.client.request(slotMutation, { slots: { slotNames: strippedSlots } })
-            console.info("Reported " + strippedSlots.length + " slots")
         } catch (error) {
             console.error(error)
         }
@@ -136,7 +135,6 @@ export default class SlotStore {
         }
         try {
             writeFile(this.filepath, JSON.stringify(final))
-            console.info('Wrote transformed booking at ', this.filepath, final)
         } catch (error) {
             console.error(error)
         }

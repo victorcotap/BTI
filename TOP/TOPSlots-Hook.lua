@@ -13,42 +13,42 @@ local slotBooking = {}
 --- CALLBACKS -------------------------------------------------------------------------------------------------------
 local TOPSlotsCallbacks = {}
 
--- TOPSlotsCallbacks.onPlayerTryChangeSlot = function(playerID, side, slotID)
---     if DCS.isServer() and DCS.isMultiplayer() then
---         net.log("TOP: onPlayerTryChangeSlot")
---         local playerSlot = DCS.getUnitProperty(slotID, DCS.UNIT_GROUPNAME)
---         local playerInfo = net.get_player_info(playerID)
---         local playerUCID = playerInfo.ucid
---         local playerName = playerInfo.name
+TOPSlotsCallbacks.onPlayerTryChangeSlot = function(playerID, side, slotID)
+    if DCS.isServer() and DCS.isMultiplayer() then
+        net.log("TOP: onPlayerTryChangeSlot")
+        local playerSlot = DCS.getUnitProperty(slotID, DCS.UNIT_GROUPNAME)
+        local playerInfo = net.get_player_info(playerID)
+        local playerUCID = playerInfo.ucid
+        local playerName = playerInfo.name
 
---         net.log(
---             "TOP: Player selected slot: " ..
---                 playerName .. " side:" .. side .. " slot: " .. playerSlot .. " ucid: " .. playerUCID
---         )
+        net.log(
+            "TOP: Player selected slot: " ..
+                playerName .. " side:" .. side .. " slot: " .. playerSlot .. " ucid: " .. playerUCID
+        )
 
---         local currentTime = os.time()
---         for _, booking in pairs(slotBooking) do
---             local slotKey = booking["slot"]["nameKey"]
---             local pilotUCID = booking["pilot"]["playerUCID"]
---             local fromTime = booking["fromDate"]
---             local fromTime = booking["toDate"]
+        local currentTime = os.time()
+        for _, booking in pairs(slotBooking) do
+            local slotKey = booking["slot"]["nameKey"]
+            local pilotUCID = booking["pilot"]["playerUCID"]
+            local fromTime = booking["fromDate"]
+            local fromTime = booking["toDate"]
 
---             net.log("TOP: booking " .. slotKey)
---             if slotKey == playerSlot then
---                 net.log("TOP: Correct slot")
---                 if currentTime > fromDate and currentTime < toDate then
---                     net.log("TOP: Correct time")
---                     if pilotUCID == playerUCID then
---                         return true
---                     else
---                         return false
---                     end
---                 end
---             end
---         end
---     end
---     return
--- end
+            net.log("TOP: booking " .. slotKey)
+            if slotKey == playerSlot then
+                net.log("TOP: Correct slot")
+                if currentTime > fromDate and currentTime < toDate then
+                    net.log("TOP: Correct time")
+                    if pilotUCID == playerUCID then
+                        return true
+                    else
+                        return false
+                    end
+                end
+            end
+        end
+    end
+    return
+end
 
 TOPSlotsCallbacks.onPlayerTrySendChat = function(playerID, message, all) --new definition
     if message == "-ucid" then
