@@ -80,13 +80,13 @@ export default class SlotStore {
     constructor(filepath: string, slotFilePath: string) {
         this.filepath = filepath;
         this.slotFilePath = slotFilePath;
-        setInterval(() => this.fetchServerSlotsBooking(), 60000);
-        setInterval(() => this.reportServerSlots(), 60000);
+        setInterval(() => this.fetchServerSlotsBooking(), 6000);
+        setInterval(() => this.reportServerSlots(), 7000);
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
     }
 
     async readSlotFile() {
-        console.log("accessing slot file")
+        console.log("accessing slot file", this.slotFilePath)
         try {
             const buffer = await readFile(this.slotFilePath, { encoding: 'utf-8' })
             const json = JSON.parse(buffer)
