@@ -63,7 +63,6 @@ TOPSlotsCallbacks.onPlayerTryChangeSlot = function(playerID, side, slotID)
             end
         end
     end
-    return
 end
 
 TOPSlotsCallbacks.onPlayerTrySendChat = function(playerID, message, all) --new definition
