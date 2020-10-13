@@ -80,7 +80,7 @@ export default class SlotStore {
     constructor(filepath: string, slotFilePath: string) {
         this.filepath = filepath;
         this.slotFilePath = slotFilePath;
-        setInterval(() => this.fetchServerSlotsBooking(), 3000);
+        setInterval(() => this.fetchServerSlotsBooking(), 60000);
         setInterval(() => this.reportServerSlots(), 60000);
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
     }

@@ -9,6 +9,7 @@ if JSONLib == nil then
 end
 
 local slotBooking = {}
+local slotRules = {}
 
 --- CALLBACKS -------------------------------------------------------------------------------------------------------
 local TOPSlotsCallbacks = {}
@@ -31,18 +32,33 @@ TOPSlotsCallbacks.onPlayerTryChangeSlot = function(playerID, side, slotID)
             local slotKey = booking["slot"]["nameKey"]
             local pilotUCID = booking["pilot"]["playerUCID"]
             local fromTime = booking["fromDate"]
-            local fromTime = booking["toDate"]
+            local toTime = booking["toDate"]
 
             net.log("TOP: booking " .. slotKey)
             if slotKey == playerSlot then
                 net.log("TOP: Correct slot")
-                if currentTime > fromDate and currentTime < toDate then
+                net.log(string.format("TOP: current %d fromDate %d toDate %d", currentTime, fromTime, toTime))
+                if currentTime > fromTime and currentTime < toTime then
                     net.log("TOP: Correct time")
                     if pilotUCID == playerUCID then
+                        net.send_chat_to("I knew you would show up, son...", playerID)
                         return true
                     else
+                        net.send_chat_to("Sorry this slot is currently booked on DCSSuperCareer.online", playerID)
                         return false
                     end
+                end
+            end
+        end
+        for _, slotRule in pairs(slotRules) do
+            net.log("TOP: checking rule " .. slotRule["match"])
+            if slotRule["block"] == true then
+                local ruleMatch = string.lower(slotRule["match"])
+                local slotMatch = string.lower(playerSlot)
+                if string.find(slotMatch, ruleMatch, 1, true) ~= nil then
+                    net.log("TOP: Match, blocking slot " .. playerSlot .. "from rule " .. ruleMatch)
+                    net.send_chat_to("Sorry this slot requires a booking from DCSSuperCareer.online", playerID)
+                    return false
                 end
             end
         end
@@ -56,22 +72,24 @@ TOPSlotsCallbacks.onPlayerTrySendChat = function(playerID, message, all) --new d
         local name = net.get_player_info(playerID, "name")
         net.log("TOP: Player" .. name .. " trying to access ucid " .. ucid)
         net.send_chat_to("Your UCID is " .. ucid .. " . This message is only sent to you " .. name, playerID)
-        return ''
+        return ""
     end
 end
 -----------------------------------------------------------------------------------------------------------------------
 
 --- READ SLOT BOOKING FILE1
--- local function readSlotsFile()
---     local savedSlotBookingMaster = loadFile(TOPSlotsFilePath)
---     slotBooking = JSONLib.decode(savedSlotBookingMaster)
--- end
+local function readSlotsFile()
+    local savedSlotBookingMaster = loadFile(TOPSlotsFilePath)
+    master = JSONLib.decode(savedSlotBookingMaster)
+    slotBooking = master["bookings"]
+    slotRules = master["slotRules"]
+end
 -----------------------------------------------------------------------------------------------------------------------
 --- UTILS -------------------------------------------------------------------------------------------------------------
 
 --- START HOOK
 DCS.setUserCallbacks(TOPSlotsCallbacks)
--- readSlotsFile()
+readSlotsFile() -- PUT THAT ON A TIMER FOR REFRESH
 net.log("TOP: TOPSlots are hooked")
 
 --DEBUG

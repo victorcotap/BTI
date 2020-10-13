@@ -1,7 +1,7 @@
 {
     "port": 10407,
     "pathToGreenieBoardCSV": "",
-    "DCSSuperCareerHost" : "",
+    "DCSSuperCareerHost": "",
     "DCSSuperCareerApiKey": "",
     "DCSSuperCareerServerName": "",
     "DCSSupercareerFilepath": "",
