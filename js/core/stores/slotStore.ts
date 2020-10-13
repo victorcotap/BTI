@@ -100,7 +100,6 @@ export default class SlotStore {
     fetchServerSlotsBooking = async () => {
         try {
             const data = await this.client.request<BookingQueryResponse>(query, { serverID: config.DCSSuperCareerServerName })
-            console.log(data)
             this.cache.bookings = data.bookings
             this.cache.slotRules = data.server.slotRules
             this.generateBookingJSON()
