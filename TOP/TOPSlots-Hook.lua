@@ -1,8 +1,9 @@
 net.log("TOP: In TOPSlots")
 local lfs = require("lfs")
 
--- IMPORTANT -> Add the name of your server slot booking file beloew. Path starts in SavedGames/DCS.openbeta/
+-- IMPORTANT -> Add the name of your server slot booking file below. Path starts in SavedGames/DCS.openbeta/
 local TOPSlotsFilePath = lfs.writedir() .. [[ServerBookings.json]]
+local TOPLogbookFilePath = lfs.writedir() .. [[Logbook.json]]
 
 if JSONLib == nil then
     JSONLib = dofile("C:\\BTI\\Json.lua")
@@ -65,6 +66,64 @@ TOPSlotsCallbacks.onPlayerTryChangeSlot = function(playerID, side, slotID)
     end
 end
 
+local LogbookTable = {}
+
+TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, slotID)
+    if eventName ~= 'takeoff' and eventName ~= 'self_kill' and eventName ~= 'eject' and eventName ~= 'landing' and eventName ~= 'pilot_death' then
+        return -- Return right away if we don't care about such event
+    end
+    net.log("TOP: onGameEvent " .. eventName)
+
+    local playerInfo = net.get_player_info(playerID)
+    local playerUCID = playerInfo["ucid"]
+    net.log("TOP: onGameEvent for player ucid " .. playerUCID)
+    local playerData = LogbookTable[playerUCID]
+    if playerData == nil then
+        playerData = {
+            ["flights"] = {},
+            ["currentTakeoffTime"] = 0
+        }
+    end
+
+    if eventName == 'takeoff' then
+        playerData["currentTakeoffTime"] = os.time()
+        net.log("TOP: Setting currentTakeoffTime to " .. tostring(os.time()))
+    elseif eventName == 'self_kill' or eventName == 'eject' or eventName == 'landing' or eventName == 'pilot_death' then
+        if playerData["currentTakeoffTime"] == 0 then
+            net.log("TOP: Logbook event arriving before takeoff event")
+        end
+
+        local slotName = DCS.getUnitProperty(slotID, DCS.UNIT_NAME)
+        local slotType = DCS.getUnitProperty(slotID, DCS.UNIT_TYPE)
+        local landingTime = os.time()
+        net.log("TOP: end flight event " .. eventName .. " slotName " .. slotName .. " slotType " .. slotType)
+        local flight = {
+            ["id"] = tostring(playerData["currentTakeoffTime"]) .. tostring(landingTime),
+            ["takeoffTime"] = playerData["currentTakeoffTime"],
+            ["landingTime"] = os.time(),
+            ["slotName"] = slotName,
+            ["slotType"] = slotType,
+            ["outcome"] = eventName,
+            -- Add score here when figured out what teamkilling looks like
+        }
+        net.log("TOP: After flight table ready " .. flight["id"])
+        table.insert( playerData["flights"], flight )
+        net.log("TOP: after insert " .. tostring(#playerData["flights"]))
+        playerData["currentTakeoffTime"] = 0 --Maybe we don't need that
+        TOPsaveLogbookFile()
+        net.log("TOP: Logbook file saved")
+    elseif eventName == 'kill' then
+        -- check if player gets killed
+    elseif eventName == 'disconnect' then
+        -- trim data table maybe
+    end
+
+    LogbookTable[playerUCID] = playerData
+    net.log("TOP: end table takeofftime " .. tostring(LogbookTable[playerUCID]["currentTakeoffTime"]))
+    TOPsaveLogbookFile() -- remove that
+    return --Return nothing to let other hooks take over
+end
+
 TOPSlotsCallbacks.onPlayerTrySendChat = function(playerID, message, all) --new definition
     if message == "-ucid" then
         local ucid = net.get_player_info(playerID, "ucid")
@@ -75,6 +134,7 @@ TOPSlotsCallbacks.onPlayerTrySendChat = function(playerID, message, all) --new d
     end
 end
 -----------------------------------------------------------------------------------------------------------------------
+----JSON Files---------------------------------------------------------------------------------------------------------
 
 --- READ SLOT BOOKING FILE1
 local function readSlotsFile()
@@ -83,12 +143,28 @@ local function readSlotsFile()
     slotBooking = master["bookings"]
     slotRules = master["slotRules"]
 end
+
+-- This
+function TOPsaveLogbookFile()
+    net.log("TOP: Trying to encode LogbookTable " .. tostring(#LogbookTable))
+    local master = JSONLib.encode(LogbookTable)
+    net.log("TOP: Logbook master " .. master)
+    saveFile(TOPLogbookFilePath, master)
+    net.log("TOP: Logbook save complete")
+end
+
+local function wipeLogbookFile()
+    local emptyTable = {}
+    master = JSONLib.encode(emptyTable)
+    saveFile(TOPLogbookFilePath, master)
+end
 -----------------------------------------------------------------------------------------------------------------------
 --- UTILS -------------------------------------------------------------------------------------------------------------
 
 --- START HOOK
 DCS.setUserCallbacks(TOPSlotsCallbacks)
 readSlotsFile() -- PUT THAT ON A TIMER FOR REFRESH
+wipeLogbookFile()
 net.log("TOP: TOPSlots are hooked")
 
 --DEBUG
