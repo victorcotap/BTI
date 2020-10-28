@@ -18,6 +18,7 @@ local function basePlayerData()
     return {
         ["flights"] = {},
         ["currentTakeoffTime"] = 0,
+        ["currentTakeoffAirdromeName"] = nil,
         ["currentFriendlyFire"] = 0,
         ["vehicles"] = 0,
         ["planes"] = 0,
@@ -90,7 +91,7 @@ end
 
 local LogbookTable = {}
 
-TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg2)
+TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg4)
     if
         eventName ~= "takeoff" and eventName ~= "self_kill" and eventName ~= "eject" and eventName ~= "landing" and
             eventName ~= "pilot_death" and eventName ~= "friendly_fire"
@@ -109,6 +110,7 @@ TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg2)
 
     if eventName == "takeoff" then
         playerData["currentTakeoffTime"] = os.time()
+        playerData["currentTakeoffAirdromeName"] = arg4
         net.log("TOP: Setting currentTakeoffTime to " .. tostring(os.time() .. " for " .. playerID))
     elseif eventName == "self_kill" or eventName == "eject" or eventName == "landing" or eventName == "pilot_death" then
         if playerData["currentTakeoffTime"] == 0 then
@@ -129,7 +131,9 @@ TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg2)
         local flight = {
             ["id"] = tostring(playerData["currentTakeoffTime"]) .. tostring(landingTime),
             ["takeoffTime"] = playerData["currentTakeoffTime"],
+            ["takeoffAirdrome"] = playerData["currentTakeoffAirdromeName"], -- may be nil
             ["landingTime"] = os.time(),
+            ["landingAirdrome"] = arg4, --may be nil
             ["slotName"] = slotName,
             ["slotType"] = slotType,
             ["outcome"] = eventName,
