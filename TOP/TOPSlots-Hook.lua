@@ -90,7 +90,6 @@ TOPSlotsCallbacks.onPlayerTryChangeSlot = function(playerID, side, slotID)
 end
 
 local LogbookTable = {}
-
 TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg4)
     if
         eventName ~= "takeoff" and eventName ~= "self_kill" and eventName ~= "eject" and eventName ~= "landing" and
@@ -111,10 +110,10 @@ TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg4)
     if eventName == "takeoff" then
         playerData["currentTakeoffTime"] = os.time()
         playerData["currentTakeoffAirdromeName"] = arg4
-        net.log("TOP: Setting currentTakeoffTime to " .. tostring(os.time() .. " for " .. playerID))
+        -- net.log("TOP: Setting currentTakeoffTime to " .. tostring(os.time() .. " for " .. playerID))
     elseif eventName == "self_kill" or eventName == "eject" or eventName == "landing" or eventName == "pilot_death" then
         if playerData["currentTakeoffTime"] == 0 then
-            net.log("TOP: Logbook event arriving before takeoff event")
+            net.log("TOP: Error Logbook event arriving before takeoff event")
         end
 
         local slotID = arg3
@@ -126,7 +125,7 @@ TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg4)
         local planes = getPlayerStat(playerID, net.PS_PLANE)
         local score = getPlayerStat(playerID, net.PS_SCORE)
 
-        net.log("TOP: end flight event " .. eventName .. " slotName " .. slotName .. " slotType " .. slotType)
+        -- net.log("TOP: end flight event " .. eventName .. " slotName " .. slotName .. " slotType " .. slotType)
         -- net.log("TOP: stats: score " .. tostring(score) .. " vehicles " .. tostring(vehicles) .. " planes " .. tostring(planes) .. " ships" .. tostring(ships) .. " teamkill " .. tostring(playerData["currentFriendlyFire"]))
         local flight = {
             ["id"] = tostring(playerData["currentTakeoffTime"]) .. tostring(landingTime),
@@ -155,7 +154,7 @@ TOPSlotsCallbacks.onGameEvent = function(eventName, playerID, arg3, arg4)
         playerData["currentTakeoffTime"] = 0 -- resetting this as a flag
         playerData["currentFriendlyFire"] = 0
         TOPsaveLogbookFile()
-        net.log("TOP: Logbook file saved")
+        -- net.log("TOP: Logbook file saved")
     elseif eventName == "friendly_fire" then
         playerData["currentFriendlyFire"] = playerData["currentFriendlyFire"] + 1
         -- check if player gets killed
