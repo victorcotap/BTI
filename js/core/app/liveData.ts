@@ -9,9 +9,10 @@ import SlotStore from '../stores/slotStore';
 
 const router = express.Router();
 const cacheTime = 60;
-const trackingFilePath = "/BTI/Tracking/TrackingFile.json";
+const trackingFilePath = config.pathToTrackingFile;
 const CSARFilePath = "/BTI/Tracking/CSARTracking.json";
-const SlotsFilePath = "/BTI/Tracking/SlotsFile.json";
+const SlotsFilePath = config.pathToSlotFile;
+const LogbookFilePath = config.pathToLogbookFile;
 
 const trackingStore = new TrackingStore(trackingFilePath);
 const csarStore = new CSARStore(CSARFilePath);
@@ -43,7 +44,7 @@ router.get('/csar', async (request, response) => {
 });
 
 if (config.SlotsEnabled) {
-    const slotStore = new SlotStore(config.DCSSupercareerFilepath, SlotsFilePath);
+    const slotStore = new SlotStore(config.DCSSupercareerFilepath, SlotsFilePath, LogbookFilePath);
     router.get('/slots', async (request, response) => {
         const currentTime = new Date();
         if (currentTime.getTime() - slotStore.cache.time.getTime() > 30000) {

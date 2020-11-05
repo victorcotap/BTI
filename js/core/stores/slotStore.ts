@@ -13,11 +13,32 @@ export interface Cache {
     bookings: Array<BookingQueryType>,
     slotRules: Array<SlotRuleType>,
     slots: Array<Slot>
+    savedLogbook: Logbook
+}
+
+type Logbook = {
+    [ucid: string]: { flights: LogbookEntry[] }
+}
+
+type LogbookEntry = {
+    id: string
+    slotName: string
+    slotType: string
+    takeoffTime: number
+    takeoffAirdrome: string | undefined
+    landingTime: number
+    landingAirdrome: string | undefined
+    outcome: string
+    friendlyFire: number
+    score: number
+    vehicles: number
+    planes: number
+    ships: number
 }
 
 type BookingQueryResponse = {
     bookings: BookingQueryType[],
-    server: {  slotRules: SlotRuleType[] },
+    server: { slotRules: SlotRuleType[] },
 }
 type BookingQueryType = {
     id: string,
@@ -65,23 +86,32 @@ mutation slotMutation($slots: UpdateServerSlots!) {
     updateServerSlots(input: $slots)
 }
 `
+const logbookMutation = `
+mutation logbookMutation($entry: LogbookEntryInput!) {
+    addLogbookEntry(input: $entry)
+}
+`
 
 export default class SlotStore {
     filepath: string
     slotFilePath: string
+    logbookFilePath: string
     cache: Cache = {
         time: new Date(),
         bookings: Array<BookingQueryType>(),
         slotRules: Array<SlotRuleType>(),
         slots: Array<Slot>(),
+        savedLogbook: {},
     }
     client: GraphQLClient
 
-    constructor(filepath: string, slotFilePath: string) {
+    constructor(filepath: string, slotFilePath: string, logbookFilePath: string) {
         this.filepath = filepath;
         this.slotFilePath = slotFilePath;
+        this.logbookFilePath = logbookFilePath;
         setInterval(() => this.fetchServerSlotsBooking(), 6000);
-        setInterval(() => this.reportServerSlots(), 7000);
+        setTimeout(() => this.reportServerLogbook(true), 500);
+        setInterval(() => this.reportServerLogbook(false), 5000); //prod
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
     }
 
@@ -96,6 +126,17 @@ export default class SlotStore {
             console.log(`Unable to read file ${this.slotFilePath} error`, error);
         }
     }
+    async readLogbookFile() {
+        console.log("accessing logbook file", this.logbookFilePath)
+        try {
+            const buffer = await readFile(this.logbookFilePath, { encoding: 'utf-8' })
+            const json = JSON.parse(buffer)
+            return json
+        } catch (error) {
+            console.log(`Unable to read file ${this.slotFilePath} error`, error);
+        }
+    }
+
 
     fetchServerSlotsBooking = async () => {
         try {
@@ -115,6 +156,40 @@ export default class SlotStore {
             const result = await this.client.request(slotMutation, { slots: { slotNames: strippedSlots } })
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    reportServerLogbook = async (firstTime: boolean) => {
+        const logbook = await this.readLogbookFile()
+        if (firstTime) {
+            this.cache.savedLogbook = logbook
+        } else {
+            try {
+                this.computeSendNewLogbookEntries(logbook)
+                this.cache.savedLogbook = logbook
+            } catch (error) {
+                console.error("Error sending logbook", error)
+            }
+        }
+    }
+
+    computeSendNewLogbookEntries = async (logbook: Logbook) => {
+        for (const playerUCID in logbook) {
+            const newLogbookEntries: LogbookEntry[] = []
+            const pilotLogbook = logbook[playerUCID];
+            const savedPilotLogbook = this.cache.savedLogbook[playerUCID];
+            pilotLogbook.flights.forEach((flight) => {
+                const found = savedPilotLogbook?.flights.findIndex((savedFlight) => flight.id === savedFlight.id)
+                if (found === -1) { newLogbookEntries.push(flight) }
+            })
+            if (newLogbookEntries.length) {
+                 try {
+                    const result = await this.client.request(logbookMutation, { entry: { flights: newLogbookEntries, playerUCID } })
+                } catch (error) {
+                    console.error('Cannot process flight for pilot', error )
+                    throw error
+                }
+            }
         }
     }
 

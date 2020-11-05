@@ -6,6 +6,8 @@
     "DCSSuperCareerServerName": "",
     "DCSSupercareerFilepath": "",
     "pathToSlotFile": "",
+    "pathToLogbookFile": "",
+    "pathToTrackingFile": "",
     "DiscordEnabled": false,
     "DiscordToken": "",
     "DiscordChannelID": "",

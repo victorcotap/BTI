@@ -4,8 +4,6 @@ import config from '../config.json';
 
 import liveDataRouter from './liveData';
 
-import SlotStore from '../stores/slotStore';
-
 const app = express()
 app.use(cors());
 
