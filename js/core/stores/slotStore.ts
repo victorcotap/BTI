@@ -110,12 +110,11 @@ export default class SlotStore {
         this.slotFilePath = slotFilePath;
         this.logbookFilePath = logbookFilePath;
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
-        this.reportServerSlots();
-        this.reportServerLogbook(true);
-        this.fetchServerSlotsBooking();
+        setTimeout(() => this.fetchServerSlotsBooking(), 500);
         setInterval(() => this.fetchServerSlotsBooking(), 300000);
+        setTimeout(() => this.reportServerSlots(), 500);
         setInterval(() => this.reportServerSlots(), 600000)
-        // setTimeout(() => this.reportServerLogbook(true), 500);
+        setTimeout(() => this.reportServerLogbook(true), 500);
         setInterval(() => this.reportServerLogbook(false), 150000);
     }
 
