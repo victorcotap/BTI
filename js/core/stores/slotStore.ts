@@ -109,10 +109,14 @@ export default class SlotStore {
         this.filepath = filepath;
         this.slotFilePath = slotFilePath;
         this.logbookFilePath = logbookFilePath;
-        setInterval(() => this.fetchServerSlotsBooking(), 150000);
-        setTimeout(() => this.reportServerLogbook(true), 500);
-        setInterval(() => this.reportServerLogbook(false), 150000);
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
+        this.reportServerSlots();
+        this.reportServerLogbook(true);
+        this.fetchServerSlotsBooking();
+        setInterval(() => this.fetchServerSlotsBooking(), 300000);
+        setInterval(() => this.reportServerSlots(), 600000)
+        // setTimeout(() => this.reportServerLogbook(true), 500);
+        setInterval(() => this.reportServerLogbook(false), 150000);
     }
 
     async readSlotFile() {
@@ -133,7 +137,7 @@ export default class SlotStore {
             const json = JSON.parse(buffer)
             return json
         } catch (error) {
-            console.log(`Unable to read file ${this.slotFilePath} error`, error);
+            console.log(`Unable to read file ${this.logbookFilePath} error`, error);
         }
     }
 
