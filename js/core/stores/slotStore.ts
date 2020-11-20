@@ -110,12 +110,15 @@ export default class SlotStore {
         this.slotFilePath = slotFilePath;
         this.logbookFilePath = logbookFilePath;
         this.client = new GraphQLClient(ENDPOINT, { headers: { serverAPIKey: config.DCSSuperCareerApiKey }, mode: "cors" })
-        setTimeout(() => this.fetchServerSlotsBooking(), 500);
-        setInterval(() => this.fetchServerSlotsBooking(), 300000);
-        setTimeout(() => this.reportServerSlots(), 500);
-        setInterval(() => this.reportServerSlots(), 600000)
-        setTimeout(() => this.reportServerLogbook(true), 500);
-        setInterval(() => this.reportServerLogbook(false), 150000);
+        setTimeout(() => this.firstTime(), 500)
+    }
+
+    async firstTime() {
+        await this.fetchServerSlotsBooking()
+        const logbook = await this.readLogbookFile()
+        this.cache.savedLogbook = logbook
+        await this.reportServerSlots()
+        await this.reportServerLogbook()
     }
 
     async readSlotFile() {
@@ -162,17 +165,13 @@ export default class SlotStore {
         }
     }
 
-    reportServerLogbook = async (firstTime: boolean) => {
+    reportServerLogbook = async () => {
         const logbook = await this.readLogbookFile()
-        if (firstTime) {
+        try {
+            this.computeSendNewLogbookEntries(logbook)
             this.cache.savedLogbook = logbook
-        } else {
-            try {
-                this.computeSendNewLogbookEntries(logbook)
-                this.cache.savedLogbook = logbook
-            } catch (error) {
-                console.error("Error sending logbook", error)
-            }
+        } catch (error) {
+            console.error("Error sending logbook", error)
         }
     }
 
@@ -186,10 +185,10 @@ export default class SlotStore {
                 if (found === -1) { newLogbookEntries.push(flight) }
             })
             if (newLogbookEntries.length) {
-                 try {
+                try {
                     const result = await this.client.request(logbookMutation, { entry: { flights: newLogbookEntries, playerUCID } })
                 } catch (error) {
-                    console.error('Cannot process flight for pilot', error )
+                    console.error('Cannot process flight for pilot', error)
                     throw error
                 }
             }
