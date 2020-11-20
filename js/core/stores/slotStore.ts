@@ -119,6 +119,7 @@ export default class SlotStore {
         this.cache.savedLogbook = logbook
         await this.reportServerSlots()
         await this.reportServerLogbook()
+        console.info("First time setup complete")
     }
 
     async readSlotFile() {
@@ -129,7 +130,7 @@ export default class SlotStore {
             this.cache.slots = json["slots"]
             this.cache.time = new Date()
         } catch (error) {
-            console.log(`Unable to read file ${this.slotFilePath} error`, error);
+            console.error(`Unable to read file ${this.slotFilePath} error`, error);
         }
     }
     async readLogbookFile() {
@@ -139,7 +140,7 @@ export default class SlotStore {
             const json = JSON.parse(buffer)
             return json
         } catch (error) {
-            console.log(`Unable to read file ${this.logbookFilePath} error`, error);
+            console.error(`Unable to read file ${this.logbookFilePath} error`, error);
         }
     }
 
