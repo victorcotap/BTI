@@ -7,10 +7,15 @@ import Map from './Map';
 import CSARSlots from './CSARSlots';
 import FlightPlanner from './FlightPlanner';
 
-
 import Waypoint, { WaypointType } from '../model/waypoint';
 import {genColor} from '../utils/colorUtils';
 
+import config from '../config.json';
+import { Checkbox } from 'antd';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import TaskList from './TaskList';
+
+const defaultServers = config.servers.map((server) => server.serverName)
 const getElevation = MapboxElevation("pk.eyJ1IjoidmljdG9yY290YXAiLCJhIjoiY2p4eTdvZjRhMDdpejNtb2FmenRvenk0cCJ9.lf2sq-jELqUvTyPil0tWRA")
 
 const styleToolbar: CSSProperties = {
@@ -67,6 +72,7 @@ interface State {
     showSlots: boolean,
     showFlightPlanner: boolean,
     route: Waypoint[],
+    showServerNames: string[],
 }
 
 export default class LiveMap extends React.Component {
@@ -74,6 +80,7 @@ export default class LiveMap extends React.Component {
         showSlots: false,
         showFlightPlanner: false,
         route: Array<Waypoint>(),
+        showServerNames: defaultServers,
     }
 
     onClearRoute = () => {
@@ -103,6 +110,10 @@ export default class LiveMap extends React.Component {
         })
     }
 
+    onSelectServer = (checkedServers: CheckboxValueType[]) => {
+        this.setState({showServerNames: checkedServers})
+    }
+
     render() {
         const { showFlightPlanner, showSlots} = this.state;
         const slotsButtonStyle = showSlots ? {...styleButton, ...selectedStyleButton} : styleButton;
@@ -111,19 +122,23 @@ export default class LiveMap extends React.Component {
         return (
             <div>
                 <div style={styleToolbar}>
-                    <button style={slotsButtonStyle} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}> Toggle Slots List</button>
+                    <button style={slotsButtonStyle} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}> Toggle Task List</button>
+                    <Checkbox.Group defaultValue={defaultServers} onChange={this.onSelectServer}>
+                        {config.servers.map((server) => <Checkbox key={server.serverName} value={server.serverName}>{server.serverName}</Checkbox>)}
+                    </Checkbox.Group>
                     <button style={fpButtonStyle} onClick={(event) => this.setState({showFlightPlanner: !this.state.showFlightPlanner})}>Flight Planning Mode</button>
                 </div>
                 <div style={styleContentArea}>
                     {showSlots ? (
                         <div style={styleSidebar}>
-                            <CSARSlots />
+                            <TaskList />
                         </div>
                     ) : null}
                     <div style={styleMap}>
                         <Map
                             onSelectMapPoint={this.onSelectMapPoint}
                             route={this.state.route}
+                            showServerNames={this.state.showServerNames}
                         />
                     </div>
                     {showFlightPlanner ? (

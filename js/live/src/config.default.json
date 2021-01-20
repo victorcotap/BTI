@@ -1,7 +1,13 @@
 {
     "coreTunnel": "something.ngrok",
-    "map": "PG",
+    "map": "World",
     "showRules": true,
     "showAbout": true,
-    "serverName": "Topper Shenanigans"
+    "serverName": "Topper Shenanigans",
+    "servers": [
+        {
+            "serverName": "Some Name",
+            "serverTunnel": "http://someserver.com:10407"
+        }
+    ]
 }

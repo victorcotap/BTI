@@ -46,8 +46,8 @@ const App: React.FC = () => {
           <h1 style={{ fontSize: "1.2rem", margin: "0" }}>{config.serverName}</h1>
         </header>
         <section style={styleTopSection}>
-          <Link style={styleLink} to="/">MAP</Link>
-          <Link style={styleLink} to="/airboss">GREENIE BOARD</Link>
+          {/* <Link style={styleLink} to="/">MAP</Link>
+          <Link style={styleLink} to="/airboss">GREENIE BOARD</Link> */}
           {config.showRules ? <Link style={styleLink} to="/rules">RULES</Link> : undefined}
           {config.showAbout ? <Link style={styleLink} to="/about">ABOUT</Link> : undefined}
         </section>

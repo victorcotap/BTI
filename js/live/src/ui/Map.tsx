@@ -40,14 +40,16 @@ const Mapbox = ReactMapboxGl({
     antialias: true,
 });
 
-const mapCenters: { [key: string]: [number, number] } = {
+const mapCenters: { [key: string]: [number, number,] } = {
     'PG': [55.415474, 26.078377],
     'CCS': [41.139825, 42.659296],
     'NTTR': [-115.0306085, 36.235341],
+    'World': [0.0, 40.0],
 }
 
 interface Props {
     route?: Waypoint[],
+    showServerNames: string[],
     onSelectMapPoint: (point: LngLat, type: WaypointType, name?: string) => void
 }
 
@@ -64,7 +66,8 @@ interface State {
     showApproachChart: boolean,
 }
 
-const defaultZoom: [number] = [7];
+const defaultZoom: [number] = [2];
+const mapServers = config.servers;
 
 export default class Map extends React.Component<Props> {
     state: State = {
@@ -78,11 +81,10 @@ export default class Map extends React.Component<Props> {
         showApproachChart: false,
     };
     lastLocation?: [number, number] = undefined;
-    private underlyingMap: MapboxGl.Map | undefined;
 
 
-    private async fetchData() {
-        return fetch(config.coreTunnel + "/live", {
+    private async fetchData(tunnel: string) {
+        return fetch(tunnel + "/live", {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -91,16 +93,25 @@ export default class Map extends React.Component<Props> {
         })
     }
     async refreshData() {
+        let serversToFetch = this.props.showServerNames.map((serverName) => config.servers.find((server) => server.serverName === serverName))
         try {
-            const newData = await this.fetchData()
-            const newJSON = await newData.json()
-            const { currentGroups } = newJSON;
-            const groups: Group[] = currentGroups;
-            if (groups) {
-                this.setState({ currentGroups: groups })
-            }
+            let totalData: Group[] = Array<Group>()
+
+            serversToFetch.forEach(async server => {
+                if (!server) return; // Wish i could update to TS 4.0+ but the web is a broken open source community
+                    const newData = await this.fetchData(server.serverTunnel || "");
+                    const newJSON = await newData.json();
+                    const { currentGroups } = newJSON;
+                    if (currentGroups) {
+                        totalData = [
+                            ...totalData,
+                            ...currentGroups,
+                        ];
+                        this.setState({ currentGroups: totalData})
+                    }
+            });
         } catch (error) {
-            console.log(error);
+            console.log('ERROR', error);
         }
     }
 
