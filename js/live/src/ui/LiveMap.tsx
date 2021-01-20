@@ -8,10 +8,10 @@ import CSARSlots from './CSARSlots';
 import FlightPlanner from './FlightPlanner';
 
 import Waypoint, { WaypointType } from '../model/waypoint';
-import {genColor} from '../utils/colorUtils';
+import { genColor } from '../utils/colorUtils';
 
 import config from '../config.json';
-import { Checkbox } from 'antd';
+import { Checkbox, Typography, Row } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import TaskList from './TaskList';
 
@@ -22,7 +22,7 @@ const styleToolbar: CSSProperties = {
     boxSizing: "border-box",
     minHeight: '5vh',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'flex-end',
     paddingLeft: "10px",
     paddingRight: "10px",
@@ -84,49 +84,53 @@ export default class LiveMap extends React.Component {
     }
 
     onClearRoute = () => {
-        this.setState({route: Array<Waypoint>()});
+        this.setState({ route: Array<Waypoint>() });
     }
     onSwapWaypoint = (waypointIndex: number, newWaypointIndex: number) => {
         const route = this.state.route;
         const swappedWaypoint = this.state.route[waypointIndex];
         route[waypointIndex] = route[newWaypointIndex];
         route[newWaypointIndex] = swappedWaypoint;
-        this.setState({route});
+        this.setState({ route });
     }
     onDeleteWaypoint = (waypointIndex: number) => {
         const route = this.state.route;
         route.splice(waypointIndex, 1);
-        this.setState({route});
+        this.setState({ route });
     }
 
-    onSelectMapPoint = (point: LngLat, type: WaypointType, name?: string, ) => {
+    onSelectMapPoint = (point: LngLat, type: WaypointType, name?: string,) => {
         if (!this.state.showFlightPlanner && !name) { return }
         const route = this.state.route
         getElevation([point.lng, point.lat], (error: Error, elevation: number) => {
             if (error) { console.warn(error); }
             const color = type === WaypointType.waypoint ? '#' + genColor(point.lat + point.lng) : undefined;
-            route.push({latitude: point.lat, longitude: point.lng, elevation, name, color, type});
-            this.setState({route});
+            route.push({ latitude: point.lat, longitude: point.lng, elevation, name, color, type });
+            this.setState({ route });
         })
     }
 
     onSelectServer = (checkedServers: CheckboxValueType[]) => {
-        this.setState({showServerNames: checkedServers})
+        this.setState({ showServerNames: checkedServers })
     }
 
     render() {
-        const { showFlightPlanner, showSlots} = this.state;
-        const slotsButtonStyle = showSlots ? {...styleButton, ...selectedStyleButton} : styleButton;
-        const fpButtonStyle = showFlightPlanner ? {...styleButton, ...selectedStyleButton} : styleButton;
+        const { showFlightPlanner, showSlots } = this.state;
+        const slotsButtonStyle = showSlots ? { ...styleButton, ...selectedStyleButton } : styleButton;
+        const fpButtonStyle = showFlightPlanner ? { ...styleButton, ...selectedStyleButton } : styleButton;
 
         return (
             <div>
                 <div style={styleToolbar}>
-                    <button style={slotsButtonStyle} onClick={(event) => this.setState({showSlots: !this.state.showSlots})}> Toggle Task List</button>
-                    <Checkbox.Group defaultValue={defaultServers} onChange={this.onSelectServer}>
-                        {config.servers.map((server) => <Checkbox key={server.serverName} value={server.serverName}>{server.serverName}</Checkbox>)}
-                    </Checkbox.Group>
-                    <button style={fpButtonStyle} onClick={(event) => this.setState({showFlightPlanner: !this.state.showFlightPlanner})}>Flight Planning Mode</button>
+                    {/* <button style={slotsButtonStyle} onClick={(event) => this.setState({ showSlots: !this.state.showSlots })}> Toggle Task List</button> */}
+                    <Row justify="center">
+                        <Typography.Text>Wait 30s after selection for map to refresh</Typography.Text>
+                        <Checkbox.Group defaultValue={defaultServers} onChange={this.onSelectServer}>
+                            {config.servers.map((server) => <Checkbox key={server.serverName} value={server.serverName}>{server.serverName}</Checkbox>)}
+                        </Checkbox.Group>
+                    </Row>
+
+                    {/* <button style={fpButtonStyle} onClick={(event) => this.setState({ showFlightPlanner: !this.state.showFlightPlanner })}>Flight Planning Mode</button> */}
                 </div>
                 <div style={styleContentArea}>
                     {showSlots ? (
@@ -143,7 +147,7 @@ export default class LiveMap extends React.Component {
                     </div>
                     {showFlightPlanner ? (
                         <div style={styleSidebar}>
-                            <FlightPlanner route={this.state.route} onClearRoute={this.onClearRoute} onSwapWaypoint={this.onSwapWaypoint} onDeleteWaypoint={this.onDeleteWaypoint}/>
+                            <FlightPlanner route={this.state.route} onClearRoute={this.onClearRoute} onSwapWaypoint={this.onSwapWaypoint} onDeleteWaypoint={this.onDeleteWaypoint} />
                         </div>
                     ) : null}
                 </div>
