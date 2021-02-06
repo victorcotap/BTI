@@ -193,7 +193,6 @@ export default class SlotStore {
                     const result = await this.client.request(logbookMutation, { entry: { flights: newLogbookEntries, playerUCID } })
                 } catch (error) {
                     console.error('Cannot process flight for pilot', error)
-                    throw error
                 }
             }
         }
