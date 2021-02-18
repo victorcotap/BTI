@@ -142,24 +142,6 @@ function saveMasterTracking(master, masterPath, slots, slotsPath)
         env.info("TOP: No master or slots provided for saving")
         return
     end
-    for i, group in ipairs(master) do
-        for key, groupValue in pairs(group) do
-            if type(groupValue) == "table" then
-                for attributeKey, attributeValue in pairs(groupValue) do
-                    if type(attributeValue) == "number" then
-                        if attributeValue ~= attributeValue or attributeValue <= -math.huge or attributeValue >= math.huge then
-                            env.info("TOP: ERROR IN TABLE DATA " .. key .. "for group " .. groupValue["displayName"])
-                        end
-                    end
-                end
-            end
-            if type(groupValue) == "number" then
-                if groupValue ~= groupValue or groupValue <= -math.huge or groupValue >= math.huge then
-                    env.info("TOP: ERROR IN DATA " .. key .. "for group " .. groupValue["displayName"])
-                end
-            end
-        end
-    end
     local newMasterJSON = JSONLib.encode(master)
     local newSlotsJSON = JSONLib.encode(slots)
     -- env.info("TOP: encoding new master JSON" .. newMasterJSON)
