@@ -2,7 +2,7 @@ import express from 'express';
 
 import TrackingStore from '../stores/trackingStore';
 import CSARStore from '../stores/csarStore';
-import AirbossStore from '../stores/airbossStore';
+// import AirbossStore from '../stores/airbossStore';
 
 import config from '../config.json';
 import SlotStore from '../stores/slotStore';
@@ -59,12 +59,13 @@ if (config.SlotsEnabled) {
 
 }
 
-if (config.DiscordEnabled) {
-    const airbossStore = new AirbossStore(config.pathToGreenieBoardCSV)
-    router.get('/airboss', async (request, response) => {
-        console.info('AIRBOSS data access', new Date());
-        response.json({currentTraps: airbossStore.cache.currentTraps});
-    });
-}
+// Re enable when Discord library doesn't crash anymore / might just need to be updated
+// if (config.DiscordEnabled) {
+//     const airbossStore = new AirbossStore(config.pathToGreenieBoardCSV)
+//     router.get('/airboss', async (request, response) => {
+//         console.info('AIRBOSS data access', new Date());
+//         response.json({currentTraps: airbossStore.cache.currentTraps});
+//     });
+// }
 
 export default router
