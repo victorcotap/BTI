@@ -14,18 +14,19 @@ local function triggerMission(side, baseZone, store)
   local destination = TFLFindEmptyContestedZone(store.zones, side)
 
   --FIXME: Randomize asset selection ?
-  local group = asset:SpawnInZone(baseZone.zone, true)
-  group:RouteToVec2()
+  local warehouse = TFL.ternary(side == 1, store.redAssets, store.blueAssets)
+  -- local group = store:SpawnInZone(baseZone.zone, true)
+  -- group:RouteToVec2()
 
   local missionTextCoordinate = TFLMiddleCoordinate(baseZone.zone:GetCoordinate(), destination.zone:GetCoordinate())
-  local lineDrawID = baseZone.zone:GetCoordinate():LineToAll(store.zones[3].conflictZones[1].zone:GetCoordinate(), -1, TFL.color.red, 0.8, 4, true)
-  local textBoxID = missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.red, 0.3, 14)
+  local lineDrawID = baseZone.zone:GetCoordinate():LineToAll(store.zones[3].conflictZones[1].zone:GetCoordinate(), side, TFL.color.red, 0.8, 4, true)
+  local textBoxID = missionTextCoordinate:TextToAll("Test Mission text" , side, TFL.color.white, 1, TFL.color.red, 0.3, 14)
   local mission = {
     departureZone = baseZone,
     destinationZone = destination,
     description = "We going boyz",
     side = side,
-    group = group,
+    -- group = group,
     lineDrawID = lineDrawID,
     textBoxID = textBoxID,
   }
@@ -106,6 +107,11 @@ local function paintInitial(store)
   previousZone.zone:GetCoordinate():LineToAll(store.redBase.zone:GetCoordinate(), -1, TFL.color.green, 1.0, 6, true)
 end
 
+local function removeInitial(store)
+  COORDINATE:RemoveMark(store.redBase.zone.DrawID)
+
+end
+
 local function paintIntel(store)
 
   --Draw conflict zones
@@ -143,10 +149,10 @@ local function gameLoop(store)
   local blueMissions = TFL.filter(store.missions, function(e) return e.side == 2 end)
   local redMissions = TFL.filter(store.missions, function(e) return e.side == 1 end)
   if TFL.tableLength(redMissions) < store.maxConcurrentMissions then
-    triggerMission(1, store.redBase, store)
+    -- triggerMission(1, store.redBase, store)
   end
   if TFL.tableLength(blueMissions) < store.maxConcurrentMissions then
-    triggerMission(2, store.blueBase, store)
+    -- triggerMission(2, store.blueBase, store)
   end
 
   -- Display Intel

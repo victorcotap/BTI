@@ -12,16 +12,13 @@ local configuration = {
   },
   ["RedBase"] = "REDBorderZone",
   ["RedAssets"] = {
-      { "Atkasia", 20},
-      { "BMP3", 20},
+      { "Gepard", 20, 2},
+      { "BMP-3", 20, 4},
   },
   ["BlueBase"] = "BLUEBorderZone",
   ["BlueAssets"] = {
-    { "Paladin", 20},
-    { "M270", 20},
-    { "Truck", 20},
-    { "Leclerc", 20},
-    { "TPz", 20},
+    { "Gepard", 20},
+    { "Challenger2", 20},
   }
 }
 
@@ -79,16 +76,50 @@ for i,zones in ipairs(configuration.ZonesBtoR) do
   table.insert(TFLStore.zones, levelZones)
 end
 
+
+local function createGroup(coalitionNumber, groupData)
+  local groupAmount = TFL.ternary(groupData[3] ~= nil, groupData[3], 1)
+  local groupCoalition = TFL.ternary(coalitionNumber == 1, "R", "B")
+  local groupCountry = TFL.ternary(coalitionNumber == 1, country.id.CJTF_RED, country.id.CJTF_BLUE)
+  local units = {}
+  for i = 1, groupAmount, 1 do
+    units[i] = {
+      name = groupCoalition .. " " .. groupData[1] .. tostring(i),
+      type = groupData[1],
+      x = 0,
+      y = 0,
+      playerCanDrive = true,
+    }
+  end
+
+  local groupTable = {
+    name = groupCoalition .. " " .. groupData[1],
+    task = "Ground Nothing",
+    units= units,
+    lateActivation = true,
+  }
+
+  coalition.addGroup(groupCountry, Group.Category.GROUND, groupTable)
+  GROUP:NewTemplate(groupTable, coalitionNumber, Group.Category.GROUND, groupCountry)
+
+  return groupTable
+end
+
 for i,v in ipairs(configuration.BlueAssets) do
+  local groupTable = createGroup(2, v)
+
   table.insert(TFLStore.blueAssets, {
-    ["spawn"] = SPAWN:New(v[1]),
-    ["amount"] = v[2],
+    spawn = SPAWN:New(groupTable.name),
+    amount = v[2],
+    groupBy = TFL.ternary(v[3] ~= nil, v[3], 1),
   })
 end
 for i,v in ipairs(configuration.RedAssets) do
+  local groupTable = createGroup(1, v)
+
   table.insert(TFLStore.redAssets, {
-    ["spawn"] = SPAWN:New(v[1]),
-    ["amount"] = v[2],
+    spawn = SPAWN:New(groupTable.name),
+    amount = v[2],
   })
 end
 -- printTable(TFLStore.BlueAssets)
