@@ -77,7 +77,7 @@ end
 
 function TFLFindEmptyContestedZone(zones, side)
   local oppositeSide = TFL.ternary(side == 1, 2, 1)
-  local levels = TFL.ternary(side == 2, levels, TFL.tableReverse(zones))
+  local levels = TFL.ternary(side == 2, zones, TFL.tableReverse(zones))
 
   for i, l in ipairs(levels) do
     local contested = TFL.filter(l.conflictZones, function(e) return e.state == -1 end)
@@ -89,4 +89,13 @@ function TFLFindEmptyContestedZone(zones, side)
     local empty = TFL.filter(l.conflictZones, function(e) return e.state == 0 end)
     if #empty > 0 then return empty[math.random(#empty)] end
   end
+end
+
+function TFLGenerateMissionGroup(warehouse)
+  --Basic
+  local groupType = warehouse[math.random(#warehouse)]
+  if groupType.amount > groupType.groupBy then
+    groupType.amount = groupType.amount - groupType.groupBy
+    return groupType
+  else return end
 end

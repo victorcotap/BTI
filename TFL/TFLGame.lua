@@ -1,44 +1,36 @@
 local function triggerMission(side, baseZone, store)
 
-  -- Randomize new Mission
-  -- Spawn units but randomize time (+5 minutes) at which they depart
-  -- Store mission with groups table to check
-
-  -- Rules of the gameLoop
-  -- Holding conflict zones gives you point
-  -- Fill up a level before moving to the next one
-  -- If a level if contested (one zone held by enemy side)
-    -- Always target the enemy zone
-    -- Then select an empty zone
-
   local destination = TFLFindEmptyContestedZone(store.zones, side)
-
-  --FIXME: Randomize asset selection ?
   local warehouse = TFL.ternary(side == 1, store.redAssets, store.blueAssets)
-  -- local group = store:SpawnInZone(baseZone.zone, true)
-  -- group:RouteToVec2()
+  local color = TFL.ternary(side == 1, TFL.color.red, TFL.color.blue)
+  local groupType = TFLGenerateMissionGroup(warehouse)
 
-  local missionTextCoordinate = TFLMiddleCoordinate(baseZone.zone:GetCoordinate(), destination.zone:GetCoordinate())
-  local lineDrawID = baseZone.zone:GetCoordinate():LineToAll(store.zones[3].conflictZones[1].zone:GetCoordinate(), side, TFL.color.red, 0.8, 4, true)
-  local textBoxID = missionTextCoordinate:TextToAll("Test Mission text" , side, TFL.color.white, 1, TFL.color.red, 0.3, 14)
-  local mission = {
-    departureZone = baseZone,
-    destinationZone = destination,
-    description = "We going boyz",
-    side = side,
-    -- group = group,
-    lineDrawID = lineDrawID,
-    textBoxID = textBoxID,
-  }
-  table.insert(store.missions, mission)
+  if groupType then
+    local group = groupType.spawn:SpawnInZone(baseZone.zone, true)
+    group:RouteGroundOnRoad(destination.zone:GetCoordinate())
+    local missionTextCoordinate = TFLMiddleCoordinate(baseZone.zone:GetCoordinate(), destination.zone:GetCoordinate())
+    local lineDrawID = baseZone.zone:GetCoordinate():LineToAll(destination.zone:GetCoordinate(), side, color, 0.8, 4, true)
+    local textBoxID = missionTextCoordinate:TextToAll("Sending Assets" , side, TFL.color.white, 1, color, 0.3, 14)
+    local mission = {
+      departureZone = baseZone,
+      destinationZone = destination,
+      description = "We going boyz",
+      side = side,
+      group = group,
+      lineDrawID = lineDrawID,
+      textBoxID = textBoxID,
+      active = true,
+    }
+    table.insert(store.missions, mission)
+  else return end -- Fail mission trigger and try again next loop
 end
 
 local function missionLoop(store)
   -- Check if spawned group is dead or arrived at destination
   for i, v in ipairs(store.missions) do
-    if v.group:IsCompletelyInZone(v.destinationZone.zone) or v.group.IsAlive() == nil then
+    if v.group:IsCompletelyInZone(v.destinationZone.zone) or v.group:IsAlive() == nil then
       --delete mission
-      v.group:MessageToCoalition("We have arrived at our destination! HODDOR!", 15, v.side)
+      -- v.group:MessageToCoalition("We have arrived at our destination! HODDOR!", 15, v.side)
       COORDINATE:RemoveMark(v.lineDrawID)
       COORDINATE:RemoveMark(v.textBoxID)
       table.remove(store.missions, i)
@@ -57,9 +49,11 @@ local function scanIntel(store)
       elseif v.zone:IsAllInZoneOfCoalition(1) then
         --Red
         v.state = 1
+        store.redScore = store.redScore + 1
       elseif v.zone:IsAllInZoneOfCoalition(2) then
         --Blue
         v.state = 2
+        store.blueScore = store.blueScore + 1
       else
         --Both
         v.state = -1
@@ -67,7 +61,7 @@ local function scanIntel(store)
     end
   end
 
-  timer.scheduleFunction(scanIntel, store, timer.getTime() + 10)
+  -- timer.scheduleFunction(scanIntel, store, timer.getTime() + 10)
 end
 
 local function paintInitial(store)
@@ -109,7 +103,11 @@ end
 
 local function removeInitial(store)
   COORDINATE:RemoveMark(store.redBase.zone.DrawID)
-
+  COORDINATE:RemoveMark(store.blueBase.zone.DrawID)
+  for k, v in pairs(store.missions) do
+    COORDINATE:RemoveMark(v.lineDrawID)
+    COORDINATE:RemoveMark(v.textBoxID)
+  end
 end
 
 local function paintIntel(store)
@@ -129,30 +127,31 @@ local function paintIntel(store)
   end
 
   --Draw missions
-  local missionTextCoordinate = TFLMiddleCoordinate(store.blueBase.zone:GetCoordinate(), store.zones[2].conflictZones[2].zone:GetCoordinate())
-  store.blueBase.zone:GetCoordinate():LineToAll(store.zones[2].conflictZones[2].zone:GetCoordinate(), -1, TFL.color.blue, 0.8, 4, true)
-  missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.blue, 0.3, 14)
+  -- local missionTextCoordinate = TFLMiddleCoordinate(store.blueBase.zone:GetCoordinate(), store.zones[2].conflictZones[2].zone:GetCoordinate())
+  -- store.blueBase.zone:GetCoordinate():LineToAll(store.zones[2].conflictZones[2].zone:GetCoordinate(), -1, TFL.color.blue, 0.8, 4, true)
+  -- missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.blue, 0.3, 14)
 
-  missionTextCoordinate = TFLMiddleCoordinate(store.redBase.zone:GetCoordinate(), store.zones[3].conflictZones[1].zone:GetCoordinate())
-  store.redBase.zone:GetCoordinate():LineToAll(store.zones[3].conflictZones[1].zone:GetCoordinate(), -1, TFL.color.red, 0.8, 4, true)
-  missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.red, 0.3, 14)
+  -- missionTextCoordinate = TFLMiddleCoordinate(store.redBase.zone:GetCoordinate(), store.zones[3].conflictZones[1].zone:GetCoordinate())
+  -- store.redBase.zone:GetCoordinate():LineToAll(store.zones[3].conflictZones[1].zone:GetCoordinate(), -1, TFL.color.red, 0.8, 4, true)
+  -- missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.red, 0.3, 14)
 
-  timer.scheduleFunction(paintIntel, store, timer.getTime() + 10)
+  -- timer.scheduleFunction(paintIntel, store, timer.getTime() + 10)
 end
 
 local function gameLoop(store)
   env.info("Running GameLoop")
+  scanIntel(store)
   -- Check on missions in progress
   missionLoop(store)
+  paintIntel(store)
 
   -- If currentMissions < maxConcurrentMissions
   local blueMissions = TFL.filter(store.missions, function(e) return e.side == 2 end)
   local redMissions = TFL.filter(store.missions, function(e) return e.side == 1 end)
   if TFL.tableLength(redMissions) < store.maxConcurrentMissions then
-    -- triggerMission(1, store.redBase, store)
-  end
-  if TFL.tableLength(blueMissions) < store.maxConcurrentMissions then
-    -- triggerMission(2, store.blueBase, store)
+    triggerMission(1, store.redBase, store)
+  end if TFL.tableLength(blueMissions) < store.maxConcurrentMissions then
+    triggerMission(2, store.blueBase, store)
   end
 
   -- Display Intel
@@ -163,6 +162,5 @@ local function gameLoop(store)
 end
 
 gameLoop(TFLStore)
-scanIntel(TFLStore)
 paintInitial(TFLStore)
-paintIntel(TFLStore)
+

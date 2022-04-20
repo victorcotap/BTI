@@ -2,7 +2,7 @@
 
 local configuration = {
   ["Name"] = "Some Name",
-  ["MaxConcurrentMissions"] = 4,
+  ["MaxConcurrentMissions"] = 3,
   ZonesBtoR = { -- Grouped by levels
     {"StagingZoneB"},
     {"ConflictZoneA", "ConflictZoneB", "ConflictZoneC"},
@@ -12,17 +12,23 @@ local configuration = {
   },
   ["RedBase"] = "REDBorderZone",
   ["RedAssets"] = {
-      { "Gepard", 20, 2},
-      { "BMP-3", 20, 4},
+      { "Gepard", 30, 1},
+      { "BMP-3", 30, 1},
   },
   ["BlueBase"] = "BLUEBorderZone",
   ["BlueAssets"] = {
-    { "Gepard", 20},
-    { "Challenger2", 20},
+    { "Gepard", 30, 1},
+    { "Challenger2", 30, 1},
   }
 }
 
+-- See Initialization at the bottom of this file --
 -- Do not modify after this line --
+
+local function prepareStore(configuration)
+
+  return store
+end
 
 TFLStore = {
   name = configuration.Name,
@@ -45,8 +51,10 @@ TFLStore = {
   missions = {},
   redAssets = {},
   redMissions = 0,
+  redScore = 0,
   blueAssets = {},
   blueMissions = 0,
+  blueScore = 0,
 }
 
 local Mission = {
@@ -57,6 +65,7 @@ local Mission = {
   group = nil,
   lineDrawID = nil,
   textBoxID = nil,
+  active = false,
 }
 
 for i,zones in ipairs(configuration.ZonesBtoR) do
@@ -105,22 +114,16 @@ local function createGroup(coalitionNumber, groupData)
   return groupTable
 end
 
-for i,v in ipairs(configuration.BlueAssets) do
-  local groupTable = createGroup(2, v)
+local prepareGroup = function(side, configAssets, storeAssets)
+  for i,v in ipairs(configAssets) do
+    local groupTable = createGroup(side, v)
 
-  table.insert(TFLStore.blueAssets, {
-    spawn = SPAWN:New(groupTable.name),
-    amount = v[2],
-    groupBy = TFL.ternary(v[3] ~= nil, v[3], 1),
-  })
+    table.insert(storeAssets, {
+      spawn = SPAWN:New(groupTable.name):InitRandomizePosition(),
+      amount = v[2],
+      groupBy = TFL.ternary(v[3] ~= nil, v[3], 1),
+    })
+  end
 end
-for i,v in ipairs(configuration.RedAssets) do
-  local groupTable = createGroup(1, v)
-
-  table.insert(TFLStore.redAssets, {
-    spawn = SPAWN:New(groupTable.name),
-    amount = v[2],
-  })
-end
--- printTable(TFLStore.BlueAssets)
--- printTable(TFLStore.RedAssets)
+prepareGroup(2, configuration.BlueAssets, TFLStore.blueAssets)
+prepareGroup(1, configuration.RedAssets, TFLStore.redAssets)
