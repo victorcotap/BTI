@@ -1,4 +1,8 @@
-local function triggerMission(side, baseZone, store)
+local function triggerMission(argument)
+
+  local side = argument.side
+  local baseZone = argument.base
+  local store = argument.store
 
   local destination = TFLFindEmptyContestedZone(store.zones, side)
   local warehouse = TFL.ternary(side == 1, store.redAssets, store.blueAssets)
@@ -7,7 +11,7 @@ local function triggerMission(side, baseZone, store)
 
   if groupType then
     local group = groupType.spawn:SpawnInZone(baseZone.zone, true)
-    group:RouteGroundOnRoad(destination.zone:GetCoordinate())
+    group:RouteGroundOnRoad(destination.zone:GetCoordinate(), 35)
     local missionTextCoordinate = TFLMiddleCoordinate(baseZone.zone:GetCoordinate(), destination.zone:GetCoordinate())
     local lineDrawID = baseZone.zone:GetCoordinate():LineToAll(destination.zone:GetCoordinate(), side, color, 0.8, 4, true)
     local textBoxID = missionTextCoordinate:TextToAll("Sending Assets" , side, TFL.color.white, 1, color, 0.3, 14)
@@ -26,11 +30,8 @@ local function triggerMission(side, baseZone, store)
 end
 
 local function missionLoop(store)
-  -- Check if spawned group is dead or arrived at destination
   for i, v in ipairs(store.missions) do
-    if v.group:IsCompletelyInZone(v.destinationZone.zone) or v.group:IsAlive() == nil then
-      --delete mission
-      -- v.group:MessageToCoalition("We have arrived at our destination! HODDOR!", 15, v.side)
+    if v.group:IsInZone(v.destinationZone.zone) or v.group:IsAlive() == nil then
       COORDINATE:RemoveMark(v.lineDrawID)
       COORDINATE:RemoveMark(v.textBoxID)
       table.remove(store.missions, i)
@@ -61,10 +62,51 @@ local function scanIntel(store)
     end
   end
 
-  -- timer.scheduleFunction(scanIntel, store, timer.getTime() + 10)
 end
 
-local function paintInitial(store)
+local function removeInitial(store)
+  COORDINATE:RemoveMark(store.redBase.zone.DrawID)
+  COORDINATE:RemoveMark(store.blueBase.zone.DrawID)
+  for k, v in pairs(store.missions) do
+    COORDINATE:RemoveMark(v.lineDrawID)
+    COORDINATE:RemoveMark(v.textBoxID)
+  end
+end
+
+local function paintIntel(store)
+  for i, level in pairs(store.zones) do
+    for i, v in pairs(level.conflictZones) do
+      if v.zone.DrawID then
+         COORDINATE:RemoveMark(v.zone.DrawID)
+      end if v.textBoxID then
+         COORDINATE:RemoveMark(v.textBoxID)
+      end
+      v.zone:DrawZone(-1, TFL.color.black, 0.8, TFLZoneStateColor(v.state), 0.2, 5, true)
+      local zoneRadius = v.zone:GetRadius()
+      v.textBoxID = v.zone:GetCoordinate():Translate(zoneRadius * 1.5, 315):TextToAll(TFLZoneStateText(v.state, v.name) ,-1, TFL.color.white, 1, TFLZoneStateColor(v.state), 0.3, 11)
+    end
+  end
+end
+
+function gameLoop(store)
+  env.info("Running GameLoop")
+  scanIntel(store)
+  missionLoop(store)
+  paintIntel(store)
+
+  local blueMissions = TFL.filter(store.missions, function(e) return e.side == 2 end)
+  local redMissions = TFL.filter(store.missions, function(e) return e.side == 1 end)
+  if TFL.tableLength(redMissions) <= store.maxConcurrentMissions then
+    timer.scheduleFunction(triggerMission, {side = 1, base = store.redBase, store = store}, timer.getTime() + 1)
+  end if TFL.tableLength(blueMissions) <= store.maxConcurrentMissions then
+    timer.scheduleFunction(triggerMission, {side = 2, base = store.blueBase, store = store}, timer.getTime() + 1)
+  end
+
+  timer.scheduleFunction(gameLoop, store, timer.getTime() + 30)
+end
+
+
+function TFLStartGame(store)
   --Draw Bases
   if store.blueBaseDrawID then COORDINATE:RemoveMark(store.blueBaseDrawID.DrawID) end
   if store.redBaseDrawID then COORDINATE:RemoveMark(store.redBaseDrawID.DrawID) end
@@ -99,68 +141,6 @@ local function paintInitial(store)
     previousZone = closestZone
   end
   previousZone.zone:GetCoordinate():LineToAll(store.redBase.zone:GetCoordinate(), -1, TFL.color.green, 1.0, 6, true)
+
+  gameLoop(store)
 end
-
-local function removeInitial(store)
-  COORDINATE:RemoveMark(store.redBase.zone.DrawID)
-  COORDINATE:RemoveMark(store.blueBase.zone.DrawID)
-  for k, v in pairs(store.missions) do
-    COORDINATE:RemoveMark(v.lineDrawID)
-    COORDINATE:RemoveMark(v.textBoxID)
-  end
-end
-
-local function paintIntel(store)
-
-  --Draw conflict zones
-  for i, level in pairs(store.zones) do
-    for i, v in pairs(level.conflictZones) do
-      if v.zone.DrawID then
-         COORDINATE:RemoveMark(v.zone.DrawID)
-      end if v.textBoxID then
-         COORDINATE:RemoveMark(v.textBoxID)
-      end
-      v.zone:DrawZone(-1, TFL.color.black, 0.8, TFLZoneStateColor(v.state), 0.2, 5, true)
-      local zoneRadius = v.zone:GetRadius()
-      v.textBoxID = v.zone:GetCoordinate():Translate(zoneRadius * 1.5, 315):TextToAll(TFLZoneStateText(v.state, v.name) ,-1, TFL.color.white, 1, TFLZoneStateColor(v.state), 0.3, 11)
-    end
-  end
-
-  --Draw missions
-  -- local missionTextCoordinate = TFLMiddleCoordinate(store.blueBase.zone:GetCoordinate(), store.zones[2].conflictZones[2].zone:GetCoordinate())
-  -- store.blueBase.zone:GetCoordinate():LineToAll(store.zones[2].conflictZones[2].zone:GetCoordinate(), -1, TFL.color.blue, 0.8, 4, true)
-  -- missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.blue, 0.3, 14)
-
-  -- missionTextCoordinate = TFLMiddleCoordinate(store.redBase.zone:GetCoordinate(), store.zones[3].conflictZones[1].zone:GetCoordinate())
-  -- store.redBase.zone:GetCoordinate():LineToAll(store.zones[3].conflictZones[1].zone:GetCoordinate(), -1, TFL.color.red, 0.8, 4, true)
-  -- missionTextCoordinate:TextToAll("Test Mission text" ,-1, TFL.color.white, 1, TFL.color.red, 0.3, 14)
-
-  -- timer.scheduleFunction(paintIntel, store, timer.getTime() + 10)
-end
-
-local function gameLoop(store)
-  env.info("Running GameLoop")
-  scanIntel(store)
-  -- Check on missions in progress
-  missionLoop(store)
-  paintIntel(store)
-
-  -- If currentMissions < maxConcurrentMissions
-  local blueMissions = TFL.filter(store.missions, function(e) return e.side == 2 end)
-  local redMissions = TFL.filter(store.missions, function(e) return e.side == 1 end)
-  if TFL.tableLength(redMissions) < store.maxConcurrentMissions then
-    triggerMission(1, store.redBase, store)
-  end if TFL.tableLength(blueMissions) < store.maxConcurrentMissions then
-    triggerMission(2, store.blueBase, store)
-  end
-
-  -- Display Intel
-  -- Color zones according to status
-  -- Color lines according to missions
-
-  timer.scheduleFunction(gameLoop, store, timer.getTime() + 30)
-end
-
-gameLoop(TFLStore)
-paintInitial(TFLStore)
-

@@ -1,4 +1,4 @@
-local isDebugging = true
+local isDebugging = false
 
 -- load debugger
 local function startDebugger()
@@ -24,5 +24,12 @@ if isDebugging then
 end
 -- load mission scripts
 dofile("C:\\BTI\\TFL\\TFLUtils.lua")
-dofile("C:\\BTI\\TFL\\TFLStore.lua")
 dofile("C:\\BTI\\TFL\\TFLGame.lua")
+dofile("C:\\BTI\\TFL\\TFLStore.lua")
+
+-- local function checkLuaMem()
+--   env.info("BENCHMARK - MEMORY USAGE: " ..string.format("%.2f MB", collectgarbage("count")/1000))
+--   trigger.action.outText("BENCHMARK - MEMORY USAGE: " ..string.format("%.2f MB", collectgarbage("count")/1000), 5)
+--   timer.scheduleFunction(checkLuaMem, nil, timer.getTime() + 5)
+-- end
+-- checkLuaMem()
