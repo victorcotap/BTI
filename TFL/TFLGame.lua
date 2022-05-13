@@ -61,7 +61,7 @@ local function scanIntel(store)
       end
     end
   end
-
+  env.info(string.format("TFL Score Red %d Blue %d", store.redScore, store.blueScore))
 end
 
 local function removeInitial(store)
