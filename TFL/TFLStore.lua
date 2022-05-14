@@ -13,12 +13,14 @@ local configuration = {
   },
   ["RedBase"] = "REDBorderZone",
   ["RedAssets"] = {
-    {"Gepard", 30, 1},
-    {"BMP-3", 30, 1}
+    {"HL_DSHK", 30, 1},
+    {"BTR-80", 30, 1},
+    {"T-80UD", 30, 1}
   },
   ["BlueBase"] = "BLUEBorderZone",
   ["BlueAssets"] = {
-    {"Gepard", 30, 1},
+    {"HL_DSHK", 30, 1},
+    {"LAV-25", 30, 1},
     {"Challenger2", 30, 1}
   }
 }
@@ -34,15 +36,15 @@ local nicosia = {
   },
   ["RedBase"] = "Nicosia Red Base",
   ["RedAssets"] = {
-    {"LAV-25", 30, 2},
-    {"M1126 Stryker ICV", 30, 2},
-    {"Leclerc", 30, 2}
+    {"BTR-80", 30, 2},
+    {"HL_DSHK", 30, 1},
+    {"Challenger", 30, 2},
   },
   ["BlueBase"] = "Nicosia Blue Base",
   ["BlueAssets"] = {
     {"LAV-25", 30, 2},
-    {"M1126 Stryker ICV", 30, 2},
-    {"Leclerc", 30, 2}
+    {"HL_DSHK", 30, 2},
+    {"Leclerc", 30, 2},
   }
 }
 
@@ -57,15 +59,15 @@ local ercan = {
   },
   ["RedBase"] = "Ercan Red Base",
   ["RedAssets"] = {
-    {"LAV-25", 30, 2},
-    {"M1126 Stryker ICV", 30, 2},
-    {"Leclerc", 30, 2}
+    {"HL_DSHK", 30, 2},
+    {"BTR-80", 30, 1},
+    {"T-80UD", 30, 1},
   },
   ["BlueBase"] = "Ercan Blue Base",
   ["BlueAssets"] = {
     {"LAV-25", 30, 2},
-    {"M1126 Stryker ICV", 30, 2},
-    {"Leclerc", 30, 2}
+    {"HL_DSHK", 30, 2},
+    {"Leclerc", 30, 2},
   }
 }
 
