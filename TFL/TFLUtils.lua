@@ -10,7 +10,9 @@ TFL = {
     contested = {1,1,0},
     yellow = {1,1,0},
     turquoise = {0,1,1},
-    magenta = {1,0,1}
+    magenta = {1,0,1},
+    orange = {1,0.647,0},
+    purple = {0.627, 0.125, 0.941}
   },
 
   ternary = function( cond , T , F )
@@ -40,9 +42,75 @@ TFL = {
         reversedTable[itemCount + 1 - k] = v
     end
     return reversedTable
+  end,
+
+  split = function(str, sep)
+    local result = {}
+    local regex = ("([^%s]+)"):format(sep)
+    for each in str:gmatch(regex) do
+        table.insert(result, each)
+    end
+    return result
+  end,
+
+  centerVec2s = function(vec2A, vec2B)
+    local newX = (vec2A.x + vec2B.x) / 2
+    local newY = (vec2A.y + vec2B.y) / 2
+    return {x = newX, y = newY}
+  end,
+
+  drawMenu = function(coord, lines, unitSize, fontSize, noArrow)
+    local unitSize = unitSize or 300
+    local lineHeight = unitSize / 4
+    local fontSize = fontSize or 14
+    local noArrow = noArrow or false
+
+    local markIds = {}
+    local buttonsCoords = {}
+
+    local originPoint = coord
+    if noArrow == false then
+      originPoint = coord:Translate(1000, 135)
+      local arrowId = originPoint:ArrowToAll(coord, coalition.side.BLUE, TFL.color.orange, 0.7, TFL.color.orange, 0.2, 1)
+      table.insert(markIds, arrowId)
+    end
+
+    for i, line in ipairs(lines) do
+      local lineOrigin = originPoint
+      for i, column in ipairs(line) do
+        local size = column.size or 1
+        local color = column.color or TFL.color.purple
+        local type = column.type or "text"
+        local text = column.text
+
+        local contentOriginPoint = originPoint:Translate(lineHeight / 3, 135)
+        local nextOriginPoint = originPoint:Translate(unitSize * size, 090)
+        local endColumnPoint = nextOriginPoint:Translate(lineHeight, 180)
+
+        local cellId = originPoint:RectToAll(endColumnPoint, coalition.side.BLUE, color, 0.7, color, 0.2, 7)
+        table.insert(markIds, cellId)
+
+        if type == "text" and text ~= nil then
+          local textOriginPoint = contentOriginPoint:Translate(lineHeight / 4, 180)
+          local contentId = textOriginPoint:TextToAll(text, coalition.side.BLUE, TFL.color.white, 0.8, nil, 0.0, fontSize)
+          table.insert(markIds, contentId)
+        elseif type == "button" then
+          local centerVec2 = TFL.centerVec2s(originPoint:GetVec2(), endColumnPoint:GetVec2())
+          local centerCoord = COORDINATE:NewFromVec2(centerVec2)
+          local contentId = centerCoord:CircleToAll((lineHeight * 0.8) / 2, coalition.side.BLUE, TFL.color.green, 0.9, TFL.color.green, 0.2, 5)
+
+          table.insert(markIds, contentId)
+          table.insert(buttonsCoords, centerCoord)
+        end
+
+        originPoint = nextOriginPoint
+      end
+      local newLineOrigin = lineOrigin:Translate(lineHeight, 180)
+      originPoint = newLineOrigin
+    end
+    return markIds, buttonsCoords, originPoint
   end
 }
-
 
 function TFLZoneStateColor(state)
   if state == -1 then
@@ -98,4 +166,39 @@ function TFLGenerateMissionGroup(warehouse)
     groupType.amount = groupType.amount - groupType.groupBy
     return groupType
   else return end
+end
+
+function ccw(a,b,c)
+  return (b.x - a.x) * (c.y - a.y) > (b.y - a.y) * (c.x - a.x)
+end
+function TFLNewConvexHull(pl)
+  if #pl == 0 then
+      return {}
+  end
+  table.sort(pl, function(left,right)
+      return left.x < right.x
+  end)
+
+  local h = {}
+
+  -- lower hull
+  for i,pt in pairs(pl) do
+      while #h >= 2 and not ccw(h[#h-1], h[#h], pt) do
+          table.remove(h,#h)
+      end
+      table.insert(h,pt)
+  end
+
+  -- upper hull
+  local t = #h + 1
+  for i=#pl, 1, -1 do
+      local pt = pl[i]
+      while #h >= t and not ccw(h[#h-1], h[#h], pt) do
+          table.remove(h,#h)
+      end
+      table.insert(h,pt)
+  end
+
+  table.remove(h,#h)
+  return h
 end

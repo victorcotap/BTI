@@ -30,7 +30,12 @@ end
 dofile("C:\\BTI\\TFL\\TFLUtils.lua")
 -- dofile("C:\\BTI\\TFL\\TFLGame.lua")
 -- dofile("C:\\BTI\\TFL\\TFLStore.lua")
+dofile("C:\\BTI\\TFL\\TFLLocalStorage.lua")
+dofile("C:\\BTI\\TFL\\TFLResource.lua")
 dofile("C:\\BTI\\TFL\\TFLTaskManager.lua")
 dofile("C:\\BTI\\TFL\\TFLFleet.lua")
+dofile("C:\\BTI\\TFL\\TFLIntel.lua")
+dofile("C:\\BTI\\TFL\\TFLPersistence.lua")
+dofile("C:\\BTI\\TFL\\TFLSupport.lua")
 
 env.info("TFL: Dynamic loader finished")
