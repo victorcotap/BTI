@@ -78,9 +78,9 @@ local function sendBombAtCoordinate(coord)
     return
   end
   bombSpawn:OnSpawnGroup(function( spawnedGroup )
-    local routeTask = spawnedGroup:TaskRouteToVec2(coord:GetVec2(), UTILS.KnotsToMps(280))
+    -- local routeTask = spawnedGroup:TaskRouteToVec2(coord:GetVec2(), UTILS.KnotsToMps(280))
     local bombTask = spawnedGroup:TaskBombing( coord:GetVec2(), true, AI.Task.WeaponExpend.ALL)
-    spawnedGroup:PushTask(routeTask, 1)
+    -- spawnedGroup:PushTask(routeTask, 1)
     spawnedGroup:PushTask(bombTask, 2)
   end)
   bombSpawn:Spawn()
@@ -88,8 +88,9 @@ end
 local function sendAARAtCoordinate(coord)
   aarSpawn:OnSpawnGroup(function (spawnedGroup)
     local task = spawnedGroup:TaskOrbitCircleAtVec2(coord:GetVec2(), 5000, UTILS.KnotsToMps(250))
-    local tankerTask = spawnedGroup:EnrouteTaskTanker()
+    local tankerTask = spawnedGroup:EnRouteTaskTanker()
     spawnedGroup:PushTask(task, 1)
+    env.info("DEBUG yeah we tasking")
   end)
   aarSpawn:Spawn()
 end
@@ -101,17 +102,23 @@ local function executeSupport(supportIndex)
   if type == "aar" then
     if debitBalance("ttiGuild", cost, { name = "Some Player", credits = cost, reason = type, date = os.date("*t")}) == true then
       sendAARAtCoordinate(supportStore.supportMenu.coord)
+    else
+      trigger.action.outText("You do not have the necessary funds to perform this action", 10)
     end
   elseif type == "cap" then
     -- if check cooldown is
     if debitBalance("ttiGuild", cost, { name = "Some Player", credits = cost, reason = type, date = os.date("*t")}) == true then
       sendCAPAtCoordinate(supportStore.supportMenu.coord)
+    else
+      trigger.action.outText("You do not have the necessary funds to perform this action", 10)
     end
   elseif type == "sead" then
     -- sendSEADAtCoordinate(coord)
   elseif type == "bomb" then
     if debitBalance("ttiGuild", cost, { name = "Some Player", credits = cost, reason = type, date = os.date("*t")}) == true then
       sendBombAtCoordinate(supportStore.supportMenu.coord)
+    else
+      trigger.action.outText("You do not have the necessary funds to perform this action", 10)
     end
   end
   clearSupportMenu()

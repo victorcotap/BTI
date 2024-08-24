@@ -37,5 +37,6 @@ dofile("C:\\BTI\\TFL\\TFLFleet.lua")
 dofile("C:\\BTI\\TFL\\TFLIntel.lua")
 dofile("C:\\BTI\\TFL\\TFLPersistence.lua")
 dofile("C:\\BTI\\TFL\\TFLSupport.lua")
+dofile("C:\\BTI\\TFL\\TFLPatrol.lua")
 
 env.info("TFL: Dynamic loader finished")

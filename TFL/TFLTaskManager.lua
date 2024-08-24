@@ -109,7 +109,7 @@ function taskmanager:OnAfterTaskSuccess(From, Event, To, Task)
   taskStore[task.PlayerTaskNr].completedLineA = cornerA:LineToAll(cornerC, coalition.side.BLUE, TFL.color.white, 0.9, 4)
   taskStore[task.PlayerTaskNr].completedLineB = cornerB:LineToAll(cornerD, coalition.side.BLUE, TFL.color.white, 0.9, 4)
 
-  local log = { name = "Some Players", credits = taskStore[task.PlayerTaskNr].credits, reason = task.PlayerTaskNr .." completed", time = os.date("*t")}
+  local log = { name = "Some Players", credits = taskStore[task.PlayerTaskNr].credits, reason = task.PlayerTaskNr .." completed", date = os.date("*t")}
   creditBalance("ttiGuild", taskStore[task.PlayerTaskNr].credits, log)
 
   env.info(
@@ -305,19 +305,19 @@ function markHandler:onEvent(Event)
       end
     elseif Event.text ~= nil and Event.text:lower():find("-click") then
       -- RE-ENABLE THIS ONCE SUPPORT WORK IS DONE
-      -- local client = CLIENT:FindByPlayerName(Event.initiator:getPlayerName())
-      -- env.info("TFL: player " .. UTILS.OneLineSerialize(client))
-      -- for k, store in pairs(taskStore) do
-      --   if coord:IsInRadius(store.greenOffsetCornerPoint, 200) then
-      --     env.info("TFL: adding to task")
-      --     taskmanager:_JoinTask(store.task, true, client:GetGroup(), client)
-      --     return true
-      --   elseif coord:IsInRadius(store.redOffsetCornerPoint, 200) then
-      --     env.info("TFL: removing from task")
-      --     taskmanager:_AbortTask(client:GetGroup(), client)
-      --     return true
-      --   end
-      -- end
+      local client = CLIENT:FindByPlayerName(Event.initiator:getPlayerName())
+      env.info("TFL: player " .. UTILS.OneLineSerialize(client))
+      for k, store in pairs(taskStore) do
+        if coord:IsInRadius(store.greenOffsetCornerPoint, 200) then
+          env.info("TFL: adding to task")
+          taskmanager:_JoinTask(store.task, true, client:GetGroup(), client)
+          return true
+        elseif coord:IsInRadius(store.redOffsetCornerPoint, 200) then
+          env.info("TFL: removing from task")
+          taskmanager:_AbortTask(client:GetGroup(), client)
+          return true
+        end
+      end
     end
   end
 end

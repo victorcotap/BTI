@@ -97,6 +97,11 @@ local function clearFleetMenu(markIds)
   isFleetMenuOn = false
 end
 
+local function costForDistance(costPerNm, distance)
+  local nmDistance = distance * 0.000539957
+  return nmDistance * costPerNm
+end
+
 local function generateSupportLines(coord)
   local lines = {
     {
@@ -113,7 +118,7 @@ local function generateSupportLines(coord)
     local line = {
       {text = command.title, size = 1, color = TFL.color.turquoise},
       {text = tostring(command.costPerNm)},
-      {text = string.format("%.0f", distance)},
+      {text = string.format("%.0f", costForDistance(command.costPerNm, distance))},
       {type = "button", size = 1, color = TFL.color.grey}
     }
     table.insert(lines, line)
@@ -123,9 +128,17 @@ end
 
 local function executeFleetTask(index, coord)
   local command = fleetCommands[index]
-  local group = GROUP:FindByName(command.groupName)
-  group:TaskRouteToVec2(coord:GetVec2(), 25)
-  clearFleetMenu(fleetMarkIds)
+  local fleetGroup = GROUP:FindByName(command.groupName)
+  local distance = fleetGroup:GetCoordinate():Get2DDistance(coord)
+  local cost = costForDistance(command.costPerNm, distance)
+
+  if debitBalance("ttiGuild", cost, { name = "Some Player", credits = cost, reason = command.title, date = os.date("*t")}) then
+    local group = GROUP:FindByName(command.groupName)
+    group:TaskRouteToVec2(coord:GetVec2(), 25)
+    clearFleetMenu(fleetMarkIds)
+  else
+    trigger.action.outText("You do not have the necessary funds to perform this fleet action", 10)
+  end
 end
 
 -- -fleet move=[groupName] speed=25
