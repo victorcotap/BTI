@@ -18,7 +18,7 @@
     "react-dom": "^16.14.0",
     "react-mapbox-gl": "^5.0.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.0.1",
+    "react-scripts": "5.0.1",
     "typescript": "3.9.7"
   },
   "scripts": {
